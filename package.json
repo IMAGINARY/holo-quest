@@ -1,0 +1,37 @@
+{
+  "name": "holo-quest",
+  "version": "0.1.0",
+  "description": "A first person interactive story engine",
+  "main": "index.html",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/IMAGINARY/holo-quest.git"
+  },
+  "author": "Eric Londaits <eric.londaits@imaginary.org>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/IMAGINARY/holo-quest/issues"
+  },
+  "engines": {
+    "node": ">=24.4.1"
+  },
+  "scripts": {
+    "dev": "npx vite",
+    "build": "npx vite build",
+    "preview": "npx vite preview",
+    "lint": "eslint \"src/**/*.{js,jsx}\" --max-warnings=0",
+    "lint:style": "stylelint \"src/**/*.{css,scss}\"",
+    "test": "jest --passWithNoTests"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.1",
+    "eslint-config-airbnb": "^19.0.4",
+    "jest": "^30.2.0",
+    "stylelint": "^16.26.1",
+    "stylelint-config-standard-scss": "^15.0.1"
+  },
+  "dependencies": {
+    "sass-embedded": "^1.97.3",
+    "vite": "^7.3.1"
+  }
+}
