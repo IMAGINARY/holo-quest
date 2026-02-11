@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "A first person interactive story engine",
   "main": "index.html",
+  "type": "module",
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/IMAGINARY/holo-quest.git"
