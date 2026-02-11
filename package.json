@@ -31,7 +31,9 @@
     "stylelint-config-standard-scss": "^15.0.1"
   },
   "dependencies": {
+    "jquery": "^4.0.0",
     "sass-embedded": "^1.97.3",
-    "vite": "^7.3.1"
+    "vite": "^7.3.1",
+    "vite-plugin-static-copy": "^3.2.0"
   }
 }
