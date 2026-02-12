@@ -1,5 +1,6 @@
-import { logger } from './lib/helpers/logger';
-import { installFatalErrorHandler } from './lib/helpers-web/show-fatal-error';
+import initStandaloneApp from './lib/init/init-standalone-app';
 
-installFatalErrorHandler();
-logger.info('Hello World!');
+// eslint-disable-next-line no-unused-vars
+const { config } = await initStandaloneApp();
+// eslint-disable-next-line no-console
+console.log('Ready.');
