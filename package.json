@@ -32,6 +32,7 @@
     "stylelint-config-standard-scss": "^15.0.1"
   },
   "dependencies": {
+    "@sentry/browser": "^10.38.0",
     "deepmerge": "^4.3.1",
     "jquery": "^4.0.0",
     "js-yaml": "^4.1.1",

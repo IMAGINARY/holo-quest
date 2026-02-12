@@ -1,6 +1,7 @@
 import yaml from 'js-yaml';
 import { installFatalErrorHandler } from '../helpers-web/show-fatal-error';
 import { logger } from '../helpers/logger';
+import initSentry from '../helpers/sentry';
 import CfgLoader from '../loaders/cfg-loader';
 import CfgReaderFetch from '../loaders/cfg-reader-fetch';
 import configFiles from './inject-config-files';
@@ -12,6 +13,12 @@ export default async function initStandaloneApp() {
 
   const logLevel = qs.get('log') || 'warn';
   logger.setLevel(logLevel);
+
+  // Phase 1: Initialize Sentry early from query string to capture config-loading errors
+  const sentryDsn = qs.get('sentry_dsn');
+  if (sentryDsn) {
+    initSentry(sentryDsn);
+  }
 
   // Accept a settings url param with comma-separated filenames. Each name must be made of
   // alphanumeric characters, _ or -, and have a .yml extension.
@@ -45,6 +52,11 @@ export default async function initStandaloneApp() {
     logger.debug('Configuration loaded successfully', config);
   } catch (err) {
     throw new Error(`Error loading configuration: ${err.message}`);
+  }
+
+  // Phase 2: Initialize Sentry from config (no-op if already initialized from query string)
+  if (config.sentry && config.sentry.dsn) {
+    initSentry(config.sentry.dsn);
   }
 
   return { config };
