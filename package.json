@@ -37,6 +37,7 @@
   "dependencies": {
     "@sentry/browser": "^10.38.0",
     "deepmerge": "^4.3.1",
+    "howler": "^2.2.4",
     "jquery": "^4.0.0",
     "js-yaml": "^4.1.1",
     "loglevel": "^1.9.2",

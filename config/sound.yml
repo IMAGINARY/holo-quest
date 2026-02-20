@@ -1,0 +1,24 @@
+sound:
+  # Global volume for all sounds. Value should be between 0 and 1.
+  volume: 1
+  resources:
+    # Sound effects. Format is:
+    # id:
+    #   src (string|array): path to the sound file or an array of paths with different formats
+    #     (e.g., mp3, ogg) for better browser compatibility.
+    #   loop (boolean, optional): whether the sound should loop when played. Default is false.
+    #   preload (boolean, optional): whether the sound should be preloaded. Default is true.
+    #     if set to false, the metadata of the sound will be loaded, but the actual audio
+    #     data will not be loaded until the sound is played for the first time.
+    #   sprites (object, optional): an object defining sound sprites. Each key is the sprite
+    #     id, and the value is an array with three elements:
+    #     [start time in ms, duration in ms, loop (optional)].
+    #     Sprites can be played by referencing them as <id>.<spriteId>.
+    back:
+      src: 'assets/sound/kenney-nl/back_003.mp3'
+    drop:
+      src: 'assets/sound/kenney-nl/drop_003.mp3'
+    error:
+      src: 'assets/sound/kenney-nl/error_002.mp3'
+    switch:
+      src: 'assets/sound/kenney-nl/switch_002.mp3'
