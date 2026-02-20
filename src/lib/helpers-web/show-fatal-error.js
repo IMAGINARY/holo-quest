@@ -1,4 +1,4 @@
-import '../../styles/show-fatal-error.scss';
+import '../../styles/show-fatal-error.css';
 
 /**
  * Show a fatal error message on the page.

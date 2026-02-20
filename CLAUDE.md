@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-Holo-Quest is a first-person interactive story engine built with vanilla JavaScript (no framework), SCSS for styling, and Vite as the build tool.
+Holo-Quest is a first-person interactive story engine built with vanilla JavaScript (no framework), Tailwind CSS v4 for styling, and Vite as the build tool.
 
 ## Commands
 
@@ -12,14 +12,14 @@ Holo-Quest is a first-person interactive story engine built with vanilla JavaScr
 - `npm run build` — Production build
 - `npm run preview` — Preview production build
 - `npm run lint` — ESLint (zero warnings enforced via `--max-warnings=0`)
-- `npm run lint:style` — Stylelint for SCSS
+- `npm run lint:style` — Stylelint for CSS
 - `npm run test` — Jest tests (currently passes with no tests)
 
 ## Architecture
 
-- **Entry point**: `index.html` loads `/src/main.js` and `/src/styles/default.scss`
+- **Entry point**: `index.html` loads `/src/main.js` and `/src/styles/default.css`
 - **`src/main.js`** — Application entry point
-- **`src/styles/`** — SCSS stylesheets
+- **`src/styles/`** — CSS stylesheets (Tailwind CSS v4)
 - **`src/assets/`** — Static assets
 
 ## Code Style
@@ -27,7 +27,7 @@ Holo-Quest is a first-person interactive story engine built with vanilla JavaScr
 - ESLint with Airbnb config; zero warnings policy
 - Trailing commas on multiline (except functions)
 - No file extensions in JS/JSX/TS/TSX imports
-- SCSS follows `stylelint-config-standard-scss`
+- CSS follows `stylelint-config-standard`
 
 ## Conventions
 

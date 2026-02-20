@@ -9,11 +9,11 @@ Requires Node.js >= 24.4.1.
 npm install        # Install dependencies
 npm run build      # Create a production build (output in dist/)
 npm run lint       # Run ESLint (zero warnings enforced)
-npm run lint:style # Run Stylelint for SCSS
+npm run lint:style # Run Stylelint for CSS
 npm run test       # Run Jest tests
 ```
 
-## Running
+## Running  
 
 - `npm run dev` — Start the Vite dev server for development
 - `npm run preview` — Preview the production build (run `npm run build` first)
