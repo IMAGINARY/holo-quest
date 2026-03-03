@@ -1,4 +1,5 @@
 import { execSync } from 'child_process';
+import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
@@ -6,7 +7,7 @@ import { viteStaticCopy } from 'vite-plugin-static-copy';
 const gitCommitHash = process.env.GIT_COMMIT_HASH
   || execSync('git rev-parse HEAD').toString().trim();
 
-export default {
+export default defineConfig({
   define: {
     'process.env.GIT_COMMIT_HASH': JSON.stringify(gitCommitHash),
   },
@@ -22,4 +23,4 @@ export default {
       ],
     }),
   ],
-};
+});

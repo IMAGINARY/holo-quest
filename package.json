@@ -37,6 +37,7 @@
   "dependencies": {
     "@sentry/browser": "^10.38.0",
     "@vitejs/plugin-react": "^5.1.4",
+    "daisyui": "^5.5.19",
     "deepmerge": "^4.3.1",
     "howler": "^2.2.4",
     "jquery": "^4.0.0",
