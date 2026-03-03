@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-Holo-Quest is a first-person interactive story engine built with vanilla JavaScript (no framework), Tailwind CSS v4 for styling, and Vite as the build tool.
+Holo-Quest is a first-person interactive story engine built with React 19, Tailwind CSS v4 + DaisyUI for styling, and Vite as the build tool.
 
 ## Commands
 
@@ -17,14 +17,23 @@ Holo-Quest is a first-person interactive story engine built with vanilla JavaScr
 
 ## Architecture
 
-- **Entry point**: `index.html` loads `/src/main.js` and `/src/styles/default.css`
-- **`src/main.js`** — Application entry point
-- **`src/styles/`** — CSS stylesheets (Tailwind CSS v4)
+- **Entry point**: `index.html` loads `/src/main.jsx` and `/src/styles/default.css`
+- **`src/main.jsx`** — Application entry point; renders React with `StrictMode`
+- **`src/lib/components/`** — React components (JSX)
+- **`src/lib/helpers/`** — Utility modules (logger, sentry)
+- **`src/lib/helpers-web/`** — Browser-specific helpers (fatal error display)
+- **`src/lib/sound/`** — SoundManager (Howler.js)
+- **`src/lib/init/`** — App initialization and config injection
+- **`src/lib/loaders/`** — YAML config loading
+- **`config/`** — YAML configuration files
+- **`src/styles/`** — CSS stylesheets (Tailwind CSS v4 with DaisyUI plugin via `@plugin "daisyui"`)
 - **`src/assets/`** — Static assets
+- Vite runs in MPA mode (`appType: 'mpa'`)
 
 ## Code Style
 
-- ESLint with Airbnb config; zero warnings policy
+- ESLint extends `airbnb` + `airbnb/hooks` (React rules); zero warnings policy
+- `react/react-in-jsx-scope` and `react/prop-types` are disabled
 - Trailing commas on multiline (except functions)
 - No file extensions in JS/JSX/TS/TSX imports
 - CSS follows `stylelint-config-standard`
@@ -32,6 +41,7 @@ Holo-Quest is a first-person interactive story engine built with vanilla JavaScr
 ## Conventions
 
 - Classes stored in kebab-case files (e.g., `MapView` class → `map-view.js`)
+- React components use kebab-case `.jsx` files (e.g., `AppView` → `app-view.jsx`)
 - Conventional commits: `feat:`, `fix:`, `refactor:`, `chore:`
 
 ## Requirements
