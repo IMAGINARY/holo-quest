@@ -4,6 +4,9 @@
 # Both screens are rendered on a single browser viewport and split into two different computer
 # monitors through OS-level window management.
 holoDisplay:
+  # When true, both screens are overlaid on a single monitor with CSS blend mode
+  # to approximate the pepper's ghost effect without the physical hardware.
+  simulationMode: false
   # Distribution of the two screens in the browser viewport.
   # Options:
   # - vertical: the two screens are distributed vertically, touching by their long edges.

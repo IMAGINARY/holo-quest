@@ -45,7 +45,7 @@ function Back({ children }) {
  * @param {React.ReactNode} props.children
  */
 function DisplayViewport({
-  width, height, screen, children,
+  width, height, screen, style: styleProp, children,
 }) {
   const style = {
     width: `${width}px`,
@@ -59,6 +59,8 @@ function DisplayViewport({
   if (screen.rotated) {
     style.transform = 'rotate(180deg)';
   }
+
+  Object.assign(style, styleProp);
 
   return (
     <div className="relative shrink-0 overflow-hidden" style={style}>
@@ -87,8 +89,24 @@ function DisplayViewport({
 export default function HoloDisplay({ config, children }) {
   const { holoDisplay } = config;
   const {
-    screenDistribution, invertScreenOrder, width, height, screens,
+    simulationMode, screenDistribution, invertScreenOrder, width, height, screens,
   } = holoDisplay;
+
+  // Simulation overrides: disable rotation, stack screens, add blend mode to front
+  const frontScreen = simulationMode ? { ...screens.front, rotated: false } : screens.front;
+  const backScreen = simulationMode ? { ...screens.back, rotated: false } : screens.back;
+
+  const frontStyle = simulationMode
+    ? { position: 'absolute', zIndex: 1, mixBlendMode: 'screen' }
+    : {};
+  const backStyle = simulationMode ? { position: 'absolute' } : {};
+
+  const containerClass = simulationMode
+    ? 'relative'
+    : `flex ${screenDistribution === 'vertical' ? 'flex-col' : 'flex-row'}`;
+  const containerStyle = simulationMode
+    ? { width: `${width}px`, height: `${height}px` }
+    : {};
 
   let frontContent = null;
   let backContent = null;
@@ -102,23 +120,22 @@ export default function HoloDisplay({ config, children }) {
   });
 
   const frontViewport = (
-    <DisplayViewport width={width} height={height} screen={screens.front}>
+    <DisplayViewport width={width} height={height} screen={frontScreen} style={frontStyle}>
       {frontContent}
     </DisplayViewport>
   );
 
   const backViewport = (
-    <DisplayViewport width={width} height={height} screen={screens.back}>
+    <DisplayViewport width={width} height={height} screen={backScreen} style={backStyle}>
       {backContent}
     </DisplayViewport>
   );
 
-  const flexDirection = screenDistribution === 'vertical' ? 'flex-col' : 'flex-row';
   const first = invertScreenOrder ? backViewport : frontViewport;
   const second = invertScreenOrder ? frontViewport : backViewport;
 
   return (
-    <div className={`flex ${flexDirection}`}>
+    <div className={containerClass} style={containerStyle}>
       {first}
       {second}
     </div>
