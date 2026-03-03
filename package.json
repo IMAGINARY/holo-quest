@@ -36,11 +36,14 @@
   },
   "dependencies": {
     "@sentry/browser": "^10.38.0",
+    "@vitejs/plugin-react": "^5.1.4",
     "deepmerge": "^4.3.1",
     "howler": "^2.2.4",
     "jquery": "^4.0.0",
     "js-yaml": "^4.1.1",
     "loglevel": "^1.9.2",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
     "vite": "^7.3.1",
     "vite-plugin-static-copy": "^3.2.0"
   }

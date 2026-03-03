@@ -1,5 +1,8 @@
+import { createRoot } from 'react-dom/client';
+import { StrictMode } from 'react';
 import initStandaloneApp from './lib/init/init-standalone-app';
 import SoundManager from './lib/sound/sound-manager';
+import AppView from './lib/components/app-view';
 
 // eslint-disable-next-line no-unused-vars
 const { config } = await initStandaloneApp();
@@ -13,3 +16,7 @@ if (window.IMAGINARY.HoloQuest === undefined) {
   window.IMAGINARY.HoloQuest = {};
 }
 window.IMAGINARY.HoloQuest.soundManager = new SoundManager(config);
+
+const appNode = document.getElementById('app');
+const root = createRoot(appNode);
+root.render(<StrictMode><AppView /></StrictMode>);

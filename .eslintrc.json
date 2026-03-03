@@ -1,8 +1,8 @@
 {
-  "extends": ["airbnb"],
+  "extends": ["airbnb", "airbnb/hooks"],
   "settings": {
     "react": {
-      "version": "18.0"
+      "version": "detect"
     }
   },
   "parserOptions": {
@@ -26,6 +26,7 @@
       "exports": "always-multiline",
       "functions": "never"
     }],
+    "react/react-in-jsx-scope": "off",
     "import/extensions": [
       "error",
       "ignorePackages",

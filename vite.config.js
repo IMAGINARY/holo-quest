@@ -1,4 +1,5 @@
 import { execSync } from 'child_process';
+import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
 
@@ -10,6 +11,7 @@ export default {
     'process.env.GIT_COMMIT_HASH': JSON.stringify(gitCommitHash),
   },
   plugins: [
+    react(),
     tailwindcss(),
     viteStaticCopy({
       targets: [
