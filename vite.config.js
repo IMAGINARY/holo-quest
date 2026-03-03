@@ -9,6 +9,7 @@ const gitCommitHash = process.env.GIT_COMMIT_HASH
   || execSync('git rev-parse HEAD').toString().trim();
 
 export default defineConfig({
+  appType: 'mpa', // disable history fallback
   define: {
     'process.env.GIT_COMMIT_HASH': JSON.stringify(gitCommitHash),
   },
