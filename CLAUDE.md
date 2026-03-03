@@ -13,7 +13,7 @@ Holo-Quest is a first-person interactive story engine built with vanilla JavaScr
 - `npm run preview` — Preview production build
 - `npm run lint` — ESLint (zero warnings enforced via `--max-warnings=0`)
 - `npm run lint:style` — Stylelint for CSS
-- `npm run test` — Jest tests (currently passes with no tests)
+- `npm run test` — Vitest tests (currently passes with no tests)
 
 ## Architecture
 
