@@ -1,0 +1,28 @@
+# The Holo-Display™ is based on the pepper's ghost illusion.
+# The "front" screen is the virtual screen reflected on the glass,
+# while the "back" screen is seen directly through the glass.
+# Both screens are rendered on a single browser viewport and split into two different computer
+# monitors through OS-level window management.
+holoDisplay:
+  # Distribution of the two screens in the browser viewport.
+  # Options:
+  # - vertical: the two screens are distributed vertically, touching by their long edges.
+  # - horizontal: the two screens are distributed horizontally, touching by their short edges.
+  screenDistribution: vertical
+  # By default the "front" screen is rendered on the left (for vertical distribution) or
+  # top (for horizontal distribution) side of the browser viewport.
+  # Setting this option to true will invert this order.
+  invertScreenOrder: false
+  # Shared dimensions for both screens in pixels.
+  width: 1920
+  height: 1080
+  # Per-screen configuration:
+  # - rotated: whether the screen is rotated by 180 degrees.
+  # - brightness: CSS brightness multiplier (1 = unchanged).
+  screens:
+    front:
+      rotated: false
+      brightness: 1
+    back:
+      rotated: false
+      brightness: 1
