@@ -28,6 +28,7 @@ Holo-Quest is a first-person interactive story engine built with React 19, Tailw
 - **`config/`** — YAML configuration files
 - **`src/styles/`** — CSS stylesheets (Tailwind CSS v4 with DaisyUI plugin via `@plugin "daisyui"`)
 - **`src/assets/`** — Static assets
+- **`playground/`** — Isolated UI component experiments; served by `npm run dev` but excluded from production builds. Copy `_template.html`/`_template.jsx` to create a new experiment.
 - Vite runs in MPA mode (`appType: 'mpa'`)
 
 ## Code Style

@@ -1,4 +1,5 @@
 /// <reference types="vitest/config" />
+import { resolve } from 'path';
 import { execSync } from 'child_process';
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react';
@@ -16,6 +17,13 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'jsdom',
+  },
+  build: {
+    rollupOptions: {
+      input: {
+        main: resolve(__dirname, 'index.html'),
+      },
+    },
   },
   plugins: [
     react(),
