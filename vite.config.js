@@ -26,6 +26,10 @@ export default defineConfig({
           src: 'node_modules/jquery/dist/jquery.slim.min.js',
           dest: 'vendor/jquery',
         },
+        {
+          src: 'config/*.yml',
+          dest: 'config',
+        }
       ],
     }),
   ],
