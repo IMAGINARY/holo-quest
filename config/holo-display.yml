@@ -22,10 +22,20 @@ holoDisplay:
   # Per-screen configuration:
   # - rotated: whether the screen is rotated by 180 degrees.
   # - brightness: CSS brightness multiplier (1 = unchanged).
+  # - scaleX/Y: Content scale factor in X/Y direction (1 = unchanged).
+  # - offsetX/Y: Content translation in X/Y direction in pixels (0 = unchanged)
   screens:
     front:
       rotated: false
       brightness: 1
+      scaleX: 1
+      scaleY: 1
+      offsetX: 0
+      offsetY: 0
     back:
       rotated: false
       brightness: 1
+      scaleX: 1
+      scaleY: 1
+      offsetX: 0
+      offsetY: 0

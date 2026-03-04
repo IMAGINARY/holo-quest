@@ -42,6 +42,10 @@ function Back({ children }) {
  * @param {object} props.screen
  * @param {number} props.screen.brightness — CSS brightness multiplier (1 = unchanged).
  * @param {boolean} props.screen.rotated  — Whether to rotate the viewport 180°.
+ * @param {number} props.screen.scaleX    — Content scale factor in X direction (1 = unchanged).
+ * @param {number} props.screen.scaleY    — Content scale factor in Y direction (1 = unchanged).
+ * @param {number} props.screen.offsetX   — Content X translation in px (0 = unchanged).
+ * @param {number} props.screen.offsetY   — Content Y translation in px (0 = unchanged).
  * @param {React.ReactNode} props.children
  */
 function DisplayViewport({
@@ -62,9 +66,23 @@ function DisplayViewport({
 
   Object.assign(style, styleProp);
 
+  const needsContentTransform = screen.scaleX !== 1
+    || screen.scaleY !== 1
+    || screen.offsetX !== 0
+    || screen.offsetY !== 0;
+
   return (
     <div className="relative shrink-0 overflow-hidden" style={style}>
-      {children}
+      {needsContentTransform ? (
+        <div style={{
+          width: '100%',
+          height: '100%',
+          transform: `scale(${screen.scaleX}, ${screen.scaleY}) translate(${screen.offsetX}px, ${screen.offsetY}px)`,
+        }}
+        >
+          {children}
+        </div>
+      ) : children}
     </div>
   );
 }
