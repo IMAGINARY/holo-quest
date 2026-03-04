@@ -1,3 +1,4 @@
+import deepmerge from 'deepmerge';
 import yaml from 'js-yaml';
 import { installFatalErrorHandler } from '../helpers-web/show-fatal-error';
 import { logger } from '../helpers/logger';
@@ -5,6 +6,7 @@ import initSentry from '../helpers/sentry';
 import CfgLoader from '../loaders/cfg-loader';
 import CfgReaderFetch from '../loaders/cfg-reader-fetch';
 import configFiles from './inject-config-files';
+import getQsConfigOverrides from './init-qs-config-overrides';
 
 /**
  * Parse and validate the 'settings' query string parameter.
@@ -34,15 +36,19 @@ function parseSettingsFiles(qs) {
  * @param {string[]} settingsFiles
  * @return {Promise<Object>} Resolved configuration object
  */
-async function loadConfig(settingsFiles) {
+async function loadConfig(settingsFiles, overrides = {}) {
   const cfgLoader = new CfgLoader(CfgReaderFetch, yaml.load);
   try {
     logger.debug('Loading configuration files: %s', configFiles.join(', '));
     logger.debug('Loading settings files: %s', settingsFiles.join(', '));
-    const config = await cfgLoader.load([
+    let config = await cfgLoader.load([
       ...configFiles.map((name) => `config/${name}.yml`),
       ...settingsFiles,
     ]);
+    Object.entries(overrides).forEach(([source, override]) => {
+      logger.debug('Applying config override from: %s', source);
+      config = deepmerge(config, override);
+    });
     Object.freeze(config);
     logger.debug('Configuration loaded successfully', config);
     return config;
@@ -75,8 +81,10 @@ export default async function initStandaloneApp() {
     initSentry(sentryDsn);
   }
 
+  const overrides = getQsConfigOverrides(qs);
+
   const settingsFiles = parseSettingsFiles(qs);
-  const config = await loadConfig(settingsFiles);
+  const config = await loadConfig(settingsFiles, overrides);
 
   // Phase 2: Initialize Sentry from the config (no-op if already initialized from query string)
   if (config.sentry && config.sentry.dsn) {

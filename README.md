@@ -27,8 +27,10 @@ The app accepts query string parameters to control its behavior:
 | `log`      | Sets the logging verbosity level. Accepted values: `trace`, `debug`, `info`, `warn`, `error`, `silent`. | `warn` |
 | `settings` | Comma-separated list of settings filenames to load (must match `[a-zA-Z0-9_-]+\.yml`). Replaces the default settings file. | `settings.yml` |
 | `sentry_dsn` | Sentry DSN for error tracking. Initializes Sentry immediately, before configuration is loaded. | _(none)_ |
+| `frontAdj`   | Per-screen content transform for the **front** screen. Format: `offsetX,offsetY,scaleX,scaleY` (4 comma-separated numbers). Overrides `holoDisplay.screens.front`. | _(none)_ |
+| `backAdj`    | Per-screen content transform for the **back** screen. Format: `offsetX,offsetY,scaleX,scaleY` (4 comma-separated numbers). Overrides `holoDisplay.screens.back`. | _(none)_ |
 
-Examples: `?log=debug`, `?settings=my-settings.yml`, `?log=info&settings=game1.yml,game2.yml`, `?sentry_dsn=https://examplePublicKey@o0.ingest.sentry.io/0`
+Examples: `?log=debug`, `?settings=my-settings.yml`, `?log=info&settings=game1.yml,game2.yml`, `?sentry_dsn=https://examplePublicKey@o0.ingest.sentry.io/0`, `?frontAdj=0,0,1.1,1.2`
 
 ## Configuration
 
