@@ -6,6 +6,18 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Holo-Quest is a first-person interactive story engine built with React 19, Tailwind CSS v4 + DaisyUI for styling, and Vite as the build tool.
 
+## Platform
+
+### Production (museum kiosk)
+
+- Two-screen Pepper's Ghost display (one reflected on glass, one seen through glass) enabling parallax via two layers
+- Input: spinner (freely rotating arcade knob) + two hardware buttons (switch language, reset)
+- Runs in a Chromium-based kiosk browser; user has no access outside the app
+
+### Development
+
+- Regular screen, mouse/keyboard, standard browser
+
 ## Commands
 
 - `npm run dev` — Start Vite dev server
