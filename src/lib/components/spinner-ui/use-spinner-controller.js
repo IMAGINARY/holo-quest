@@ -15,6 +15,8 @@ export function useSpinnerController({
   captureSpeed = 20,
   settleThreshold = 0.05,
   stickyForce = 3,
+  confirmationDelay = 2,
+  onConfirm,
 } = {}) {
   const discrete = step > 0;
 
@@ -31,6 +33,8 @@ export function useSpinnerController({
     captureSpeed,
     settleThreshold,
     stickyForce,
+    confirmationDelay,
+    onConfirm,
     discrete,
   };
 
@@ -43,6 +47,8 @@ export function useSpinnerController({
     isSettled: discrete,
     isLocked: false,
     lastTimestamp: null,
+    confirmationElapsed: 0,
+    isConfirmed: false,
   });
 
   const rafRef = useRef(null);
@@ -52,6 +58,7 @@ export function useSpinnerController({
     velocity: 0,
     isSettled: physicsRef.current.isSettled,
     isLocked: false,
+    confirmationProgress: 0,
   });
 
   const requestLock = useCallback(() => {
@@ -97,6 +104,7 @@ export function useSpinnerController({
           velocity: p.velocity,
           isSettled: p.isSettled,
           isLocked: p.isLocked,
+          confirmationProgress: 0,
         });
         return;
       }
@@ -170,12 +178,31 @@ export function useSpinnerController({
         }
       }
 
-      // 11. Push state to React
+      // 11. Confirmation progress (discrete + settled, not at neutral)
+      if (c.discrete && p.isSettled && !p.isConfirmed && p.position !== 0) {
+        p.confirmationElapsed += dt;
+        const progress = Math.min(1, p.confirmationElapsed / c.confirmationDelay);
+        if (progress >= 1) {
+          p.isConfirmed = true;
+          if (c.onConfirm) c.onConfirm(p.position);
+        }
+      } else if (!p.isSettled || p.position === 0) {
+        p.confirmationElapsed = 0;
+        p.isConfirmed = false;
+      }
+
+      // 12. Push state to React
       setState({
         position: p.position,
         velocity: p.velocity,
         isSettled: p.isSettled,
         isLocked: p.isLocked,
+        confirmationProgress: (() => {
+          if (c.discrete && p.isSettled && !p.isConfirmed) {
+            return Math.min(1, p.confirmationElapsed / c.confirmationDelay);
+          }
+          return p.isConfirmed ? 1 : 0;
+        })(),
       });
     }
 
@@ -200,6 +227,7 @@ export function useSpinnerController({
     velocity: state.velocity,
     isSettled: state.isSettled,
     isLocked: state.isLocked,
+    confirmationProgress: state.confirmationProgress,
     requestLock,
   };
 }

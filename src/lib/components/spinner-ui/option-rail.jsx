@@ -1,14 +1,17 @@
+import ProgressRing from './progress-ring';
 import theme, { lerp, hexLerp } from './theme';
 
 const {
-  rail, marker, cursor, label, layout,
+  rail, marker, cursor, label, ring, layout,
 } = theme;
 
 function clamp(value, min, max) {
   return Math.min(max, Math.max(min, value));
 }
 
-export default function OptionRail({ options, position, velocity }) {
+export default function OptionRail({
+  options, position, velocity, confirmationProgress = 0,
+}) {
   const keys = Object.keys(options).map(Number).sort((a, b) => a - b);
   const minKey = keys[0];
   const maxKey = keys[keys.length - 1];
@@ -108,6 +111,21 @@ export default function OptionRail({ options, position, velocity }) {
           backgroundColor: cursorColor,
         }}
       />
+
+      {/* Confirmation ring */}
+      {confirmationProgress > 0 && (
+        <div
+          className="absolute"
+          style={{
+            left: cursorX - ring.size / 2,
+            top: railY - ring.size / 2,
+            width: ring.size,
+            height: ring.size,
+          }}
+        >
+          <ProgressRing progress={confirmationProgress} color={ring.color} />
+        </div>
+      )}
     </div>
   );
 }

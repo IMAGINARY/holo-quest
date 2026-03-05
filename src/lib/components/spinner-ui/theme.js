@@ -54,6 +54,10 @@ export default {
     offsetY: 24,
     proximityRange: 1,
   },
+  ring: {
+    size: 28,
+    color: '#ffffff',
+  },
   layout: {
     stepWidth: 80,
     railPaddingX: 40,

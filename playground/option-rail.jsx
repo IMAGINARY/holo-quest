@@ -14,13 +14,15 @@ const sampleOptions = {
 
 function App() {
   const {
-    position, velocity, isSettled, isLocked, requestLock,
+    position, velocity, isSettled, isLocked, confirmationProgress, requestLock,
   } = useSpinnerController({
     min: -3,
     max: 3,
     step: 1,
     friction: 0.15,
     stickyForce: 3,
+    // eslint-disable-next-line no-console
+    onConfirm: (value) => console.log('Confirmed:', value),
   });
 
   return (
@@ -33,6 +35,7 @@ function App() {
             options={sampleOptions}
             position={position}
             velocity={velocity}
+            confirmationProgress={confirmationProgress}
           />
 
           <button
@@ -63,6 +66,12 @@ function App() {
               Locked:
               {' '}
               {isLocked ? 'Yes' : 'No'}
+            </div>
+            <div>
+              Confirmation:
+              {' '}
+              {(confirmationProgress * 100).toFixed(0)}
+              %
             </div>
           </div>
         </div>
