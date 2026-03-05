@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { createRoot } from 'react-dom/client';
 import ScaleToFit from '../src/lib/components/scale-to-fit';
-import { OptionRail } from '../src/lib/components/spinner-ui';
+import { OptionRail, useSpinnerController } from '../src/lib/components/spinner-ui';
 
 const sampleOptions = {
   '-3': 'Very Low',
@@ -13,8 +13,15 @@ const sampleOptions = {
 };
 
 function App() {
-  const [position, setPosition] = useState(0);
-  const [velocity, setVelocity] = useState(0);
+  const {
+    position, velocity, isSettled, isLocked, requestLock,
+  } = useSpinnerController({
+    min: -3,
+    max: 3,
+    step: 1,
+    friction: 0.15,
+    stickyForce: 3,
+  });
 
   return (
     <div className="flex justify-center h-screen">
@@ -28,40 +35,35 @@ function App() {
             velocity={velocity}
           />
 
-          <div className="flex flex-col gap-6 w-[480px]">
-            <label className="flex flex-col gap-1 text-white text-sm">
-              <span>
-                Position:
-                {' '}
-                {position.toFixed(2)}
-              </span>
-              <input
-                type="range"
-                min="-3"
-                max="3"
-                step="0.01"
-                value={position}
-                onChange={(e) => setPosition(parseFloat(e.target.value))}
-                className="w-full"
-              />
-            </label>
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={requestLock}
+          >
+            {isLocked ? 'Spinner Locked' : 'Lock Spinner'}
+          </button>
 
-            <label className="flex flex-col gap-1 text-white text-sm">
-              <span>
-                Velocity:
-                {' '}
-                {velocity.toFixed(2)}
-              </span>
-              <input
-                type="range"
-                min="-1"
-                max="1"
-                step="0.01"
-                value={velocity}
-                onChange={(e) => setVelocity(parseFloat(e.target.value))}
-                className="w-full"
-              />
-            </label>
+          <div className="text-white text-sm font-mono space-y-1">
+            <div>
+              Position:
+              {' '}
+              {position.toFixed(3)}
+            </div>
+            <div>
+              Velocity:
+              {' '}
+              {velocity.toFixed(3)}
+            </div>
+            <div>
+              Settled:
+              {' '}
+              {isSettled ? 'Yes' : 'No'}
+            </div>
+            <div>
+              Locked:
+              {' '}
+              {isLocked ? 'Yes' : 'No'}
+            </div>
           </div>
         </div>
       </ScaleToFit>
