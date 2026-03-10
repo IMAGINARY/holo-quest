@@ -18,7 +18,7 @@ function parseSettingsFiles(qs) {
   const VALID_SETTINGS_RE = /^[a-zA-Z0-9_-]+\.yml$/;
   const settingsParam = qs.get('settings');
   if (!settingsParam) {
-    return ['settings.yml'];
+    return [];
   }
   const validated = settingsParam.split(',').filter((name) => {
     if (!name.match(VALID_SETTINGS_RE)) {
@@ -27,7 +27,7 @@ function parseSettingsFiles(qs) {
     }
     return true;
   });
-  return validated.length > 0 ? validated : ['settings.yml'];
+  return validated.length > 0 ? validated : [];
 }
 
 /**
