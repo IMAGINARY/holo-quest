@@ -68,6 +68,7 @@ export default function OptionRail({
         const labelColor = hexLerp(label.colorFar, nearColor, proximity);
         const nearSize = lerp(label.fontSizeMin, label.fontSizeMax, 1 - absVel);
         const fontSize = lerp(label.fontSizeMin, nearSize, proximity);
+        const scale = fontSize / label.fontSizeMin;
 
         return (
           <div key={key}>
@@ -88,9 +89,9 @@ export default function OptionRail({
               style={{
                 left: x,
                 top: railY - label.offsetY,
-                transform: 'translateX(-50%)',
+                transform: `translateX(-50%) scale(${scale})`,
                 color: labelColor,
-                fontSize,
+                fontSize: label.fontSizeMin,
                 whiteSpace: 'nowrap',
               }}
             >
