@@ -84,7 +84,7 @@ export default function OptionRail({
             />
             {/* Label */}
             <div
-              className="absolute text-center"
+              className="absolute text-center font-bold"
               style={{
                 left: x,
                 top: railY - label.offsetY,

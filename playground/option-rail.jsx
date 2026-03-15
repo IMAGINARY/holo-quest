@@ -19,8 +19,6 @@ function App() {
     min: -3,
     max: 3,
     step: 1,
-    friction: 0.15,
-    stickyForce: 3,
     // eslint-disable-next-line no-console
     onConfirm: (value) => console.log('Confirmed:', value),
   });
@@ -29,7 +27,7 @@ function App() {
     <div className="flex justify-center h-screen">
       <ScaleToFit contentWidth={1920} contentHeight={1080}>
         <div style={{ width: 1920, height: 1080 }} className="bg-black flex flex-col items-center justify-center gap-12">
-          <h1 className="text-2xl font-bold text-white">OptionRail Playground</h1>
+          <h1 className="text-4xl font-bold text-white mb-20">OptionRail Playground</h1>
 
           <OptionRail
             options={sampleOptions}
