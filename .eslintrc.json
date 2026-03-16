@@ -1,5 +1,6 @@
 {
   "extends": ["airbnb", "airbnb/hooks"],
+  "plugins": ["react-refresh"],
   "settings": {
     "react": {
       "version": "detect"
@@ -28,6 +29,7 @@
     }],
     "react/react-in-jsx-scope": "off",
     "react/prop-types": "off",
+    "react-refresh/only-export-components": "error",
     "import/extensions": [
       "error",
       "ignorePackages",
