@@ -1,5 +1,4 @@
 import React from 'react';
-import { createRoot } from 'react-dom/client';
 import ScaleToFit from '../src/lib/components/scale-to-fit';
 import { OptionRail, useSpinnerController } from '../src/lib/components/spinner-ui';
 
@@ -12,15 +11,15 @@ const sampleOptions = {
   3: 'Very High',
 };
 
-function App() {
+export default function App() {
   const {
     position, velocity, isSettled, isLocked, confirmationProgress, requestLock,
   } = useSpinnerController({
-    min: -3,
-    max: 3,
+    min: Object.keys(sampleOptions).map(Number).reduce((a, b) => Math.min(a, b), Infinity),
+    max: Object.keys(sampleOptions).map(Number).reduce((a, b) => Math.max(a, b), -Infinity),
     step: 1,
     // eslint-disable-next-line no-console
-    onConfirm: (value) => console.log('Confirmed:', value),
+    onConfirm: (value) => console.log('Input:', value),
   });
 
   return (
@@ -77,5 +76,3 @@ function App() {
     </div>
   );
 }
-
-createRoot(document.getElementById('app')).render(<App />);
