@@ -1,4 +1,4 @@
-import LogicParser from './logic-parser';
+import ConditionParser from './condition-parser';
 
 /**
  * Iterates through a dialogue tree.
@@ -13,7 +13,7 @@ export default class DialogueIterator {
   constructor(dialogue, context) {
     this.dialogue = dialogue;
     this.context = context;
-    this.conditionParser = new LogicParser(context);
+    this.conditionParser = new ConditionParser(context);
     this.reset();
   }
 

@@ -26,7 +26,7 @@ const str = (result) => {
  * prefix operators (`^` for NOT, `COUNT` for flag-prefix counting),
  * integer literals, flag lookups, and string literals (in double quotes).
  */
-export default class LogicParser {
+export default class ConditionParser {
   /**
    * @param {DialogueIteratorContext} context - Provides flag values for term evaluation.
    */
@@ -100,7 +100,7 @@ export default class LogicParser {
   static DECIMAL_RE = /^-?\d+(\.\d+)?$/;
 
   static parseDecimal(aString) {
-    if (!LogicParser.DECIMAL_RE.test(aString)) return Number.NaN;
+    if (!ConditionParser.DECIMAL_RE.test(aString)) return Number.NaN;
     return Number(aString);
   }
 
@@ -123,9 +123,9 @@ export default class LogicParser {
    * @throws {Error} if the term is neither a valid literal nor a valid flag.
    */
   evaluateTerm(term) {
-    const numVal = LogicParser.parseDecimal(term);
+    const numVal = ConditionParser.parseDecimal(term);
     if (Number.isNaN(numVal)) {
-      if (LogicParser.isValidFlag(term)) {
+      if (ConditionParser.isValidFlag(term)) {
         return this.context.flags.value(term);
       }
       throw new Error(`Invalid term: ${term}`);

@@ -1,17 +1,17 @@
 import {
   describe, it, expect, beforeAll, beforeEach,
 } from 'vitest';
-import LogicParser from '../src/lib/model/dialogues/logic-parser';
+import ConditionParser from '../src/lib/model/dialogues/condition-parser';
 import FlagStore from '../src/lib/model/flag-store';
 
-describe('LogicParser', () => {
+describe('ConditionParser', () => {
   let parser = null;
   let context = null;
   beforeAll(() => {
     context = {
       flags: new FlagStore(),
     };
-    parser = new LogicParser(context);
+    parser = new ConditionParser(context);
   });
 
   beforeEach(() => {
