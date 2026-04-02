@@ -1,7 +1,16 @@
 import DialogueSequencerState from './dialogue-sequencer-state';
 import DialogueEffect from '../effects/dialogue-effect';
 
+/**
+ * UI state that manages a dialogue effect node's start/end lifecycle.
+ *
+ * Supports three effect phases: 'start' (begin only), 'end' (end only),
+ * and 'all' (begin then end).
+ */
 export default class DialogueSequencerEffectState extends DialogueSequencerState {
+  /**
+   * @param {DialogueSequencer} dialogueSequencer
+   */
   constructor(dialogueSequencer) {
     super(dialogueSequencer);
     this.handleEffectStartComplete = this.handleEffectStartComplete.bind(this);

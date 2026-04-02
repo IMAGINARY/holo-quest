@@ -123,6 +123,12 @@ export default class DialogueIterator {
     }
   }
 
+  /**
+   * Advances the iterator by selecting a specific response on the active node.
+   *
+   * @throws Error if the active node has no responses or the responseId is unknown.
+   * @param {string} responseId - The id of the chosen response.
+   */
   nextWithResponse(responseId) {
     if (this.activeNode === null) {
       return;
@@ -164,6 +170,13 @@ export default class DialogueIterator {
     this.activeNode = nextNode;
   }
 
+  /**
+   * Filters items to only those whose conditions are met.
+   *
+   * @private
+   * @param {Array<Object>} items
+   * @returns {Array<Object>}
+   */
   getEnabledItems(items) {
     if (!items) return [];
     return items.filter((item) => {
@@ -176,6 +189,12 @@ export default class DialogueIterator {
     });
   }
 
+  /**
+   * Applies an array of flag assignment expressions (e.g. "myFlag", "score += 1").
+   *
+   * @private
+   * @param {Array<string>} [assignments]
+   */
   setFlags(assignments) {
     if (!assignments) return;
     assignments.forEach((assignment) => {
@@ -183,6 +202,14 @@ export default class DialogueIterator {
     });
   }
 
+  /**
+   * Parses and executes a single flag assignment expression.
+   *
+   * Supported forms: `flag` (touch), `flag = N`, `flag += N`, `flag -= N`.
+   *
+   * @private
+   * @param {string} assignment
+   */
   processAssignment(assignment) {
     // Parse through a regex
     // flag ((operator) intLiteral)?
@@ -248,6 +275,13 @@ export default class DialogueIterator {
     return false;
   }
 
+  /**
+   * Jumps to the next node when the active node is of type 'cycle'.
+   * Picks the first enabled item after the last-visited one, wrapping around.
+   *
+   * @private
+   * @returns {boolean} true if the transition to the next node was successful.
+   */
   nextOnCycle() {
     const lastCycleId = this.context.getLastCycleId(this.activeNode.id);
     // Order the items starting with the one right after the last cycle index

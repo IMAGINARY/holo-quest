@@ -1,5 +1,14 @@
 import findCycle from 'find-cycle/directed';
 
+/**
+ * Throws if the dialogue's node graph contains a cycle.
+ *
+ * Builds a directed graph from `then` references, response `then` targets, parent-child
+ * item links, and sequence sibling edges, then uses DFS-based cycle detection.
+ *
+ * @param {Dialogue} dialogue
+ * @throws {Error} with a description of the cycle path.
+ */
 export default function checkCyclesInDialogue(dialogue) {
   // Assign a unique id (incremental) to each node in dialogue.nodes
   const ids = {};

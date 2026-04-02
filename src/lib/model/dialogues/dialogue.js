@@ -1,21 +1,33 @@
 import validateDialogueDefinition from './dialogue-schema-validation';
 
+/**
+ * Represents a parsed dialogue tree with nodes linked by parent/child relationships.
+ */
 export default class Dialogue {
   constructor() {
+    /** @type {Object|null} The root node of the dialogue tree. */
     this.root = null;
+    /** @type {Array<Object>} Flat list of all nodes in the dialogue. */
     this.nodes = [];
+    /** @type {Object<string, Object>} Lookup map of nodes keyed by their id. */
     this.nodesById = {};
   }
 
+  /**
+   * Returns the node with the given id, or undefined if not found.
+   *
+   * @param {string} id
+   * @returns {Object|undefined}
+   */
   getNode(id) {
     return this.nodesById[id];
   }
 
   /**
-   * Create a Dialogue from a json dialogue definition
+   * Create a Dialogue from a JSON dialogue definition
    *
    * @throws {Ajv.ValidationError}
-   * @param {Object} data A json dialogue definition (see doc/dialogues.md)
+   * @param {Object} data A JSON dialogue definition (see doc/dialogues.md)
    * @returns {Dialogue}
    */
   static fromJson(data) {

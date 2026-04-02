@@ -1,7 +1,15 @@
 import DialogueSequencerState from './dialogue-sequencer-state';
 import DialogueSequencerResponseState from './response-state';
 
+/**
+ * UI state that displays a speech bubble for a statement node.
+ * Transitions to {@link DialogueSequencerResponseState} if responses are available,
+ * otherwise shows a "press to continue" prompt.
+ */
 export default class DialogueSequencerTextState extends DialogueSequencerState {
+  /**
+   * @param {DialogueSequencer} dialogueSequencer
+   */
   constructor(dialogueSequencer) {
     super(dialogueSequencer);
     this.handleSpeechComplete = this.handleSpeechComplete.bind(this);

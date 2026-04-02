@@ -3,18 +3,34 @@ import DialogueIterator from './dialogue-iterator';
 import DialogueSequencerTextState from './dialogue-sequencer-states/text-state';
 import DialogueSequencerEffectState from './dialogue-sequencer-states/effect-state';
 
+/**
+ * Drives dialogue playback by iterating through the dialogue tree and
+ * delegating presentation to UI states (text, effect, response).
+ *
+ * Emits 'end' when the dialogue finishes and 'terminate' when forcibly stopped.
+ */
 export default class DialogueSequencer {
+  /**
+   * @param {DialogueEffectFactory} dialogueEffectFactory
+   * @param {Object} dialogueOverlay - UI overlay that renders speech, responses, and effects.
+   */
   constructor(dialogueEffectFactory, dialogueOverlay) {
     this.dialogueEffectFactory = dialogueEffectFactory;
     this.dialogueOverlay = dialogueOverlay;
     this.dialogue = null;
     this.dialogueIterator = null;
     this.uiState = null;
+    /** @type {Object<string, DialogueEffect>} Active effects keyed by effect type. */
     this.activeEffects = {};
 
     this.events = new EventEmitter();
   }
 
+  /**
+   * Transitions to a new UI state, calling lifecycle hooks on both old and new states.
+   *
+   * @param {DialogueSequencerState|null} state
+   */
   setUiState(state) {
     if (this.uiState) {
       this.uiState.onEnd();
@@ -25,6 +41,11 @@ export default class DialogueSequencer {
     }
   }
 
+  /**
+   * Ends the current UI state and advances the dialogue iterator.
+   *
+   * @param {string|null} [responseId=null] - If provided, advances via the chosen response.
+   */
   endUi(responseId = null) {
     this.uiState = null;
     if (responseId !== null) {
@@ -35,6 +56,14 @@ export default class DialogueSequencer {
     this.runUntilInteractivity();
   }
 
+  /**
+   * Starts playing a dialogue.
+   *
+   * @param {Dialogue} dialogue
+   * @param {DialogueIteratorContext} context
+   * @param {Object} options
+   * @param {string} [options.top] - Optional title shown above the dialogue overlay.
+   */
   play(dialogue, context, options) {
     this.dialogue = dialogue;
     this.dialogueOverlay.setTopTitle(options.top || null);
@@ -42,6 +71,12 @@ export default class DialogueSequencer {
     this.runUntilInteractivity();
   }
 
+  /**
+   * Advances the dialogue iterator, skipping non-interactive nodes, until a
+   * statement/effect node is reached or the dialogue ends.
+   *
+   * @private
+   */
   runUntilInteractivity() {
     const { dialogueIterator } = this;
 
@@ -63,22 +98,40 @@ export default class DialogueSequencer {
     }
   }
 
+  /** @private */
   onDialogueEnd() {
     this.events.emit('end');
     this.terminate();
   }
 
+  /**
+   * Forwards an action-button press to the current UI state.
+   */
   action() {
     if (this.uiState) {
       this.uiState.onAction();
     }
   }
 
+  /**
+   * Returns true if the node requires UI interaction (statement or effect).
+   *
+   * @private
+   * @param {Object|null} node
+   * @returns {boolean}
+   */
   // eslint-disable-next-line class-methods-use-this
   handledByUI(node) {
     return node && (node.type === 'statement' || node.type === 'effect');
   }
 
+  /**
+   * Creates and tracks a new dialogue effect, terminating any existing effect of the same type.
+   *
+   * @param {string} effectType
+   * @param {Object} effectOptions
+   * @returns {DialogueEffect}
+   */
   createEffect(effectType, effectOptions) {
     this.terminateEffect(effectType);
     this.activeEffects[effectType] = this.dialogueEffectFactory
@@ -86,6 +139,12 @@ export default class DialogueSequencer {
     return this.activeEffects[effectType];
   }
 
+  /**
+   * Ends an active effect gracefully, calling the callback when done.
+   *
+   * @param {string} effectType
+   * @param {function} endDoneCallback
+   */
   endActiveEffect(effectType, endDoneCallback) {
     if (this.activeEffects[effectType]) {
       this.activeEffects[effectType].end(endDoneCallback);
@@ -94,6 +153,11 @@ export default class DialogueSequencer {
     }
   }
 
+  /**
+   * Immediately terminates and removes a tracked effect.
+   *
+   * @param {string} effectType
+   */
   terminateEffect(effectType) {
     if (this.activeEffects[effectType]) {
       this.activeEffects[effectType].terminate();
@@ -101,6 +165,9 @@ export default class DialogueSequencer {
     delete this.activeEffects[effectType];
   }
 
+  /**
+   * Immediately terminates all tracked effects.
+   */
   terminateAllEffects() {
     Object.keys(this.activeEffects).forEach((effectType) => {
       this.activeEffects[effectType].terminate();
@@ -108,6 +175,10 @@ export default class DialogueSequencer {
     this.activeEffects = {};
   }
 
+  /**
+   * Forcibly stops the dialogue, terminating all effects and clearing state.
+   * Emits 'terminate'.
+   */
   terminate() {
     this.events.emit('terminate');
     this.terminateAllEffects();

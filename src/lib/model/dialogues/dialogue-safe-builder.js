@@ -1,6 +1,12 @@
 import logger from 'loglevel';
 import Dialogue from './dialogue';
 
+/**
+ * Returns a minimal placeholder dialogue with a single "..." statement.
+ *
+ * @param {string} id
+ * @returns {Dialogue}
+ */
 function emptyDialogue(id) {
   return Dialogue.fromJson({
     id,
@@ -10,6 +16,14 @@ function emptyDialogue(id) {
   });
 }
 
+/**
+ * Builds a {@link Dialogue} from items, falling back to a placeholder on error.
+ * Validation and parse errors are logged rather than thrown.
+ *
+ * @param {string} id - Dialogue identifier.
+ * @param {Array<Object>} items - Dialogue item definitions.
+ * @returns {Dialogue}
+ */
 export default function safeBuildDialogueFromItems(id, items) {
   try {
     if (items.length === 0) {

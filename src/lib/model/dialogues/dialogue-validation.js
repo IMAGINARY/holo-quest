@@ -1,5 +1,11 @@
 import checkCyclesInDialogue from './dialogue-validation-cycles';
 
+/**
+ * Throws if any two nodes in the dialogue share the same id.
+ *
+ * @param {Dialogue} dialogue
+ * @throws {Error}
+ */
 function checkDuplicateIds(dialogue) {
   const ids = new Set();
   dialogue.nodes.forEach((node) => {
@@ -10,6 +16,12 @@ function checkDuplicateIds(dialogue) {
   });
 }
 
+/**
+ * Throws if any `then` reference in nodes or responses points to a non-existent id.
+ *
+ * @param {Dialogue} dialogue
+ * @throws {Error}
+ */
 function checkInvalidReferences(dialogue) {
   const validIds = new Set(dialogue.nodes.map((node) => node.id));
   dialogue.nodes.forEach((node) => {
@@ -26,6 +38,13 @@ function checkInvalidReferences(dialogue) {
   });
 }
 
+/**
+ * Runs all structural validations on a parsed dialogue: duplicate ids,
+ * invalid references, and cycles.
+ *
+ * @param {Dialogue} dialogue
+ * @throws {Error}
+ */
 export default function validateDialogue(dialogue) {
   checkDuplicateIds(dialogue);
   checkInvalidReferences(dialogue);
