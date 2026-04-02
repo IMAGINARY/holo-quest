@@ -1,0 +1,12 @@
+.speech-text span {
+  opacity: 0;
+  transition: opacity 0.05s;
+}
+
+.speech-text span.revealed {
+  opacity: 1;
+}
+
+.speech-text .break {
+  height: 0.5rem;
+}
