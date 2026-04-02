@@ -1,4 +1,4 @@
-import { useTestPatternElement } from './test-pattern';
+import { useTestPatternElement } from './use-test-pattern-element';
 
 export default function ColorSwatches({ colors = [], ...placement }) {
   const { containerStyle, pixelWidth, pixelHeight } = useTestPatternElement(placement);
