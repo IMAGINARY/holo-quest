@@ -217,6 +217,12 @@ The following functions are supported:
 
 - `COUNT("prefix")`: Returns the number of flags (which are set, i.e. > 0) that start with `prefix`. 
   The prefix must be entered within quotes.
+- `ABS(value)`: Returns the absolute value.
+- `CEIL(value)`: Rounds up to the nearest integer.
+- `FLOOR(value)`: Rounds down to the nearest integer.
+- `ROUND(value)`: Rounds to the nearest integer.
+- `TRUNC(value)`: Removes the decimal part (rounds towards zero).
+- `MANTISSA(value)`: Returns the decimal part (i.e. `value - TRUNC(value)`).
 
 Parentheses can be used to group expressions.
 
@@ -241,10 +247,10 @@ in different ways:
 
 - `flag`: If the flag is not set, it's set to 1. Otherwise, its value is not changed.
 - `flag = 3`: Sets the flag to 3.
-- `flag += n`: Adds n to the flag's value (where n is an integer literal).
-- `flag -= n`: Subtracts n from the flag's value (where n is an integer literal).
+- `flag += n`: Adds n to the flag's value (where n is a number literal).
+- `flag -= n`: Subtracts n from the flag's value (where n is a number literal).
 
-The value of a flag can never be lower than 0 or higher than 999.
+Flags accept decimal numbers, including negative values.
 
 ## Restrictions
 

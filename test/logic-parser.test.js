@@ -175,6 +175,66 @@ describe('LogicParser', () => {
     });
   });
 
+  describe('math functions', () => {
+    it('should support the ABS function', () => {
+      expect(parser.evaluate('ABS(1)')).to.equal(1);
+      expect(parser.evaluate('ABS(-1)')).to.equal(1);
+      expect(parser.evaluate('ABS(0)')).to.equal(0);
+      expect(parser.evaluate('ABS(-3.5)')).to.equal(3.5);
+    });
+
+    it('should support the CEIL function', () => {
+      expect(parser.evaluate('CEIL(1.1)')).to.equal(2);
+      expect(parser.evaluate('CEIL(-1.1)')).to.equal(-1);
+      expect(parser.evaluate('CEIL(2)')).to.equal(2);
+      expect(parser.evaluate('CEIL(0.5)')).to.equal(1);
+    });
+
+    it('should support the FLOOR function', () => {
+      expect(parser.evaluate('FLOOR(1.9)')).to.equal(1);
+      expect(parser.evaluate('FLOOR(-1.1)')).to.equal(-2);
+      expect(parser.evaluate('FLOOR(2)')).to.equal(2);
+      expect(parser.evaluate('FLOOR(0.5)')).to.equal(0);
+    });
+
+    it('should support the ROUND function', () => {
+      expect(parser.evaluate('ROUND(1.4)')).to.equal(1);
+      expect(parser.evaluate('ROUND(1.5)')).to.equal(2);
+      expect(parser.evaluate('ROUND(-1.5)')).to.equal(-1);
+      expect(parser.evaluate('ROUND(2)')).to.equal(2);
+    });
+
+    it('should support the TRUNC function', () => {
+      expect(parser.evaluate('TRUNC(1.9)')).to.equal(1);
+      expect(parser.evaluate('TRUNC(-1.9)')).to.equal(-1);
+      expect(parser.evaluate('TRUNC(2)')).to.equal(2);
+      expect(parser.evaluate('TRUNC(0.7)')).to.equal(0);
+    });
+
+    it('should support the MANTISSA function', () => {
+      expect(parser.evaluate('MANTISSA(3.75)')).to.equal(0.75);
+      expect(parser.evaluate('MANTISSA(1)')).to.equal(0);
+      expect(parser.evaluate('MANTISSA(-2.5)')).to.equal(-0.5);
+    });
+
+    it('should accept flag arguments', () => {
+      parser.context.flags.set('x', 3.7);
+      expect(parser.evaluate('FLOOR(x)')).to.equal(3);
+      expect(parser.evaluate('CEIL(x)')).to.equal(4);
+      expect(parser.evaluate('ROUND(x)')).to.equal(4);
+      expect(parser.evaluate('TRUNC(x)')).to.equal(3);
+      expect(parser.evaluate('ABS(x)')).to.equal(3.7);
+      expect(parser.evaluate('MANTISSA(x)')).to.be.closeTo(0.7, 0.0001);
+    });
+
+    it('should combine with comparison and logic operators', () => {
+      expect(parser.evaluate('FLOOR(1.9) = 1')).to.equal(1);
+      expect(parser.evaluate('CEIL(1.1) = 2')).to.equal(1);
+      expect(parser.evaluate('ABS(-1) > 0 & FLOOR(1.5) = 1')).to.equal(1);
+      expect(parser.evaluate('ROUND(2.5) >= 2 & TRUNC(2.9) < 3')).to.equal(1);
+    });
+  });
+
   it('should fail with invalid syntax', () => {
     expect(() => parser.evaluate('(a')).to.throw('Mismatched Grouping (unexpected "(")');
     expect(() => parser.evaluate('a & b)')).to.throw('Mismatched Grouping (unexpected closing ")")');
