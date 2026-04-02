@@ -23,6 +23,14 @@ describe('LogicParser', () => {
       expect(parser.evaluate('0')).to.equal(0);
       expect(parser.evaluate('1')).to.equal(1);
       expect(parser.evaluate('5')).to.equal(5);
+      expect(parser.evaluate('987')).to.equal(987);
+      expect(parser.evaluate('987.1111')).to.equal(987.1111);
+      expect(parser.evaluate('0.5')).to.equal(0.5);
+      expect(parser.evaluate('0.33')).to.equal(0.33);
+      expect(parser.evaluate('-0.33')).to.equal(-0.33);
+      expect(parser.evaluate('-1')).to.equal(-1);
+      expect(parser.evaluate('-7')).to.equal(-7);
+      expect(parser.evaluate('-57')).to.equal(-57);
     });
 
     it('should evaluate flags', () => {
@@ -87,7 +95,10 @@ describe('LogicParser', () => {
       expect(parser.evaluate('a != 1')).to.equal(0);
       expect(parser.evaluate('a != 0')).to.equal(1);
       expect(parser.evaluate('a > 0')).to.equal(1);
+      expect(parser.evaluate('a > 0.5')).to.equal(1);
       expect(parser.evaluate('a > 1')).to.equal(0);
+      expect(parser.evaluate('a > -1')).to.equal(1);
+      expect(parser.evaluate('a > 1.5')).to.equal(0);
       expect(parser.evaluate('a < 0')).to.equal(0);
       expect(parser.evaluate('a < 1')).to.equal(0);
       expect(parser.evaluate('a >= 0')).to.equal(1);
@@ -97,12 +108,14 @@ describe('LogicParser', () => {
       expect(parser.evaluate('a < 2')).to.equal(1);
       expect(parser.evaluate('a = 1 & a > 0')).to.equal(1);
       expect(parser.evaluate('a = 1 & a < 0')).to.equal(0);
+      expect(parser.evaluate('a > 0.5 & a < 1.5')).to.equal(1);
     });
 
     it('should compare flags with flags', () => {
       parser.context.flags.touch('a');
       parser.context.flags.touch('b');
       parser.context.flags.set('c', 2);
+      parser.context.flags.set('d', 1.5);
       expect(parser.evaluate('a = a')).to.equal(1);
       expect(parser.evaluate('a = b')).to.equal(1);
       expect(parser.evaluate('b = a')).to.equal(1);
@@ -118,16 +131,20 @@ describe('LogicParser', () => {
       expect(parser.evaluate('c >= a')).to.equal(1);
       expect(parser.evaluate('a < c')).to.equal(1);
       expect(parser.evaluate('a <= c')).to.equal(1);
+      expect(parser.evaluate('c > d')).to.equal(1);
+      expect(parser.evaluate('a < d')).to.equal(1);
     });
 
     it('should allow mixing comparison and logic operators', () => {
       parser.context.flags.touch('a');
       parser.context.flags.touch('b');
       parser.context.flags.set('c', 2);
+      parser.context.flags.set('d', 1.5);
 
       expect(parser.evaluate('a = 1 & a = b')).to.equal(1);
       expect(parser.evaluate('a = 1 & a = c')).to.equal(0);
       expect(parser.evaluate('a = 1 | a = c')).to.equal(1);
+      expect(parser.evaluate('d > 1.25 | d < a')).to.equal(1);
       expect(parser.evaluate('^(a = c)')).to.equal(1);
       expect(parser.evaluate('a = 1 & ^(a = c)')).to.equal(1);
       expect(parser.evaluate('a = 1 & b = 1 & c = 2')).to.equal(1);

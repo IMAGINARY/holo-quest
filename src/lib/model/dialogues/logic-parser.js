@@ -91,6 +91,13 @@ export default class LogicParser {
     return term[0] >= '0' && term[0] <= '9';
   }
 
+  static DECIMAL_RE = /^-?\d+(\.\d+)?$/;
+
+  static parseDecimal(aString) {
+    if (!LogicParser.DECIMAL_RE.test(aString)) return Number.NaN;
+    return Number(aString);
+  }
+
   /**
    * Returns true if the term matches the flag id pattern from the dialogue schema.
    *
@@ -110,13 +117,14 @@ export default class LogicParser {
    * @throws {Error} if the term is neither a valid literal nor a valid flag.
    */
   evaluateTerm(term) {
-    if (LogicParser.isValidLiteral(term)) {
-      return parseInt(term, 10);
+    const numVal = LogicParser.parseDecimal(term);
+    if (Number.isNaN(numVal)) {
+      if (LogicParser.isValidFlag(term)) {
+        return this.context.flags.value(term);
+      }
+      throw new Error(`Invalid term: ${term}`);
     }
-    if (LogicParser.isValidFlag(term)) {
-      return this.context.flags.value(term);
-    }
-    throw new Error(`Invalid term: ${term}`);
+    return numVal;
   }
 
   /**
