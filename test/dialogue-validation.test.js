@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import Dialogue from '../src/lib/model/dialogues/dialogue';
-import { validateDialogue } from '../src/lib/model/dialogues/dialogue-validation';
+import validateDialogue from '../src/lib/model/dialogues/dialogue-validation';
 import cycleThenDialogue from './fixtures/dialogues/invalid/invalid-cycle-then.dialogue.json';
 import cycleResponseDialogue
   from './fixtures/dialogues/invalid/invalid-cycle-response.dialogue.json';

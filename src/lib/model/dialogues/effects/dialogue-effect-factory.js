@@ -29,7 +29,6 @@ export default class DialogueEffectFactory {
   }
 }
 
-DialogueEffectFactory.registerEffect = function (name, effectClass) {
+DialogueEffectFactory.registerEffect = function registerEffect(name, effectClass) {
   DialogueEffectFactory.Effects[name] = effectClass;
 };
-

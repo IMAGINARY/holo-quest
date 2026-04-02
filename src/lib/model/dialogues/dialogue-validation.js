@@ -26,7 +26,7 @@ function checkInvalidReferences(dialogue) {
   });
 }
 
-export function validateDialogue(dialogue) {
+export default function validateDialogue(dialogue) {
   checkDuplicateIds(dialogue);
   checkInvalidReferences(dialogue);
   checkCyclesInDialogue(dialogue);

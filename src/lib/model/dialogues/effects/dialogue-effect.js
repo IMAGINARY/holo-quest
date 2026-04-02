@@ -12,10 +12,13 @@
  * 1. The effect is created.
  * 2. The start() method is called.
  * 3. The animate method is called repeatedly, until the effect ends. (not implemented yet)
- * 4. The handleActionButton method is called if the action button is pressed before the effect is done.
- * 5. The effect may announce it is done starting by calling the doneCallback passed to the start method.
+ * 4. The handleActionButton method is called if the action button is pressed before
+ *    the effect is done.
+ * 5. The effect may announce it is done starting by calling the doneCallback passed
+ *    to the start method.
  * 6. The end() method is called to start reversing any changes made by the effect.
- * 7. The effect may announce it is done ending by calling the doneCallback passed to the end method.
+ * 7. The effect may announce it is done ending by calling the doneCallback passed to
+ *    the end method.
  * 7. The terminate() method is called to clean up any resources used by the effect.
  *
  * Until the effect is done ending:
@@ -37,8 +40,8 @@ export default class DialogueEffect {
   /**
    * Constructor
    *
-   * @param {PlayerApp} app
-   *  The player app.
+   * @param {object} app
+   *  The app.
    * @param {object} options
    *  Options for the effect.
    */
@@ -83,6 +86,7 @@ export default class DialogueEffect {
     });
   }
 
+  // noinspection JSUnusedGlobalSymbols
   /**
    * Update the effect.
    *

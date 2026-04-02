@@ -1,4 +1,4 @@
-import { validateDialogueDefinition } from './dialogue-schema-validation';
+import validateDialogueDefinition from './dialogue-schema-validation';
 
 export default class Dialogue {
   constructor() {
@@ -29,30 +29,26 @@ export default class Dialogue {
       const node = stack.pop();
       newDialogue.nodes.push(node);
       if (node.items) {
-        node.items.forEach((item, index) => {
-          item.parent = node;
-          if (!item.type) {
-            if (item.effect) {
-              item.type = 'effect';
-            } else {
-              item.type = 'statement';
-            }
-          }
-          if (!item.id) {
-            item.id = `${node.id}-${index}`;
-          }
-          if (item.responses) {
-            item.responses.forEach((response, responseIndex) => {
-              response.parent = item;
-              if (!response.id) {
-                response.id = `${item.id}-${responseIndex}`;
-              }
-            });
-
-            item.responsesById = Object.fromEntries(
-              item.responses.map((response) => [response.id, response])
+        node.items = node.items.map((item, index) => {
+          const normalizedItem = {
+            ...item,
+            parent: node,
+            type: item.type || (item.effect ? 'effect' : 'statement'),
+            id: item.id || `${node.id}-${index}`,
+          };
+          if (normalizedItem.responses) {
+            normalizedItem.responses = normalizedItem.responses.map(
+              (response, responseIndex) => ({
+                ...response,
+                parent: normalizedItem,
+                id: response.id || `${normalizedItem.id}-${responseIndex}`,
+              })
+            );
+            normalizedItem.responsesById = Object.fromEntries(
+              normalizedItem.responses.map((response) => [response.id, response])
             );
           }
+          return normalizedItem;
         });
         stack.push(...node.items);
       }
