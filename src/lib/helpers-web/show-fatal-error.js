@@ -12,21 +12,29 @@ import '../../styles/show-fatal-error.css';
  * @param {Error} error
  */
 export function showFatalError(text, error) {
-  // If we're in DEV mode, add the stack trace to the error message.
-  const stack = process.env.NODE_ENV === 'development'
-    ? $('<pre></pre>').addClass('fatal-error-stack').html(error.stack) : null;
+  const textEl = document.createElement('div');
+  textEl.classList.add('fatal-error-text');
+  textEl.textContent = text;
 
-  $('<div></div>')
-    .addClass('fatal-error')
-    .append($('<div></div>')
-      .addClass('fatal-error-text')
-      .html(text))
-    .append($('<div></div>')
-      .addClass('fatal-error-details')
-      .html(`${error.name}: ${error.message}`))
-    .append(stack)
-    .appendTo('body');
-  $('html').addClass('with-fatal-error');
+  const detailsEl = document.createElement('div');
+  detailsEl.classList.add('fatal-error-details');
+  detailsEl.textContent = `${error.name}: ${error.message}`;
+
+  const container = document.createElement('div');
+  container.classList.add('fatal-error');
+  container.appendChild(textEl);
+  container.appendChild(detailsEl);
+
+  // If we're in DEV mode, add the stack trace to the error message.
+  if (process.env.NODE_ENV === 'development') {
+    const stackEl = document.createElement('pre');
+    stackEl.classList.add('fatal-error-stack');
+    stackEl.textContent = error.stack;
+    container.appendChild(stackEl);
+  }
+
+  document.body.appendChild(container);
+  document.documentElement.classList.add('with-fatal-error');
 }
 
 /**
