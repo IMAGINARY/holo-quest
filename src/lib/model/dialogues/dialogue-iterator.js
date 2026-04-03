@@ -211,24 +211,28 @@ export default class DialogueIterator {
    * @param {string} assignment
    */
   processAssignment(assignment) {
-    // Parse through a regex
-    // flag ((operator) intLiteral)?
-    const match = assignment.match(/([a-zA-Z_][.a-zA-Z0-9_]*)(\s*([+-]?=)\s*([0-9]{1,3}))?/);
+    // Non-greedy (thanks to the final '?') so that e.g. "my-flag-=1" parses as
+    // flag "my-flag" with operator "-=", rather than flag "my-flag-" with operator "=".
+    const flagId = '([a-zA-Z_][.a-zA-Z0-9_-]*?)';
+    const op = '([+-]?=)';
+    const decimal = '(-?\\d+(\\.\\d+)?)';
+    const re = new RegExp(`^${flagId}(\\s*${op}\\s*${decimal})?$`);
+    const match = assignment.match(re);
     if (!match) {
       throw new Error(`Invalid assignment: ${assignment} (${this.activeNode.id}:${this.dialogue.root.id})`);
     }
-    const [, flag, , operator, intLiteral] = match;
+    const [, flag, , operator, literal] = match;
     if (operator === undefined) {
       this.context.flags.touch(flag);
     }
     if (operator === '=') {
-      this.context.flags.set(flag, parseInt(intLiteral, 10));
+      this.context.flags.set(flag, Number(literal));
     }
     if (operator === '+=') {
-      this.context.flags.inc(flag, parseInt(intLiteral, 10));
+      this.context.flags.inc(flag, Number(literal));
     }
     if (operator === '-=') {
-      this.context.flags.dec(flag, parseInt(intLiteral, 10));
+      this.context.flags.dec(flag, Number(literal));
     }
   }
 
