@@ -26,7 +26,7 @@ export default class FlagStore {
 
   set(flag, value, setter = null) {
     const oldValue = this.flags[flag] || undefined;
-    this.flags[flag] = Math.min(FlagStore.MAX_VALUE, Math.max(FlagStore.MIN_VALUE, value));
+    this.flags[flag] = value;
     this.events.emit('flag', flag, this.flags[flag], oldValue, setter);
   }
 
@@ -59,6 +59,3 @@ export default class FlagStore {
     return this.flags;
   }
 }
-
-FlagStore.MIN_VALUE = 0;
-FlagStore.MAX_VALUE = 999;
