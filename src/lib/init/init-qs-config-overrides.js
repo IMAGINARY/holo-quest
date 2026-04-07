@@ -52,5 +52,11 @@ export default function getQsConfigOverrides(qs) {
       };
     }
   }
+  const hdSim = qs.get('hdSim');
+  if (hdSim !== null) {
+    overrides['hdSim query string'] = {
+      holoDisplay: { simulationMode: true },
+    };
+  }
   return overrides;
 }
