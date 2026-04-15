@@ -6,25 +6,25 @@ const demoSegments = [
   { string: 'You think for a while...\nWhat is your response?', speed: Speeds.normal },
 ];
 
-const promptOptions = {
+const inputOptions = {
   '-1': 'Not for now',
   1: 'Yes, I agree',
 };
 
-const promptMin = Math.min(...Object.keys(promptOptions).map(Number));
-const promptMax = Math.max(...Object.keys(promptOptions).map(Number));
+const inputMin = Math.min(...Object.keys(inputOptions).map(Number));
+const inputMax = Math.max(...Object.keys(inputOptions).map(Number));
 
 export default function GameView({ config }) {
   const {
     speechTextTopPercent, defaultTextColor, defaultTextSize,
-    promptTopPercent, defaultPromptColor, defaultPromptSize,
+    inputTopPercent, defaultInputColor, defaultInputSize,
   } = config.gameView;
 
   const {
     position, velocity, confirmationProgress, requestLock,
   } = useSpinnerController({
-    min: promptMin,
-    max: promptMax,
+    min: inputMin,
+    max: inputMax,
     step: 1,
     // eslint-disable-next-line no-console
     onConfirm: (value) => console.log('Confirmed:', value),
@@ -47,13 +47,13 @@ export default function GameView({ config }) {
           <div
             className="absolute w-full flex justify-center"
             style={{
-              top: `${promptTopPercent}%`,
-              color: defaultPromptColor,
-              fontSize: `${defaultPromptSize}em`,
+              top: `${inputTopPercent}%`,
+              color: defaultInputColor,
+              fontSize: `${defaultInputSize}em`,
             }}
           >
             <OptionRail
-              options={promptOptions}
+              options={inputOptions}
               position={position}
               velocity={velocity}
               confirmationProgress={confirmationProgress}

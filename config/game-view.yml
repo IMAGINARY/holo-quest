@@ -5,9 +5,9 @@ gameView:
   defaultTextColor: '#cccccc'
   # Default text size for speech text (in em units)
   defaultTextSize: 3
-  # Vertical position of the prompt options, as a percentage from the top of the screen
-  promptTopPercent: 70
-  # Default color for prompt options
-  defaultPromptColor: '#cccccc'
-  # Default text size for prompt options (in em units)
-  defaultPromptSize: 3
+  # Vertical position of the input control, as a percentage from the top of the screen
+  inputTopPercent: 70
+  # Default color for the input control
+  defaultInputColor: '#cccccc'
+  # Default text size for the input control (in em units)
+  defaultInputSize: 3
