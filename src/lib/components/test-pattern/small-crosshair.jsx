@@ -1,7 +1,12 @@
 import { useTestPatternElement } from './use-test-pattern-element';
 
 export default function SmallCrosshair({ color = 'white', ...placement }) {
-  const { containerStyle, pixelWidth, pixelHeight } = useTestPatternElement(placement);
+  const centered = {
+    ...placement,
+    x: (placement.x ?? 0) - (placement.width ?? 100) / 2,
+    y: (placement.y ?? 0) - (placement.height ?? 100) / 2,
+  };
+  const { containerStyle, pixelWidth, pixelHeight } = useTestPatternElement(centered);
   const cx = pixelWidth / 2;
   const cy = pixelHeight / 2;
 
