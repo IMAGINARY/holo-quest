@@ -47,9 +47,9 @@ export const Speeds = Object.freeze({
 const isSpaceRegex = /\s/;
 
 /**
- * Parse lines into a flat array of character descriptors.
+ * Parse segments into a flat array of character descriptors.
  *
- * @param {Array} lines - Array of line objects with the following properties:
+ * @param {Array} segments - Array of segment objects with the following properties:
  *   - string {string} Text to display
  *   - speed {number} [optional] Reveal delay in ms (default: Speeds.normal)
  *   - preClasses {string[]} [optional] Classes applied to the span immediately
@@ -58,30 +58,30 @@ const isSpaceRegex = /\s/;
  *   - pause {boolean} [optional] If true, spaces are not skipped (they get a delay)
  * @returns {Array} Flat array of character descriptors
  */
-function parseLines(lines) {
+function parseSegments(segments) {
   const characters = [];
 
-  lines.forEach((line, index) => {
+  segments.forEach((segment, index) => {
     const addChar = (character) => {
       if (character === '\n') {
         characters.push({ character, isBreak: true });
       } else {
         characters.push({
           character,
-          preClasses: line.preClasses || [],
-          classes: line.classes || [],
-          isSpace: isSpaceRegex.test(character) && !line.pause,
-          delayAfter: line.speed || Speeds.normal,
-          pause: line.pause || false,
+          preClasses: segment.preClasses || [],
+          classes: segment.classes || [],
+          isSpace: isSpaceRegex.test(character) && !segment.pause,
+          delayAfter: segment.speed || Speeds.normal,
+          pause: segment.pause || false,
         });
       }
     };
 
-    if (line.noSplit) {
-      addChar(line.string);
+    if (segment.noSplit) {
+      addChar(segment.string);
     } else {
-      let { string } = line;
-      if (index < lines.length - 1) {
+      let { string } = segment;
+      if (index < segments.length - 1) {
         string += ' ';
       }
       string.split('').forEach(addChar);
@@ -97,12 +97,12 @@ function parseLines(lines) {
  * Exposes imperative controls via ref: `revealAll()`, `speedUp()`, `stop()`, `resume()`.
  *
  * @param {Object} props
- * @param {Array} props.lines - Text lines to reveal (see parseLines for format)
+ * @param {Array} props.segments - Text segments to reveal (see parseSegments for format)
  * @param {function} [props.onComplete] - Called when all characters have been revealed
  * @param {string} [props.className] - Additional CSS class(es) for the container
  * @param {React.Ref} ref - Ref for imperative control
  */
-const SpeechText = forwardRef(({ lines, onComplete, className }, ref) => {
+const SpeechText = forwardRef(({ segments, onComplete, className }, ref) => {
   const spanRefs = useRef([]);
   const timeoutRef = useRef(null);
   const speedFactorRef = useRef(1);
@@ -114,7 +114,7 @@ const SpeechText = forwardRef(({ lines, onComplete, className }, ref) => {
     onCompleteRef.current = onComplete;
   }, [onComplete]);
 
-  const characters = useMemo(() => parseLines(lines), [lines]);
+  const characters = useMemo(() => parseSegments(segments), [segments]);
 
   const clearRevealTimeout = useCallback(() => {
     clearTimeout(timeoutRef.current);
@@ -186,7 +186,7 @@ const SpeechText = forwardRef(({ lines, onComplete, className }, ref) => {
     resume,
   }), [revealAll, speedUp, stop, resume]);
 
-  // Start reveal when lines change
+  // Start reveal when segments change
   useEffect(() => {
     revealIndexRef.current = 0;
     speedFactorRef.current = 1;

@@ -2,10 +2,8 @@ import HoloDisplay from './holo-display';
 import SpeechText, { Speeds } from './speech-text';
 import { OptionRail, useSpinnerController } from './spinner-ui';
 
-const demoLines = [
-  { string: 'You think for a while...', speed: Speeds.normal },
-  { string: '\n' },
-  { string: 'What is your response?', speed: Speeds.normal },
+const demoSegments = [
+  { string: 'You think for a while...\nWhat is your response?', speed: Speeds.normal },
 ];
 
 const promptOptions = {
@@ -44,7 +42,7 @@ export default function GameView({ config }) {
               fontSize: `${defaultTextSize}em`,
             }}
           >
-            <SpeechText lines={demoLines} />
+            <SpeechText segments={demoSegments} />
           </div>
           <div
             className="absolute w-full flex justify-center"

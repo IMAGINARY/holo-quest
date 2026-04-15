@@ -4,13 +4,13 @@ import ScaleToFit from '../src/lib/components/scale-to-fit';
 import SpeechText, { Speeds } from '../src/lib/components/speech-text';
 import '../src/styles/speech-text.css';
 
-const demoLines = [
+const demoSegments = [
   { string: 'Hello, traveler.', speed: Speeds.normal },
   { string: 'Welcome to the', speed: Speeds.normal },
   { string: 'Holo-Quest!', speed: Speeds.slow, classes: ['highlight'] },
 ];
 
-const multiSpeedLines = [
+const multiSpeedSegments = [
   { string: 'This is normal speed.', speed: Speeds.normal },
   { string: '\n' },
   { string: 'This is slow...', speed: Speeds.slow },
@@ -18,7 +18,7 @@ const multiSpeedLines = [
   { string: 'And this is super fast!', speed: Speeds.superFast },
 ];
 
-function Demo({ title, lines }) {
+function Demo({ title, segments }) {
   const speechRef = useRef();
   const [status, setStatus] = useState('revealing...');
 
@@ -28,7 +28,7 @@ function Demo({ title, lines }) {
       <div className="bg-black/50 rounded-lg p-4 mb-2">
         <SpeechText
           ref={speechRef}
-          lines={lines}
+          segments={segments}
           onComplete={() => setStatus('complete')}
         />
       </div>
@@ -92,8 +92,8 @@ function App() {
             `}
           </style>
 
-          <Demo title="Basic Speech" lines={demoLines} />
-          <Demo title="Multi-speed with Line Breaks" lines={multiSpeedLines} />
+          <Demo title="Basic Speech" segments={demoSegments} />
+          <Demo title="Multi-speed with Line Breaks" segments={multiSpeedSegments} />
         </div>
       </ScaleToFit>
     </div>
