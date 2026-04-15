@@ -48,11 +48,13 @@
     "expressionparser": "^1.1.9",
     "find-cycle": "^1.1.0",
     "howler": "^2.2.4",
+    "immer": "^11.1.4",
     "js-yaml": "^4.1.1",
     "loglevel": "^1.9.2",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "vite": "^7.3.1",
-    "vite-plugin-static-copy": "^3.2.0"
+    "vite-plugin-static-copy": "^3.2.0",
+    "zustand": "^5.0.12"
   }
 }

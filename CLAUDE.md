@@ -27,6 +27,11 @@ Holo-Quest is a first-person interactive story engine built with React 19, Tailw
 - `npm run lint:style` — Stylelint for CSS
 - `npm run test` — Vitest tests (currently passes with no tests)
 
+## State Management
+
+- **Zustand** for React state (`/pmndrs/zustand` in context7)
+- **Immer** for immutable updates (`/websites/immerjs_github_io_immer` in context7)
+
 ## Architecture
 
 - **Entry point**: `index.html` loads `/src/main.jsx` and `/src/styles/default.css`
