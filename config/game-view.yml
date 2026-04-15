@@ -1,7 +1,13 @@
 gameView:
   # Vertical position of the speech text, as a percentage from the top of the screen
-  speechTextTopPercent: 15
+  speechTextTopPercent: 25
   # Default text color for speech text
   defaultTextColor: '#cccccc'
   # Default text size for speech text (in em units)
   defaultTextSize: 3
+  # Vertical position of the prompt options, as a percentage from the top of the screen
+  promptTopPercent: 70
+  # Default color for prompt options
+  defaultPromptColor: '#cccccc'
+  # Default text size for prompt options (in em units)
+  defaultPromptSize: 3
