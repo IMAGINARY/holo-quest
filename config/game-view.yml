@@ -1,0 +1,7 @@
+gameView:
+  # Vertical position of the speech text, as a percentage from the top of the screen
+  speechTextTopPercent: 15
+  # Default text color for speech text
+  defaultTextColor: '#cccccc'
+  # Default text size for speech text (in em units)
+  defaultTextSize: 3
