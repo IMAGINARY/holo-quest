@@ -4,6 +4,7 @@ import initStandaloneApp from './lib/init/init-standalone-app';
 import SoundManager from './lib/sound/sound-manager';
 // import AppView from './lib/components/app-view';
 import GameView from './lib/components/game-view';
+import useGameState from './lib/stores/game-state';
 
 const { config } = await initStandaloneApp();
 // eslint-disable-next-line no-console
@@ -20,3 +21,10 @@ window.IMAGINARY.HoloQuest.soundManager = new SoundManager(config);
 const appNode = document.getElementById('app');
 const root = createRoot(appNode);
 root.render(<StrictMode><GameView config={config} /></StrictMode>);
+
+// Temporary: seed store with demo data for development
+useGameState.getState().setText('You think for a while...\nWhat is your response?');
+useGameState.getState().setInput({
+  '-1': 'Not for now',
+  1: 'Yes, I agree',
+});

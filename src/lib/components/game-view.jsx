@@ -1,24 +1,25 @@
+import { useMemo } from 'react';
 import HoloDisplay from './holo-display';
 import SpeechText, { Speeds } from './speech-text';
 import { OptionRail, useSpinnerController } from './spinner-ui';
-
-const demoSegments = [
-  { string: 'You think for a while...\nWhat is your response?', speed: Speeds.normal },
-];
-
-const inputOptions = {
-  '-1': 'Not for now',
-  1: 'Yes, I agree',
-};
-
-const inputMin = Math.min(...Object.keys(inputOptions).map(Number));
-const inputMax = Math.max(...Object.keys(inputOptions).map(Number));
+import useGameState from '../stores/game-state';
 
 export default function GameView({ config }) {
+  const { text, input } = useGameState();
+
   const {
     speechTextTopPercent, defaultTextColor, defaultTextSize,
     inputTopPercent, defaultInputColor, defaultInputSize,
   } = config.gameView;
+
+  const segments = useMemo(
+    () => (text !== null ? [{ string: text, speed: Speeds.normal }] : null),
+    [text]
+  );
+
+  const inputKeys = input !== null ? Object.keys(input).map(Number) : [];
+  const inputMin = inputKeys.length > 0 ? Math.min(...inputKeys) : 0;
+  const inputMax = inputKeys.length > 0 ? Math.max(...inputKeys) : 0;
 
   const {
     position, velocity, confirmationProgress, requestLock,
@@ -34,40 +35,46 @@ export default function GameView({ config }) {
     <div className="relative h-screen w-screen overflow-hidden bg-black">
       <HoloDisplay config={config}>
         <HoloDisplay.Front>
-          <div
-            className="absolute w-full text-center"
-            style={{
-              top: `${speechTextTopPercent}%`,
-              color: defaultTextColor,
-              fontSize: `${defaultTextSize}em`,
-            }}
-          >
-            <SpeechText segments={demoSegments} />
-          </div>
-          <div
-            className="absolute w-full flex justify-center"
-            style={{
-              top: `${inputTopPercent}%`,
-              color: defaultInputColor,
-              fontSize: `${defaultInputSize}em`,
-            }}
-          >
-            <OptionRail
-              options={inputOptions}
-              position={position}
-              velocity={velocity}
-              confirmationProgress={confirmationProgress}
-            />
-          </div>
+          {text !== null && (
+            <div
+              className="absolute w-full text-center"
+              style={{
+                top: `${speechTextTopPercent}%`,
+                color: defaultTextColor,
+                fontSize: `${defaultTextSize}em`,
+              }}
+            >
+              <SpeechText segments={segments} />
+            </div>
+          )}
+          {input !== null && (
+            <div
+              className="absolute w-full flex justify-center"
+              style={{
+                top: `${inputTopPercent}%`,
+                color: defaultInputColor,
+                fontSize: `${defaultInputSize}em`,
+              }}
+            >
+              <OptionRail
+                options={input}
+                position={position}
+                velocity={velocity}
+                confirmationProgress={confirmationProgress}
+              />
+            </div>
+          )}
         </HoloDisplay.Front>
         <HoloDisplay.Back />
       </HoloDisplay>
-      <button
-        type="button"
-        className="absolute inset-0 z-10 cursor-pointer bg-transparent"
-        onClick={requestLock}
-        aria-label="Activate spinner"
-      />
+      {input !== null && (
+        <button
+          type="button"
+          className="absolute inset-0 z-10 cursor-pointer bg-transparent"
+          onClick={requestLock}
+          aria-label="Activate spinner"
+        />
+      )}
     </div>
   );
 }
