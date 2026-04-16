@@ -9,12 +9,15 @@ import { immer } from 'zustand/middleware/immer';
  * @property {(text: string|null) => void} setText - Replace the current dialogue text.
  * @property {(input: Object<string, string>|null) => void} setInput - Replace the
  *   current player choice options.
+ * @property {string} lang - Active language code (e.g. 'en', 'de').
+ * @property {(lang: string) => void} setLang - Change the active language.
  */
 
 const useGameState = create(
   immer((set) => ({
     text: null,
     input: null,
+    lang: 'en',
 
     /**
      * Replace the current dialogue text.
@@ -53,6 +56,20 @@ const useGameState = create(
       }
       // eslint-disable-next-line no-param-reassign
       set((state) => { state.input = input; });
+    },
+
+    /**
+     * Change the active language.
+     *
+     * @param {string} lang - Language code (e.g. 'en', 'de').
+     * @throws {TypeError} If lang is not a string.
+     */
+    setLang: (lang) => {
+      if (typeof lang !== 'string') {
+        throw new TypeError(`setLang: expected string, got ${typeof lang}`);
+      }
+      // eslint-disable-next-line no-param-reassign
+      set((state) => { state.lang = lang; });
     },
   }))
 );
