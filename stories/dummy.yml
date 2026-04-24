@@ -1,0 +1,10 @@
+- text:
+    en: 'You think for a while...\nWhat is your response?'
+    de: 'Du denkst eine Weile nach...\nWas ist deine Antwort?'
+  responses:
+    - text:
+        en: 'Not for now'
+        de: 'Nicht jetzt'
+    - text:
+        en: 'Yes, I agree'
+        de: 'Ja, ich stimme zu'

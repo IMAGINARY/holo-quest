@@ -58,14 +58,36 @@ async function loadConfig(settingsFiles, overrides = {}) {
 }
 
 /**
+ * Load the story script referenced by the resolved configuration.
+ *
+ * @param {Object} config  Resolved configuration, expected to contain `app.storyPath` and
+ *  `app.story`.
+ * @return {Promise<Object>} Resolved story object
+ */
+async function loadStory(config) {
+  const storyFile = `${config.app.storyPath}/${config.app.story}.yml`;
+  const cfgLoader = new CfgLoader(CfgReaderFetch, yaml.load);
+  try {
+    logger.debug('Loading story file: %s', storyFile);
+    const story = await cfgLoader.load([storyFile]);
+    Object.freeze(story);
+    logger.debug('Story loaded successfully', story);
+    return story;
+  } catch (err) {
+    throw new Error(`Error loading story: ${err.message}`);
+  }
+}
+
+/**
  * Initialize basic app services for a standalone (non-client-server) environment, including:
  *
  * - Fatal error handling
  * - Logging (with log level from query string)
  * - Configuration loading (from config files and settings files specified in query string)
+ * - Story loading (from the path/id resolved in configuration)
  * - Sentry initialization (with DSN from query string or config)
  *
- * @return {Promise<{config: Object}>}
+ * @return {Promise<{config: Object, story: Object}>}
  */
 export default async function initStandaloneApp() {
   const qs = new URLSearchParams(window.location.search);
@@ -91,5 +113,7 @@ export default async function initStandaloneApp() {
     initSentry(config.sentry.dsn);
   }
 
-  return { config };
+  const story = await loadStory(config);
+
+  return { config, story };
 }

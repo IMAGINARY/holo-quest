@@ -41,6 +41,15 @@ export default class GameController {
   }
 
   /**
+   * Stores the loaded story script on the controller for later use.
+   *
+   * @param {object} story The parsed story object.
+   */
+  setStory(story) {
+    this.story = story;
+  }
+
+  /**
    * Advances to the next language in `config.game.languages`, wrapping around at the end.
    * If the current language isn't in the list, falls back to the first entry.
    */

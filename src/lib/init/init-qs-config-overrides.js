@@ -58,5 +58,15 @@ export default function getQsConfigOverrides(qs) {
       holoDisplay: { simulationMode: true },
     };
   }
+  const story = qs.get('story');
+  if (story) {
+    if (story.match(/^[a-zA-Z0-9_-]+$/)) {
+      overrides['story query string'] = {
+        app: { story },
+      };
+    } else {
+      logger.error('story: must contain only alphanumeric characters, _ or -');
+    }
+  }
   return overrides;
 }
