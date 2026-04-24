@@ -58,7 +58,7 @@ export default function GameView({ config }) {
   });
 
   return (
-    <div className="relative h-screen w-screen overflow-hidden bg-black">
+    <div className="relative h-screen w-screen overflow-hidden bg-black font-[Averia_Sans_Libre]">
       <HoloDisplay config={config}>
         <HoloDisplay.Front>
           {resolvedText !== null && (
