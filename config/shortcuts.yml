@@ -1,0 +1,15 @@
+# Keyboard shortcuts configuration.
+#
+# Format: commandId: shortcutString
+#
+# shortcutString uses the format: [Modifier+]*KeyCode
+#   - KeyCode: A KeyboardEvent.code value
+#     (see https://developer.mozilla.org/en-US/docs/Web/API/UI_Events/Keyboard_event_code_values)
+#     Examples: KeyR, KeyJ, Digit1, Space, BracketLeft, Backquote, F5
+#   - Modifier (optional, case-insensitive): Ctrl, Alt, Shift — joined with +
+#     Examples: Alt+KeyJ, Ctrl+Shift+KeyP
+#
+# Using event.code ensures shortcuts work consistently across keyboard layouts.
+
+shortcuts:
+  toggleLang: KeyL

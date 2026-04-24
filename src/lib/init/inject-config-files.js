@@ -1,6 +1,8 @@
 export default [
-  'default-settings',
   'sound',
   'holo-display',
   'game-view',
+  'game',
+  'shortcuts',
+  'default-settings',
 ];
