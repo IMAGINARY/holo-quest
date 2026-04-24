@@ -18,6 +18,10 @@ import { assertString, assertLangText, assertInputControl } from '../model/type-
  *   input control.
  * @property {string} lang - Active language code (e.g. 'en', 'de').
  * @property {(lang: string) => void} setLang - Change the active language.
+ * @property {boolean} restartDialogVisible - Whether the restart-game dialog
+ *   is currently shown.
+ * @property {(visible: boolean) => void} setRestartDialogVisible - Show or
+ *   hide the restart-game dialog.
  */
 
 const useGameState = create(
@@ -25,6 +29,7 @@ const useGameState = create(
     text: null,
     input: null,
     lang: 'en',
+    restartDialogVisible: false,
 
     /**
      * Replace the current dialogue text.
@@ -60,6 +65,16 @@ const useGameState = create(
       assertString(lang, 'setLang');
       // eslint-disable-next-line no-param-reassign
       set((state) => { state.lang = lang; });
+    },
+
+    /**
+     * Show or hide the restart-game dialog.
+     *
+     * @param {boolean} visible - True to show, false to hide.
+     */
+    setRestartDialogVisible: (visible) => {
+      // eslint-disable-next-line no-param-reassign
+      set((state) => { state.restartDialogVisible = visible; });
     },
   }))
 );

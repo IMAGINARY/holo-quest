@@ -1,0 +1,10 @@
+strings:
+  restartDialogQuestion:
+    en: "Are you sure you want to restart the game?"
+    de: "Bist du sicher, dass du das Spiel neu starten möchtest?"
+  restartDialogYes:
+    en: "Yes"
+    de: "Ja"
+  restartDialogNo:
+    en: "No"
+    de: "Nein"

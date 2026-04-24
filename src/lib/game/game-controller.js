@@ -14,6 +14,7 @@ export default class GameController {
     this.languages = config.game.languages;
     this.commands = {
       toggleLang: () => this.toggleLang(),
+      showRestartDialog: () => this.showRestartDialog(),
     };
 
     this.setLang(this.languages[0]);
@@ -47,6 +48,22 @@ export default class GameController {
    */
   setStory(story) {
     this.story = story;
+  }
+
+  /**
+   * Shows the restart-game dialog by flipping `restartDialogVisible` in game state.
+   */
+  // eslint-disable-next-line class-methods-use-this
+  showRestartDialog() {
+    useGameState.getState().setRestartDialogVisible(true);
+  }
+
+  /**
+   * Hides the restart-game dialog by flipping `restartDialogVisible` in game state.
+   */
+  // eslint-disable-next-line class-methods-use-this
+  hideRestartDialog() {
+    useGameState.getState().setRestartDialogVisible(false);
   }
 
   /**

@@ -13,3 +13,4 @@
 
 shortcuts:
   toggleLang: KeyL
+  showRestartDialog: KeyR

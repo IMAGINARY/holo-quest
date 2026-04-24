@@ -2,11 +2,14 @@ import { useMemo } from 'react';
 import HoloDisplay from './holo-display';
 import SpeechText, { Speeds } from './speech-text';
 import { OptionRail, useSpinnerController } from './spinner-ui';
+import RestartDialog from './restart-dialog';
 import useGameState from '../stores/game-state';
 import { getText } from '../helpers/i18n';
 
 export default function GameView({ config }) {
-  const { text, input, lang } = useGameState();
+  const {
+    text, input, lang, restartDialogVisible,
+  } = useGameState();
 
   const {
     speechTextTopPercent, defaultTextColor, defaultTextSize,
@@ -90,6 +93,7 @@ export default function GameView({ config }) {
               />
             </div>
           )}
+          {restartDialogVisible && <RestartDialog config={config} lang={lang} />}
         </HoloDisplay.Front>
         <HoloDisplay.Back />
       </HoloDisplay>
