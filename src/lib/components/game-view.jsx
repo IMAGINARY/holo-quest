@@ -3,18 +3,26 @@ import HoloDisplay from './holo-display';
 import SpeechText, { Speeds } from './speech-text';
 import { OptionRail, useSpinnerController } from './spinner-ui';
 import useGameState from '../stores/game-state';
+import { getText } from '../helpers/i18n';
 
 export default function GameView({ config }) {
-  const { text, input } = useGameState();
+  const { text, input, lang } = useGameState();
 
   const {
     speechTextTopPercent, defaultTextColor, defaultTextSize,
     inputTopPercent, defaultInputColor, defaultInputSize,
   } = config.gameView;
 
+  // getText() dereferences text[lang] when text is an object; guard null first
+  // since typeof null === 'object' would trip it.
+  const resolvedText = useMemo(
+    () => (text === null ? null : getText(text, lang)),
+    [text, lang]
+  );
+
   const segments = useMemo(
-    () => (text !== null ? [{ string: text, speed: Speeds.normal }] : null),
-    [text]
+    () => (resolvedText !== null ? [{ string: resolvedText, speed: Speeds.normal }] : null),
+    [resolvedText]
   );
 
   const inputKeys = input !== null ? Object.keys(input).map(Number) : [];
@@ -35,7 +43,7 @@ export default function GameView({ config }) {
     <div className="relative h-screen w-screen overflow-hidden bg-black">
       <HoloDisplay config={config}>
         <HoloDisplay.Front>
-          {text !== null && (
+          {resolvedText !== null && (
             <div
               className="absolute w-full text-center"
               style={{
