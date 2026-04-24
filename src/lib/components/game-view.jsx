@@ -25,6 +25,15 @@ export default function GameView({ config }) {
     [resolvedText]
   );
 
+  // Drives SpeechText remount on narrative-text change but not on lang swap:
+  // SpeechText preserves reveal progress across segment changes, so passing
+  // the same key during a translation swap keeps that progress; a new `text`
+  // produces a new key, forcing a fresh reveal.
+  const textKey = useMemo(
+    () => (text === null ? null : JSON.stringify(text)),
+    [text]
+  );
+
   const resolvedOptions = useMemo(
     () => (input === null
       ? null
@@ -61,7 +70,7 @@ export default function GameView({ config }) {
                 fontSize: `${defaultTextSize}em`,
               }}
             >
-              <SpeechText segments={segments} />
+              <SpeechText key={textKey} segments={segments} />
             </div>
           )}
           {input !== null && (

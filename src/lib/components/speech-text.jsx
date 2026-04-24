@@ -30,7 +30,7 @@
  */
 
 import {
-  forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef,
+  forwardRef, useCallback, useEffect, useImperativeHandle, useLayoutEffect, useMemo, useRef,
 } from 'react';
 
 /**
@@ -108,6 +108,9 @@ const SpeechText = forwardRef(({ segments, onComplete, className }, ref) => {
   const speedFactorRef = useRef(1);
   const revealIndexRef = useRef(0);
   const onCompleteRef = useRef(onComplete);
+  const prevCharactersRef = useRef(null);
+  const prevCharsForKeyRef = useRef(null);
+  const versionRef = useRef(0);
 
   // Keep onComplete ref current without re-running effects
   useEffect(() => {
@@ -115,6 +118,15 @@ const SpeechText = forwardRef(({ segments, onComplete, className }, ref) => {
   }, [onComplete]);
 
   const characters = useMemo(() => parseSegments(segments), [segments]);
+
+  // Bump the version whenever `characters` changes so span keys differ and
+  // React remounts fresh DOM elements — otherwise spans get reused across a
+  // swap, carrying the `revealed` class from the prior reveal into the new
+  // text and masking the progress we want to instant-reveal.
+  if (prevCharsForKeyRef.current !== characters) {
+    prevCharsForKeyRef.current = characters;
+    versionRef.current += 1;
+  }
 
   const clearRevealTimeout = useCallback(() => {
     clearTimeout(timeoutRef.current);
@@ -186,25 +198,52 @@ const SpeechText = forwardRef(({ segments, onComplete, className }, ref) => {
     resume,
   }), [revealAll, speedUp, stop, resume]);
 
-  // Start reveal when segments change
-  useEffect(() => {
-    revealIndexRef.current = 0;
+  // Preserve reveal progress as a fraction across `characters` changes: when
+  // segments swap (e.g. mid-reveal language toggle), instant-reveal the same
+  // fraction of the new text that was already revealed, then continue timed
+  // reveal from there. Fresh mounts (prev === null) keep the 600 ms initial
+  // pause. Parents that want a full reset should change the component's React
+  // key to force a remount. Runs as a layout effect so the instant-reveal
+  // writes land before the browser paints the new spans.
+  useLayoutEffect(() => {
+    const prev = prevCharactersRef.current;
+    const prevLen = prev ? prev.length : 0;
+    const prevIdx = Math.min(revealIndexRef.current, prevLen);
+    const ratio = prevLen > 0 ? prevIdx / prevLen : 0;
+    const startIndex = Math.min(
+      Math.round(ratio * characters.length),
+      characters.length
+    );
+
+    for (let i = 0; i < startIndex; i += 1) {
+      revealCharacter(i);
+    }
+    revealIndexRef.current = startIndex;
     speedFactorRef.current = 1;
-    resume();
+    prevCharactersRef.current = characters;
+
+    clearRevealTimeout();
+    if (startIndex >= characters.length) {
+      handleComplete();
+    } else {
+      const initialDelay = prev === null ? 600 : 0;
+      timeoutRef.current = setTimeout(() => {
+        timedReveal(startIndex);
+      }, initialDelay);
+    }
     return clearRevealTimeout;
-  }, [characters, resume, clearRevealTimeout]);
+  }, [characters, revealCharacter, timedReveal, handleComplete, clearRevealTimeout]);
 
   return (
     <div className={className ? `speech-text ${className}` : 'speech-text'}>
       {characters.map((char, i) => {
+        const key = `${versionRef.current}-${i}`;
         if (char.isBreak) {
-          // eslint-disable-next-line react/no-array-index-key
-          return <div key={i} className="break" />;
+          return <div key={key} className="break" />;
         }
         return (
           <span
-            // eslint-disable-next-line react/no-array-index-key
-            key={i}
+            key={key}
             ref={(el) => { spanRefs.current[i] = el; }}
             className={char.preClasses.length > 0 ? char.preClasses.join(' ') : undefined}
           >
