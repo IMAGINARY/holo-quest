@@ -3,7 +3,7 @@ import {
   assertString,
   assertStringOrNull,
   assertLangText,
-  assertInputOptions,
+  assertInputControl,
 } from '../src/lib/model/type-guards.js';
 
 describe('type-guards', () => {
@@ -61,27 +61,78 @@ describe('type-guards', () => {
     });
   });
 
-  describe('assertInputOptions', () => {
+  describe('assertInputControl', () => {
     it('accepts null', () => {
-      expect(() => assertInputOptions(null, 'test')).not.toThrow();
+      expect(() => assertInputControl(null, 'test')).not.toThrow();
     });
 
-    it('accepts an object with numeric keys and string values', () => {
-      expect(() => assertInputOptions({ '-1': 'a', 1: 'b' }, 'test')).not.toThrow();
+    it('accepts a control with string option values', () => {
+      expect(() => assertInputControl(
+        { type: 'default', options: { '-1': 'a', 1: 'b' } },
+        'test'
+      )).not.toThrow();
     });
 
-    it('throws on non-numeric keys', () => {
-      expect(() => assertInputOptions({ abc: 'value' }, 'test'))
-        .toThrow(/key "abc" is not a finite number/);
+    it('accepts a control with LangText option values', () => {
+      expect(() => assertInputControl(
+        { type: 'default', options: { 1: { en: 'yes', es: 'sí' } } },
+        'test'
+      )).not.toThrow();
     });
 
-    it('throws on non-string values', () => {
-      expect(() => assertInputOptions({ 1: 42 }, 'test'))
-        .toThrow(/value for key "1" must be a string/);
+    it('accepts a control with an empty options map', () => {
+      expect(() => assertInputControl(
+        { type: 'default', options: {} },
+        'test'
+      )).not.toThrow();
     });
 
     it('throws on arrays', () => {
-      expect(() => assertInputOptions(['a'], 'test')).toThrow(/got array/);
+      expect(() => assertInputControl(['a'], 'test')).toThrow(/got array/);
+    });
+
+    it('throws when type is missing', () => {
+      expect(() => assertInputControl({ options: {} }, 'test'))
+        .toThrow(/test\.type: expected string, got undefined/);
+    });
+
+    it('throws when type is not a string', () => {
+      expect(() => assertInputControl({ type: 1, options: {} }, 'test'))
+        .toThrow(/test\.type: expected string, got number/);
+    });
+
+    it('throws when type is an empty string', () => {
+      expect(() => assertInputControl({ type: '', options: {} }, 'test'))
+        .toThrow(/test\.type: expected non-empty string/);
+    });
+
+    it('throws when options is missing', () => {
+      expect(() => assertInputControl({ type: 'default' }, 'test'))
+        .toThrow(/test\.options: expected plain object, got undefined/);
+    });
+
+    it('throws when options is an array', () => {
+      expect(() => assertInputControl({ type: 'default', options: [] }, 'test'))
+        .toThrow(/test\.options: expected plain object, got array/);
+    });
+
+    it('throws when options is null', () => {
+      expect(() => assertInputControl({ type: 'default', options: null }, 'test'))
+        .toThrow(/test\.options: expected plain object, got null/);
+    });
+
+    it('throws on non-numeric option keys', () => {
+      expect(() => assertInputControl(
+        { type: 'default', options: { abc: 'value' } },
+        'test'
+      )).toThrow(/test\.options: key "abc" is not a finite number/);
+    });
+
+    it('throws when an option value is an invalid LangText', () => {
+      expect(() => assertInputControl(
+        { type: 'default', options: { 1: 42 } },
+        'test'
+      )).toThrow(/test\.options\["1"\]: expected string, plain object, or null/);
     });
   });
 });

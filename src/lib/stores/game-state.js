@@ -1,21 +1,21 @@
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
-import { assertString, assertLangText, assertInputOptions } from '../model/type-guards';
+import { assertString, assertLangText, assertInputControl } from '../model/type-guards';
 
 /**
  * @import { LangText } from '../model/type-guards'
- * @import { InputOptions } from '../model/type-guards'
+ * @import { InputControl } from '../model/type-guards'
  */
 
 /**
  * @typedef {Object} GameState
  * @property {LangText|null} text - Dialogue text currently displayed to the
  *   player.
- * @property {InputOptions|null} input - Player choice options.
+ * @property {InputControl|null} input - Player input control (type + options).
  * @property {(text: LangText|null) => void} setText - Replace the current
  *   dialogue text.
- * @property {(input: InputOptions|null) => void} setInput - Replace the current
- *   player choice options.
+ * @property {(input: InputControl|null) => void} setInput - Replace the current
+ *   input control.
  * @property {string} lang - Active language code (e.g. 'en', 'de').
  * @property {(lang: string) => void} setLang - Change the active language.
  */
@@ -39,13 +39,13 @@ const useGameState = create(
     },
 
     /**
-     * Replace the current player choice options.
+     * Replace the current input control.
      *
-     * @param {InputOptions|null} input - Choice options, or null to clear.
-     * @throws {TypeError} If input is not a valid options object or null.
+     * @param {InputControl|null} input - Input control, or null to clear.
+     * @throws {TypeError} If input is not a valid control object or null.
      */
     setInput: (input) => {
-      assertInputOptions(input, 'setInput');
+      assertInputControl(input, 'setInput');
       // eslint-disable-next-line no-param-reassign
       set((state) => { state.input = input; });
     },

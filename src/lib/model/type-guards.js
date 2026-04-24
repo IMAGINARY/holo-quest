@@ -12,10 +12,14 @@
  */
 
 /**
- * Player choice options mapping spinner positions (numeric keys as strings) to
- * choice labels.
+ * Player input control. `type` discriminates the UI variant (only `'default'`
+ * exists today) and `options` maps spinner positions (numeric keys as strings)
+ * to option labels as {@link LangText}.
  *
- * @typedef {Object<string, string>} InputOptions
+ * @typedef {Object} InputControl
+ * @property {string} type - Non-empty control-variant identifier.
+ * @property {Object<string, LangText>} options - Map of spinner position to
+ *   option label.
  */
 
 function describeType(value) {
@@ -82,29 +86,35 @@ export function assertLangText(value, label) {
 }
 
 /**
- * Asserts that `value` is null, or a plain object whose keys parse as finite
- * numbers and whose values are strings.
+ * Asserts that `value` is null, or a plain object of the shape:
+ *   { type: string (non-empty), options: { [numeric-key]: LangText } }
  *
  * @param {unknown} value
  * @param {string} label - Identifier included in error messages.
  * @throws {TypeError}
- * @see {@link InputOptions}
+ * @see {@link InputControl}
  */
-export function assertInputOptions(value, label) {
+export function assertInputControl(value, label) {
   if (value === null) return;
   if (typeof value !== 'object' || Array.isArray(value)) {
     throw new TypeError(
       `${label}: expected plain object or null, got ${describeType(value)}`
     );
   }
-  Object.entries(value).forEach(([key, val]) => {
+  assertString(value.type, `${label}.type`);
+  if (value.type === '') {
+    throw new TypeError(`${label}.type: expected non-empty string`);
+  }
+  const { options } = value;
+  if (options === null || typeof options !== 'object' || Array.isArray(options)) {
+    throw new TypeError(
+      `${label}.options: expected plain object, got ${describeType(options)}`
+    );
+  }
+  Object.entries(options).forEach(([key, val]) => {
     if (!Number.isFinite(Number(key))) {
-      throw new TypeError(`${label}: key "${key}" is not a finite number`);
+      throw new TypeError(`${label}.options: key "${key}" is not a finite number`);
     }
-    if (typeof val !== 'string') {
-      throw new TypeError(
-        `${label}: value for key "${key}" must be a string, got ${describeType(val)}`
-      );
-    }
+    assertLangText(val, `${label}.options["${key}"]`);
   });
 }

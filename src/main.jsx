@@ -25,6 +25,9 @@ root.render(<StrictMode><GameView config={config} /></StrictMode>);
 // Temporary: seed store with demo data for development
 useGameState.getState().setText('You think for a while...\nWhat is your response?');
 useGameState.getState().setInput({
-  '-1': 'Not for now',
-  1: 'Yes, I agree',
+  type: 'default',
+  options: {
+    '-1': { en: 'Not for now', es: 'Ahora no' },
+    1: { en: 'Yes, I agree', es: 'Sí, estoy de acuerdo' },
+  },
 });

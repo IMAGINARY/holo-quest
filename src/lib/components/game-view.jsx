@@ -25,7 +25,16 @@ export default function GameView({ config }) {
     [resolvedText]
   );
 
-  const inputKeys = input !== null ? Object.keys(input).map(Number) : [];
+  const resolvedOptions = useMemo(
+    () => (input === null
+      ? null
+      : Object.fromEntries(
+        Object.entries(input.options).map(([k, v]) => [k, getText(v, lang)])
+      )),
+    [input, lang]
+  );
+
+  const inputKeys = input !== null ? Object.keys(input.options).map(Number) : [];
   const inputMin = inputKeys.length > 0 ? Math.min(...inputKeys) : 0;
   const inputMax = inputKeys.length > 0 ? Math.max(...inputKeys) : 0;
 
@@ -65,7 +74,7 @@ export default function GameView({ config }) {
               }}
             >
               <OptionRail
-                options={input}
+                options={resolvedOptions}
                 position={position}
                 velocity={velocity}
                 confirmationProgress={confirmationProgress}
