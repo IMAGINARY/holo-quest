@@ -46,6 +46,15 @@ The app uses a two-tier configuration system:
 
 4. **Override workflow** — To customize the app, create a `.yml` file at the document root and load it via the `settings` query parameter (e.g. `?settings=my-settings.yml`).
 
+## Keyboard Shortcuts
+
+| Command             | Default key | Description |
+|---------------------|-------------|-------------|
+| `toggleLang`        | `L`         | Cycles to the next language in `config.game.languages`, wrapping at the end. |
+| `showRestartDialog` | `R`         | Opens the restart-game dialog. |
+
+Shortcuts can be rebound in `config/shortcuts.yml`.
+
 ## Error Tracking (Sentry)
 
 The app supports optional error tracking via [Sentry](https://sentry.io/). When enabled, Sentry captures `console.error` calls and uncaught exceptions.
