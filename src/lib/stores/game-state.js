@@ -22,14 +22,21 @@ import { assertString, assertLangText, assertInputControl } from '../model/type-
  *   is currently shown.
  * @property {(visible: boolean) => void} setRestartDialogVisible - Show or
  *   hide the restart-game dialog.
+ * @property {() => void} reset - Reset transient game state (text, input,
+ *   restartDialogVisible) to initial values. `lang` is preserved as a user
+ *   preference.
  */
+
+const initialTransientState = {
+  text: null,
+  input: null,
+  restartDialogVisible: false,
+};
 
 const useGameState = create(
   immer((set) => ({
-    text: null,
-    input: null,
+    ...initialTransientState,
     lang: 'en',
-    restartDialogVisible: false,
 
     /**
      * Replace the current dialogue text.
@@ -75,6 +82,16 @@ const useGameState = create(
     setRestartDialogVisible: (visible) => {
       // eslint-disable-next-line no-param-reassign
       set((state) => { state.restartDialogVisible = visible; });
+    },
+
+    /**
+     * Reset transient game state to initial values. `lang` is preserved as a
+     * user preference. Called by GameController when a new game starts.
+     */
+    reset: () => {
+      set((state) => {
+        Object.assign(state, initialTransientState);
+      });
     },
   }))
 );

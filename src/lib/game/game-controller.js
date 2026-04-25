@@ -28,6 +28,7 @@ export default class GameController {
     if (this.gameInProgress) {
       this.endGame();
     }
+    useGameState.getState().reset();
     this.gameInProgress = true;
   }
 
