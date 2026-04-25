@@ -1,6 +1,7 @@
 import { logger } from '../helpers/logger';
 import useGameState from '../stores/game-state';
 import KeyboardInputMgr from '../input/keyboard-input-mgr';
+import FlagStore from '../model/flag-store';
 
 export default class GameController {
   /**
@@ -35,6 +36,7 @@ export default class GameController {
       }
     }
     this.setLang(initialLang);
+    this.flags = new FlagStore();
     this.keyboardInputMgr = new KeyboardInputMgr();
     this.initKeyboardHandlers();
   }
@@ -43,8 +45,17 @@ export default class GameController {
     if (this.gameInProgress) {
       this.endGame();
     }
-    useGameState.getState().reset();
+    this.resetState();
     this.gameInProgress = true;
+  }
+
+  /**
+   * Resets all transient per-game state (zustand game-state store and flag
+   * store). Called when a new game starts.
+   */
+  resetState() {
+    useGameState.getState().reset();
+    this.flags.clear();
   }
 
   endGame() {
