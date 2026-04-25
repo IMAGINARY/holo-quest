@@ -12,6 +12,7 @@ export default class GameController {
   constructor(config) {
     this.config = config;
     this.languages = config.game.languages;
+    this.gameInProgress = false;
     this.commands = {
       toggleLang: () => this.toggleLang(),
       showRestartDialog: () => this.showRestartDialog(),
@@ -19,6 +20,17 @@ export default class GameController {
 
     this.setLang(this.languages[0]);
     this.initKeyboardHandlers();
+  }
+
+  startGame() {
+    if (this.gameInProgress) {
+      this.endGame();
+    }
+    this.gameInProgress = true;
+  }
+
+  endGame() {
+    this.gameInProgress = false;
   }
 
   /**

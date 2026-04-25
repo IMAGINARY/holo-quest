@@ -2,7 +2,10 @@ import { useMemo } from 'react';
 import { OptionRail, useSpinnerController } from './spinner-ui';
 import { getText } from '../helpers/i18n';
 
-export default function RestartDialog({ config, lang }) {
+const CANCEL = -1;
+const CONFIRM = 1;
+
+export default function RestartDialog({ config, lang, controller }) {
   const {
     speechTextTopPercent, defaultTextColor, defaultTextSize,
     inputTopPercent, defaultInputColor, defaultInputSize,
@@ -12,18 +15,20 @@ export default function RestartDialog({ config, lang }) {
 
   const options = useMemo(
     () => ({
-      '-1': getText(config.strings.restartDialogNo, lang),
-      1: getText(config.strings.restartDialogYes, lang),
+      [CANCEL]: getText(config.strings.restartDialogCancel, lang),
+      [CONFIRM]: getText(config.strings.restartDialogConfirm, lang),
     }),
     [config.strings, lang]
   );
 
   const { position, velocity, confirmationProgress } = useSpinnerController({
-    min: -1,
-    max: 1,
+    min: CANCEL,
+    max: CONFIRM,
     step: 1,
-    // eslint-disable-next-line no-console
-    onConfirm: (value) => console.log('Restart confirmed:', value),
+    onConfirm: (value) => {
+      controller.hideRestartDialog();
+      if (value === CONFIRM) controller.startGame();
+    },
   });
 
   return (

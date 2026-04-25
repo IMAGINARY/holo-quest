@@ -2,9 +2,9 @@ strings:
   restartDialogQuestion:
     en: "Are you sure you want to restart the game?"
     de: "Bist du sicher, dass du das Spiel neu starten möchtest?"
-  restartDialogYes:
+  restartDialogConfirm:
     en: "Yes"
     de: "Ja"
-  restartDialogNo:
+  restartDialogCancel:
     en: "No"
     de: "Nein"

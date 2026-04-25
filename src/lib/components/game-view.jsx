@@ -6,7 +6,7 @@ import RestartDialog from './restart-dialog';
 import useGameState from '../stores/game-state';
 import { getText } from '../helpers/i18n';
 
-export default function GameView({ config }) {
+export default function GameView({ config, controller }) {
   const {
     text, input, lang, restartDialogVisible,
   } = useGameState();
@@ -96,7 +96,9 @@ export default function GameView({ config }) {
               />
             </div>
           )}
-          {restartDialogVisible && <RestartDialog config={config} lang={lang} />}
+          {restartDialogVisible && (
+            <RestartDialog config={config} lang={lang} controller={controller} />
+          )}
         </HoloDisplay.Front>
         <HoloDisplay.Back />
       </HoloDisplay>
