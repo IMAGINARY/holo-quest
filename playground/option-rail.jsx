@@ -1,6 +1,5 @@
-import React from 'react';
 import ScaleToFit from '../src/lib/components/scale-to-fit';
-import { OptionRail, useSpinnerController } from '../src/lib/components/spinner-ui';
+import { OptionRail, useSpinnerController, usePointerLock } from '../src/lib/components/spinner-ui';
 
 const sampleOptions = {
   '-3': 'Very Low',
@@ -12,8 +11,10 @@ const sampleOptions = {
 };
 
 export default function App() {
+  const { isLocked, requestLock } = usePointerLock();
+
   const {
-    position, velocity, isSettled, isLocked, confirmationProgress, requestLock,
+    position, velocity, isSettled, confirmationProgress,
   } = useSpinnerController({
     min: Object.keys(sampleOptions).map(Number).reduce((a, b) => Math.min(a, b), Infinity),
     max: Object.keys(sampleOptions).map(Number).reduce((a, b) => Math.max(a, b), -Infinity),

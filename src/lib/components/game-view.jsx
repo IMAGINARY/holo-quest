@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import HoloDisplay from './holo-display';
 import SpeechText, { Speeds } from './speech-text';
-import { OptionRail, useSpinnerController } from './spinner-ui';
+import { OptionRail, useSpinnerController, usePointerLock } from './spinner-ui';
 import RestartDialog from './restart-dialog';
 import useGameState from '../stores/game-state';
 import { getText } from '../helpers/i18n';
@@ -50,9 +50,12 @@ export default function GameView({ config }) {
   const inputMin = inputKeys.length > 0 ? Math.min(...inputKeys) : 0;
   const inputMax = inputKeys.length > 0 ? Math.max(...inputKeys) : 0;
 
+  const { requestLock } = usePointerLock();
+
   const {
-    position, velocity, confirmationProgress, requestLock,
+    position, velocity, confirmationProgress,
   } = useSpinnerController({
+    enabled: !restartDialogVisible,
     min: inputMin,
     max: inputMax,
     step: 1,

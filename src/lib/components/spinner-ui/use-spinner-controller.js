@@ -1,9 +1,8 @@
-import {
-  useState, useRef, useEffect, useCallback,
-} from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 // eslint-disable-next-line import/prefer-default-export
 export function useSpinnerController({
+  enabled = true,
   min = -3,
   max = 3,
   step,
@@ -22,6 +21,7 @@ export function useSpinnerController({
 
   const configRef = useRef();
   configRef.current = {
+    enabled,
     min,
     max,
     step,
@@ -45,50 +45,26 @@ export function useSpinnerController({
     velocity: 0,
     accumulatedDelta: 0,
     isSettled: discrete,
-    isLocked: false,
     lastTimestamp: null,
     confirmationElapsed: 0,
     isConfirmed: false,
   });
 
+  const prevEnabledRef = useRef(enabled);
   const rafRef = useRef(null);
 
   const [state, setState] = useState({
     position: physicsRef.current.position,
     velocity: 0,
     isSettled: physicsRef.current.isSettled,
-    isLocked: false,
     confirmationProgress: 0,
   });
 
-  const requestLock = useCallback(() => {
-    const el = document.documentElement;
-    try {
-      const promise = el.requestPointerLock({ unadjustedMovement: true });
-      if (promise && promise.catch) {
-        promise.catch(() => {
-          el.requestPointerLock();
-        });
-      }
-    } catch {
-      el.requestPointerLock();
-    }
-  }, []);
-
   useEffect(() => {
-    function onLockChange() {
-      const locked = document.pointerLockElement === document.documentElement;
-      physicsRef.current.isLocked = locked;
-    }
-
     function onMouseMove(e) {
-      if (!physicsRef.current.isLocked) return;
+      if (document.pointerLockElement !== document.documentElement) return;
+      if (!configRef.current.enabled) return;
       physicsRef.current.accumulatedDelta += e.movementX;
-    }
-
-    function onLockError() {
-      // eslint-disable-next-line no-console
-      console.warn('Pointer lock request failed');
     }
 
     function tick(timestamp) {
@@ -97,13 +73,28 @@ export function useSpinnerController({
       const p = physicsRef.current;
       const c = configRef.current;
 
+      // On enable→disable, freeze the rail, drop pending input, and reset the
+      // confirmation countdown so a near-completed intent can't fire when the
+      // controller resumes. Nulling lastTimestamp makes the next enabled tick
+      // re-init its dt clock instead of applying the disabled-period gap.
+      if (prevEnabledRef.current !== c.enabled) {
+        if (!c.enabled) {
+          p.accumulatedDelta = 0;
+          p.confirmationElapsed = 0;
+          p.isConfirmed = false;
+          p.lastTimestamp = null;
+        }
+        prevEnabledRef.current = c.enabled;
+      }
+
+      if (!c.enabled) return;
+
       if (p.lastTimestamp === null) {
         p.lastTimestamp = timestamp;
         setState({
           position: p.position,
           velocity: p.velocity,
           isSettled: p.isSettled,
-          isLocked: p.isLocked,
           confirmationProgress: 0,
         });
         return;
@@ -196,7 +187,6 @@ export function useSpinnerController({
         position: p.position,
         velocity: p.velocity,
         isSettled: p.isSettled,
-        isLocked: p.isLocked,
         confirmationProgress: (() => {
           if (c.discrete && p.isSettled && !p.isConfirmed) {
             return Math.min(1, p.confirmationElapsed / c.confirmationDelay);
@@ -206,19 +196,12 @@ export function useSpinnerController({
       });
     }
 
-    document.addEventListener('pointerlockchange', onLockChange);
     document.addEventListener('mousemove', onMouseMove);
-    document.addEventListener('pointerlockerror', onLockError);
     rafRef.current = requestAnimationFrame(tick);
 
     return () => {
       cancelAnimationFrame(rafRef.current);
-      document.removeEventListener('pointerlockchange', onLockChange);
       document.removeEventListener('mousemove', onMouseMove);
-      document.removeEventListener('pointerlockerror', onLockError);
-      if (document.pointerLockElement) {
-        document.exitPointerLock();
-      }
     };
   }, []);
 
@@ -226,8 +209,6 @@ export function useSpinnerController({
     position: state.position,
     velocity: state.velocity,
     isSettled: state.isSettled,
-    isLocked: state.isLocked,
     confirmationProgress: state.confirmationProgress,
-    requestLock,
   };
 }
