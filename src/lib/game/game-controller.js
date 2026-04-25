@@ -22,7 +22,19 @@ export default class GameController {
       showRestartDialog: () => this.showRestartDialog(),
     };
 
-    const { defaultLanguage } = config.game;
+    this.initLang();
+    this.flags = new FlagStore();
+    this.keyboardInputMgr = new KeyboardInputMgr();
+    this.initKeyboardHandlers();
+  }
+
+  /**
+   * Picks the initial active language from `config.game.defaultLanguage` if set
+   * and present in `this.languages`; otherwise falls back to the first entry of
+   * `this.languages`. Logs a warning when `defaultLanguage` is set but unknown.
+   */
+  initLang() {
+    const { defaultLanguage } = this.config.game;
     let initialLang = this.languages[0];
     if (defaultLanguage) {
       if (this.languages.includes(defaultLanguage)) {
@@ -36,9 +48,6 @@ export default class GameController {
       }
     }
     this.setLang(initialLang);
-    this.flags = new FlagStore();
-    this.keyboardInputMgr = new KeyboardInputMgr();
-    this.initKeyboardHandlers();
   }
 
   startGame() {
