@@ -1,5 +1,6 @@
 import { logger } from '../helpers/logger';
 import useGameState from '../stores/game-state';
+import KeyboardInputMgr from '../input/keyboard-input-mgr';
 
 export default class GameController {
   /**
@@ -19,6 +20,7 @@ export default class GameController {
     };
 
     this.setLang(this.languages[0]);
+    this.keyboardInputMgr = new KeyboardInputMgr();
     this.initKeyboardHandlers();
   }
 
@@ -90,65 +92,18 @@ export default class GameController {
   }
 
   /**
-   * Reads `config.shortcuts` and wires a single `keydown` listener on `document` that
-   * dispatches to the matching command. Shortcut strings follow the `[Modifier+]*KeyCode`
-   * grammar documented in `config/shortcuts.yml`.
+   * Reads `config.shortcuts` and registers each shortcut with the keyboard input manager.
+   * Shortcut strings follow the `[Modifier+]*KeyCode` grammar documented in `config/shortcuts.yml`.
    */
   initKeyboardHandlers() {
     const shortcuts = this.config.shortcuts ?? {};
-    const bindings = [];
-
     Object.entries(shortcuts).forEach(([commandId, shortcutString]) => {
       const command = this.commands[commandId];
       if (!command) {
         logger.warn(`GameController: shortcut '${shortcutString}' references unknown command '${commandId}'`);
         return;
       }
-      bindings.push({
-        descriptor: GameController.parseShortcut(shortcutString),
-        callback: command,
-      });
+      this.keyboardInputMgr.addShortcut(shortcutString, command);
     });
-
-    document.addEventListener('keydown', (event) => {
-      if (event.repeat) return;
-      bindings.forEach(({ descriptor, callback }) => {
-        if (GameController.matchesShortcut(event, descriptor)) {
-          callback();
-        }
-      });
-    });
-  }
-
-  /**
-   * Parses a shortcut string into a descriptor object.
-   *
-   * @param {string} shortcutString E.g. `"KeyR"`, `"Alt+KeyJ"`, `"Ctrl+Shift+KeyP"`.
-   * @returns {{ code: string, ctrl: boolean, alt: boolean, shift: boolean }}
-   */
-  static parseShortcut(shortcutString) {
-    const parts = shortcutString.split('+').map((p) => p.trim());
-    const code = parts.pop();
-    const modifiers = parts.map((m) => m.toLowerCase());
-    return {
-      code,
-      ctrl: modifiers.includes('ctrl'),
-      alt: modifiers.includes('alt'),
-      shift: modifiers.includes('shift'),
-    };
-  }
-
-  /**
-   * Tests whether a keyboard event matches a parsed shortcut descriptor.
-   *
-   * @param {KeyboardEvent} event
-   * @param {{ code: string, ctrl: boolean, alt: boolean, shift: boolean }} descriptor
-   * @returns {boolean}
-   */
-  static matchesShortcut(event, descriptor) {
-    return event.code === descriptor.code
-      && event.ctrlKey === descriptor.ctrl
-      && event.altKey === descriptor.alt
-      && event.shiftKey === descriptor.shift;
   }
 }
