@@ -7,8 +7,10 @@ export default class GameController {
    * Creates a new GameController instance.
    *
    * @param {object} config The application configuration object. Expected to contain
-   *  `game.languages` (non-empty array of language codes) and optionally `shortcuts`
-   *  (a map of command IDs to shortcut strings).
+   *  `game.languages` (non-empty array of language codes), optionally `game.defaultLanguage`
+   *  (a language code from that list, used as the initial active language; falls back to the
+   *  first list entry when absent or unknown), and optionally `shortcuts` (a map of command
+   *  IDs to shortcut strings).
    */
   constructor(config) {
     this.config = config;
@@ -19,7 +21,20 @@ export default class GameController {
       showRestartDialog: () => this.showRestartDialog(),
     };
 
-    this.setLang(this.languages[0]);
+    const { defaultLanguage } = config.game;
+    let initialLang = this.languages[0];
+    if (defaultLanguage) {
+      if (this.languages.includes(defaultLanguage)) {
+        initialLang = defaultLanguage;
+      } else {
+        logger.warn(
+          "GameController: configured defaultLanguage '%s' is not in languages list; falling back to '%s'",
+          defaultLanguage,
+          initialLang
+        );
+      }
+    }
+    this.setLang(initialLang);
     this.keyboardInputMgr = new KeyboardInputMgr();
     this.initKeyboardHandlers();
   }

@@ -31,8 +31,9 @@ The app accepts query string parameters to control its behavior:
 | `backAdj`    | Per-screen content transform for the **back** screen. Format: `offsetX,offsetY,scaleX,scaleY` (4 comma-separated numbers). Overrides `holoDisplay.screens.back`. | _(none)_ |
 | `hdSim`      | Activates simulation mode (`holoDisplay.simulationMode`). Both screens are overlaid on a single monitor with CSS blend mode to approximate the pepper's ghost effect. Presence of this parameter enables it; no value needed. | `false` |
 | `story`      | Story id to load. Overrides `app.story`; the file loaded is `${app.storyPath}/${story}.yml`. Must match `[a-zA-Z0-9_-]+`; invalid values are logged and ignored. | _(none)_ |
+| `lang`       | Default language code at startup. Must be a value present in `game.languages`; if not, the first language in the list is used and a warning is logged. Overrides `game.defaultLanguage`. Must match `[a-zA-Z0-9_-]+`; invalid values are logged and ignored. | _(none)_ |
 
-Examples: `?log=debug`, `?settings=my-settings.yml`, `?log=info&settings=game1.yml,game2.yml`, `?sentry_dsn=https://examplePublicKey@o0.ingest.sentry.io/0`, `?frontAdj=0,0,1.1,1.2`, `?hdSim`, `?story=dummy`
+Examples: `?log=debug`, `?settings=my-settings.yml`, `?log=info&settings=game1.yml,game2.yml`, `?sentry_dsn=https://examplePublicKey@o0.ingest.sentry.io/0`, `?frontAdj=0,0,1.1,1.2`, `?hdSim`, `?story=dummy`, `?lang=en`
 
 ## Configuration
 

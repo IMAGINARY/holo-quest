@@ -2,3 +2,4 @@ game:
   languages:
     - de
     - en
+  defaultLanguage: de

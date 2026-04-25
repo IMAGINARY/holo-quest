@@ -68,5 +68,15 @@ export default function getQsConfigOverrides(qs) {
       logger.error('story: must contain only alphanumeric characters, _ or -');
     }
   }
+  const lang = qs.get('lang');
+  if (lang) {
+    if (lang.match(/^[a-zA-Z0-9_-]+$/)) {
+      overrides['lang query string'] = {
+        game: { defaultLanguage: lang },
+      };
+    } else {
+      logger.error('lang: must contain only alphanumeric characters, _ or -');
+    }
+  }
   return overrides;
 }
