@@ -32,14 +32,6 @@ export default class DialogueSequencerEffectState extends DialogueSequencerState
     }
   }
 
-  onAction() {
-    if (this.effect
-      && this.effect.state !== DialogueEffect.States.IDLE
-      && this.effect.state !== DialogueEffect.States.FINISHED) {
-      this.effect.handleActionButton();
-    }
-  }
-
   // eslint-disable-next-line class-methods-use-this
   onEnd() {
     // Nothing to do

@@ -3,8 +3,8 @@
 /**
  * Base class for dialogue sequencer UI states.
  *
- * Subclasses implement the lifecycle hooks {@link onBegin}, {@link onAction}, and
- * {@link onEnd} to control what happens when a state is entered, the player presses
+ * Subclasses implement the lifecycle hooks {@link onBegin}, {@link onInput}, {@link onTextShown},
+ * and {@link onEnd} to control what happens when a state is entered, the player presses
  * the action button, and the state exits.
  */
 export default class DialogueSequencerState {
@@ -13,7 +13,7 @@ export default class DialogueSequencerState {
    */
   constructor(dialogueSequencer) {
     this.dialogueSequencer = dialogueSequencer;
-    this.dialogueOverlay = dialogueSequencer.dialogueOverlay;
+    this.uiController = dialogueSequencer.uiController;
     this.dialogueIterator = dialogueSequencer.dialogueIterator;
     this.activeNode = this.dialogueIterator ? this.dialogueIterator.getActiveNode() : null;
   }
@@ -23,8 +23,14 @@ export default class DialogueSequencerState {
 
   }
 
-  /** Called when the player presses the action button while this state is active. */
-  onAction() {
+  /** Called when the text for the active node is shown. */
+  onTextShown() {
+
+  }
+
+  /** Called when the player selects an option from an input control. */
+  // eslint-disable-next-line no-unused-vars
+  onInput(value) {
 
   }
 

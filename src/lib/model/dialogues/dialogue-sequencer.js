@@ -12,11 +12,11 @@ import DialogueSequencerEffectState from './dialogue-sequencer-states/effect-sta
 export default class DialogueSequencer {
   /**
    * @param {DialogueEffectFactory} dialogueEffectFactory
-   * @param {Object} dialogueOverlay - UI overlay that renders speech, responses, and effects.
+   * @param {Object} uiController - UI controller that renders speech, responses, and effects.
    */
-  constructor(dialogueEffectFactory, dialogueOverlay) {
+  constructor(dialogueEffectFactory, uiController) {
     this.dialogueEffectFactory = dialogueEffectFactory;
-    this.dialogueOverlay = dialogueOverlay;
+    this.uiController = uiController;
     this.dialogue = null;
     this.dialogueIterator = null;
     this.uiState = null;
@@ -24,6 +24,9 @@ export default class DialogueSequencer {
     this.activeEffects = {};
 
     this.events = new EventEmitter();
+
+    this.uiController.events.on('textShown', () => this.handleTextShown());
+    this.uiController.events.on('input', (value) => this.handleInput(value));
   }
 
   /**
@@ -66,7 +69,7 @@ export default class DialogueSequencer {
    */
   play(dialogue, context, options) {
     this.dialogue = dialogue;
-    this.dialogueOverlay.setTopTitle(options.top || null);
+    this.uiController.setTopTitle(options.top || null);
     this.dialogueIterator = new DialogueIterator(dialogue, context);
     this.runUntilInteractivity();
   }
@@ -105,11 +108,22 @@ export default class DialogueSequencer {
   }
 
   /**
-   * Forwards an action-button press to the current UI state.
+   * Forwards an input value to the current UI state.
+   *
+   * @param {any} value
    */
-  action() {
+  handleInput(value) {
     if (this.uiState) {
-      this.uiState.onAction();
+      this.uiState.onInput(value);
+    }
+  }
+
+  /**
+   * Forwards a textShown event to the current UI state.
+   */
+  handleTextShown() {
+    if (this.uiState) {
+      this.uiState.onTextShown();
     }
   }
 
@@ -183,7 +197,7 @@ export default class DialogueSequencer {
     this.events.emit('terminate');
     this.terminateAllEffects();
     this.setUiState(null);
-    this.dialogueOverlay.hide();
+    this.uiController.hide();
     this.dialogueIterator = null;
     this.dialogue = null;
   }

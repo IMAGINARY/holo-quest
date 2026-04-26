@@ -19,7 +19,7 @@ Tree-structured dialogue engine: parses JSON dialogue definitions, validates the
 
 ### Sequencer UI States (`dialogue-sequencer-states/`)
 
-All states implement the `onBegin`/`onAction`/`onEnd` lifecycle from the base class.
+All states implement the `onBegin`/`onEnd` lifecycle from the base class.
 
 - **`dialogue-sequencer-state.js`** — `DialogueSequencerState` base class
 - **`text-state.js`** — Shows speech bubble; on complete, transitions to response state or shows press-to-continue
@@ -78,7 +78,7 @@ Values clamped to [0, 999] by `FlagStore`.
 ## Key Interfaces
 
 - `DialogueIteratorContext` wraps `FlagStore` from `../flag-store.js`
-- `DialogueSequencer` talks to a `dialogueOverlay` (UI interface): `showSpeech`, `hideSpeech`, `speedUpSpeech`, `showPressToContinue`, `showResponseOptions`, `hideResponseOptions`, `getSelectedResponseId`, `setTopTitle`, `hide`; overlay exposes `events` (EventEmitter with `'speechComplete'`)
+- `DialogueSequencer` talks to a `uiController` (UI interface): `showSpeech`, `hideSpeech`, `speedUpSpeech`, `showPressToContinue`, `showResponseOptions`, `hideResponseOptions`, `getSelectedResponseId`, `setTopTitle`, `hide`; overlay exposes `events` (EventEmitter with `'textShown'`)
 - Each file exports a single default export
 
 ## Related Files

@@ -2,6 +2,9 @@ import { logger } from '../helpers/logger';
 import useGameState from '../stores/game-state';
 import KeyboardInputMgr from '../input/keyboard-input-mgr';
 import FlagStore from '../model/flag-store';
+import DialogueEffectFactory from '../model/dialogues/effects/dialogue-effect-factory';
+import DialogueSequencer from '../model/dialogues/dialogue-sequencer';
+import GameUiController from './game-ui-controller';
 
 export default class GameController {
   /**
@@ -16,14 +19,21 @@ export default class GameController {
   constructor(config) {
     this.config = config;
     this.languages = config.game.languages;
+    this.initLang();
     this.gameInProgress = false;
+    this.flags = new FlagStore();
+
+    this.dialogueEffectFactory = new DialogueEffectFactory(this);
+    this.gameUiController = new GameUiController(this.config, this);
+    this.dialogueSequencer = new DialogueSequencer(
+      this.dialogueEffectFactory,
+      this.gameUiController
+    );
+
     this.commands = {
       toggleLang: () => this.toggleLang(),
       showRestartDialog: () => this.showRestartDialog(),
     };
-
-    this.initLang();
-    this.flags = new FlagStore();
     this.keyboardInputMgr = new KeyboardInputMgr();
     this.initKeyboardHandlers();
   }

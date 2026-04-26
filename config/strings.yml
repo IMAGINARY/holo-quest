@@ -1,10 +1,17 @@
 strings:
+  # Text asking the user for confirmation that they want to restart the game
   restartDialogQuestion:
     en: "Are you sure you want to restart the game?"
     de: "Bist du sicher, dass du das Spiel neu starten möchtest?"
+  # Option for the user to confirm that they want to restart the game
   restartDialogConfirm:
     en: "Yes"
     de: "Ja"
+  # Option for the user to cancel the restart game dialog
   restartDialogCancel:
     en: "No"
     de: "Nein"
+  # Input option for the user to indicate that they're ready to continue after reading a text
+  continue:
+    en: "Continue"
+    de: "Weiter"

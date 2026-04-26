@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import HoloDisplay from './holo-display';
 import SpeechText, { Speeds } from './speech-text';
 import { OptionRail, useSpinnerController, usePointerLock } from './spinner-ui';
@@ -26,6 +26,18 @@ export default function GameView({ config, controller }) {
   const segments = useMemo(
     () => (resolvedText !== null ? [{ string: resolvedText, speed: Speeds.normal }] : null),
     [resolvedText]
+  );
+
+  const handleSpeechComplete = useCallback(
+    () => controller.gameUiController.handleTextShown(),
+    [controller]
+  );
+
+  const handleInput = useCallback(
+    (value) => {
+      controller.gameUiController.handleInput(value);
+    },
+    [controller]
   );
 
   // Drives SpeechText remount on narrative-text change but not on lang swap:
@@ -60,7 +72,7 @@ export default function GameView({ config, controller }) {
     max: inputMax,
     step: 1,
     // eslint-disable-next-line no-console
-    onConfirm: (value) => console.log('Confirmed:', value),
+    onConfirm: handleInput,
   });
 
   return (
@@ -76,7 +88,11 @@ export default function GameView({ config, controller }) {
                 fontSize: `${defaultTextSize}em`,
               }}
             >
-              <SpeechText key={textKey} segments={segments} />
+              <SpeechText
+                key={textKey}
+                segments={segments}
+                onComplete={handleSpeechComplete}
+              />
             </div>
           )}
           {input !== null && (
