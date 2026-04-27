@@ -1,5 +1,4 @@
 import DialogueSequencerState from './dialogue-sequencer-state';
-import DialogueEffect from '../effects/dialogue-effect';
 
 /**
  * UI state that manages a dialogue effect node's start/end lifecycle.
