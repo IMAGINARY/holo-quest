@@ -28,9 +28,12 @@ export default class DialogueSequencerState {
 
   }
 
-  /** Called when the player selects an option from an input control. */
+  /**
+   * Called when the player selects an option from an input control.
+   * @param {string} responseId - The id of the selected response.
+   */
   // eslint-disable-next-line no-unused-vars
-  onInput(value) {
+  onInput(responseId) {
 
   }
 

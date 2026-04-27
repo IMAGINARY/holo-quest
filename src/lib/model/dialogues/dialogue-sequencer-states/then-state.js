@@ -23,7 +23,12 @@ export default class DialogueSequencerThenTextState extends DialogueSequencerSta
     this.uiController.showContinueInput();
   }
 
-  onInput() {
+  /**
+   * @param {string} responseId - The id of the selected response (unused here;
+   *   this is the responseId of the showContinueInput call above, and not useful).
+   */
+  // eslint-disable-next-line no-unused-vars
+  onInput(responseId) {
     this.uiController.clearScreen();
     this.dialogueSequencer.endUi(this.responseId);
   }

@@ -22,7 +22,11 @@ export default class DialogueSequencerTextState extends DialogueSequencerState {
     }
   }
 
-  onInput() {
+  /**
+   * @param {string} responseId - The id of the selected response (unused here).
+   */
+  // eslint-disable-next-line no-unused-vars
+  onInput(responseId) {
     this.uiController.clearScreen();
     this.dialogueSequencer.endUi();
   }

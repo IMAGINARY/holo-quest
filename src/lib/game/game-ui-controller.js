@@ -28,8 +28,28 @@ export default class GameUiController {
     });
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  showInput(options) {
+  showInput(responses) {
+    const options = {};
+    this.responsesByValue = {};
+
+    // Upstream validation guarantees that either every response has a `value`
+    // or none do, and that any present `value`s are unique.
+    const hasValues = responses.length > 0 && responses[0].value !== undefined;
+
+    if (hasValues) {
+      responses.forEach((response) => {
+        options[response.value] = response.text;
+        this.responsesByValue[response.value] = response;
+      });
+    } else {
+      const negCount = Math.floor(responses.length / 2);
+      responses.forEach((response, i) => {
+        const value = i < negCount ? i - negCount : i - negCount + 1;
+        options[value] = response.text;
+        this.responsesByValue[value] = response;
+      });
+    }
+
     useGameState.getState().setInput({
       type: 'default',
       options,
@@ -51,6 +71,7 @@ export default class GameUiController {
   }
 
   handleInput(value) {
-    this.events.emit('input', value);
+    const responseId = this.responsesByValue?.[value]?.id;
+    this.events.emit('input', responseId);
   }
 }

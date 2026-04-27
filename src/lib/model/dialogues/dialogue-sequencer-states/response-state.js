@@ -14,18 +14,12 @@ export default class DialogueSequencerResponseState extends DialogueSequencerSta
   }
 
   onBegin() {
-    this.uiController.showResponseOptions(
-      Object.fromEntries(this.responses.map(
-        (response) => [response.id, [response.text, response.class || null]]
-      ))
-    );
+    this.uiController.showInput(this.responses);
   }
 
-  // eslint-disable-next-line no-unused-vars
-  onInput(value) {
-    this.uiController.clearScreen();
-    const responseId = this.uiController.getSelectedResponseId();
+  onInput(responseId) {
     const selectedResponse = this.dialogueIterator.getResponse(responseId);
+    this.uiController.clearScreen();
     if (selectedResponse.thenText) {
       this.dialogueSequencer.setUiState(
         new DialogueSequencerThenTextState(this.dialogueSequencer, responseId)

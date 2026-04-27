@@ -64,12 +64,9 @@ export default class DialogueSequencer {
    *
    * @param {Dialogue} dialogue
    * @param {DialogueIteratorContext} context
-   * @param {Object} options
-   * @param {string} [options.top] - Optional title shown above the dialogue overlay.
    */
-  play(dialogue, context, options) {
+  play(dialogue, context) {
     this.dialogue = dialogue;
-    this.uiController.setTopTitle(options.top || null);
     this.dialogueIterator = new DialogueIterator(dialogue, context);
     this.runUntilInteractivity();
   }
