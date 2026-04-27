@@ -1,0 +1,15 @@
+{
+  "id": "response-flag",
+  "items": [
+    {
+      "id": "pick",
+      "text": "Pick a color",
+      "responseFlag": "color",
+      "responses": [
+        { "text": "Red",   "value": "red" },
+        { "text": "Green", "value": "green" },
+        { "text": "Blue",  "value": "blue" }
+      ]
+    }
+  ]
+}

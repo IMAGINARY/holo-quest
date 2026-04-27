@@ -36,6 +36,8 @@ import conditionalResponseDialogue
   from './fixtures/dialogues/responses/conditional-response.dialogue.json';
 import responseSetsFlagsDialogue
   from './fixtures/dialogues/responses/response-sets-flags.dialogue.json';
+import responseFlagDialogue
+  from './fixtures/dialogues/responses/response-flag.dialogue.json';
 import responseJumpsDialogue from './fixtures/dialogues/responses/response-jumps.dialogue.json';
 import thentextResponseDialogue
   from './fixtures/dialogues/responses/thentext-response.dialogue.json';
@@ -326,6 +328,26 @@ describe('DialogueIterator', () => {
       );
       expect(context.flags.exists('programmer')).to.be.true;
       expect(context.flags.exists('polite')).to.be.false;
+    });
+
+    it('should write the selected response value into the node\'s responseFlag', () => {
+      const dialogue = Dialogue.fromJson(responseFlagDialogue);
+      const context = new TestDialogueIteratorContext();
+      const iterator = new DialogueIterator(dialogue, context);
+      expect(getDialogueTrace(iterator, [1])).to.deep.equal(
+        ['Pick a color', '>> Green']
+      );
+      expect(context.flags.value('color')).to.equal('green');
+    });
+
+    it('should overwrite the responseFlag when a different response is selected', () => {
+      const dialogue = Dialogue.fromJson(responseFlagDialogue);
+      const context = new TestDialogueIteratorContext();
+      const iterator = new DialogueIterator(dialogue, context);
+      expect(getDialogueTrace(iterator, [2])).to.deep.equal(
+        ['Pick a color', '>> Blue']
+      );
+      expect(context.flags.value('color')).to.equal('blue');
     });
 
     it('should support responses that jump to other nodes', () => {

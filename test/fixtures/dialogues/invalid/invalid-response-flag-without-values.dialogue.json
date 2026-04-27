@@ -1,0 +1,13 @@
+{
+  "id": "invalid-response-flag-without-values",
+  "items": [
+    {
+      "text": "Pick one",
+      "responseFlag": "choice",
+      "responses": [
+        { "text": "Yes" },
+        { "text": "No" }
+      ]
+    }
+  ]
+}

@@ -69,6 +69,7 @@ Example:
       "then": "node_id"
     }
   ],
+  "responseFlag": "selected_response",
   "then": "node_id"
 }
 ```
@@ -78,6 +79,7 @@ Statement nodes have these properties:
 - `text` (string | object, required): The text to display.
 - `class` (string | array, optional): One or more classes that are set when the text is displayed.
 - `responses` (array, optional): An array of response objects.
+- `responseFlag` (string, optional): The id of a flag that will be set to the `value` of the selected response. Requires every response in the node to have a `value` (validation will fail otherwise). Pairs naturally with conditions like `responseFlag = "yes"`.
 - `then` (string, optional): The ID of the next node to transition to.
 
 If the statement node has `responses`, they player will have to pick one of them to continue.

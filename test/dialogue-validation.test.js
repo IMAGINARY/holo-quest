@@ -16,8 +16,16 @@ import invalidResponseValuePartialDialogue
   from './fixtures/dialogues/invalid/invalid-response-value-partial.dialogue.json';
 import invalidResponseValueDuplicateDialogue
   from './fixtures/dialogues/invalid/invalid-response-value-duplicate.dialogue.json';
+import invalidResponseFlagWithoutValuesDialogue
+  from './fixtures/dialogues/invalid/invalid-response-flag-without-values.dialogue.json';
+import invalidResponseFlagNoResponsesDialogue
+  from './fixtures/dialogues/invalid/invalid-response-flag-no-responses.dialogue.json';
+import invalidResponseFlagIdDialogue
+  from './fixtures/dialogues/invalid/invalid-response-flag-id.dialogue.json';
 import responseWithValuesDialogue
   from './fixtures/dialogues/responses/response-with-values.dialogue.json';
+import responseFlagDialogue
+  from './fixtures/dialogues/responses/response-flag.dialogue.json';
 
 describe('Dialogue validation', () => {
   describe('ids', () => {
@@ -77,6 +85,27 @@ describe('Dialogue validation', () => {
 
     it('should accept responses where all have unique values', () => {
       const dialogue = Dialogue.fromJson(responseWithValuesDialogue);
+      expect(() => validateDialogue(dialogue)).to.not.throw();
+    });
+  });
+
+  describe('responseFlag', () => {
+    it('should reject a responseFlag that is not a valid flag id', () => {
+      expect(() => Dialogue.fromJson(invalidResponseFlagIdDialogue)).to.throw('validation failed');
+    });
+
+    it('should detect a responseFlag on a node where some responses are missing values', () => {
+      const dialogue = Dialogue.fromJson(invalidResponseFlagWithoutValuesDialogue);
+      expect(() => validateDialogue(dialogue)).to.throw('responses are missing values');
+    });
+
+    it('should detect a responseFlag on a node with no responses', () => {
+      const dialogue = Dialogue.fromJson(invalidResponseFlagNoResponsesDialogue);
+      expect(() => validateDialogue(dialogue)).to.throw('no responses');
+    });
+
+    it('should accept a responseFlag when all responses have unique values', () => {
+      const dialogue = Dialogue.fromJson(responseFlagDialogue);
       expect(() => validateDialogue(dialogue)).to.not.throw();
     });
   });

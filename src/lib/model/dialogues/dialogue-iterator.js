@@ -91,7 +91,7 @@ export default class DialogueIterator {
       throw new Error(`Can't use next() on a node of type 'statement' with responses (${this.activeNode.id}:${this.dialogue.root.id})`);
     }
 
-    this.setFlags(this.activeNode.set);
+    this.processAssignments(this.activeNode.set);
 
     let transitioned = false;
     switch (this.activeNode.type) {
@@ -143,8 +143,11 @@ export default class DialogueIterator {
       throw new Error(`Unknown response id: ${responseId} (${this.activeNode.id}:${this.dialogue.root.id})`);
     }
 
-    this.setFlags(this.activeNode.set);
-    this.setFlags(response.set);
+    this.processAssignments(this.activeNode.set);
+    this.processAssignments(response.set);
+    if (this.activeNode.responseFlag !== undefined) {
+      this.context.flags.set(this.activeNode.responseFlag, response.value);
+    }
     if (response.then) {
       this.goTo(response.then);
       return;
@@ -195,7 +198,7 @@ export default class DialogueIterator {
    * @private
    * @param {Array<string>} [assignments]
    */
-  setFlags(assignments) {
+  processAssignments(assignments) {
     if (!assignments) return;
     assignments.forEach((assignment) => {
       this.processAssignment(assignment);

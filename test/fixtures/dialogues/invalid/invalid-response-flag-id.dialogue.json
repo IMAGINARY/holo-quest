@@ -1,0 +1,13 @@
+{
+  "id": "invalid-response-flag-id",
+  "items": [
+    {
+      "text": "Pick one",
+      "responseFlag": "1bad-id",
+      "responses": [
+        { "text": "Yes", "value": "yes" },
+        { "text": "No",  "value": "no" }
+      ]
+    }
+  ]
+}

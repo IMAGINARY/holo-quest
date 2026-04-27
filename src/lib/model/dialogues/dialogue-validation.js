@@ -68,8 +68,30 @@ function checkResponseValues(dialogue) {
 }
 
 /**
+ * Throws if any node has a `responseFlag` without a corresponding set of
+ * responses where every response carries a `value`.
+ *
+ * @param {Dialogue} dialogue
+ * @throws {Error}
+ */
+function checkResponseFlag(dialogue) {
+  dialogue.nodes.forEach((node) => {
+    if (node.responseFlag === undefined) return;
+
+    if (!node.responses || node.responses.length === 0) {
+      throw new Error(`Dialogue node ${node.id} has responseFlag but no responses in ${dialogue.root.id}`);
+    }
+
+    const missing = node.responses.some((r) => r.value === undefined);
+    if (missing) {
+      throw new Error(`Dialogue node ${node.id} has responseFlag but responses are missing values in ${dialogue.root.id}`);
+    }
+  });
+}
+
+/**
  * Runs all structural validations on a parsed dialogue: duplicate ids,
- * invalid references, response values, and cycles.
+ * invalid references, response values, response flags, and cycles.
  *
  * @param {Dialogue} dialogue
  * @throws {Error}
@@ -78,5 +100,6 @@ export default function validateDialogue(dialogue) {
   checkDuplicateIds(dialogue);
   checkInvalidReferences(dialogue);
   checkResponseValues(dialogue);
+  checkResponseFlag(dialogue);
   checkCyclesInDialogue(dialogue);
 }

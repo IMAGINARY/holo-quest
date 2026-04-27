@@ -1,0 +1,9 @@
+{
+  "id": "invalid-response-flag-no-responses",
+  "items": [
+    {
+      "text": "A statement with no responses",
+      "responseFlag": "choice"
+    }
+  ]
+}

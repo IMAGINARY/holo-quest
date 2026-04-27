@@ -225,6 +225,9 @@
             "$ref": "#/definitions/response"
           }
         },
+        "responseFlag": {
+          "$ref": "#/definitions/flag_id"
+        },
         "then": {
           "$ref": "#/definitions/node_id"
         }
