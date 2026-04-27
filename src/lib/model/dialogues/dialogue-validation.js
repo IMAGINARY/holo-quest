@@ -28,7 +28,7 @@ function checkInvalidReferences(dialogue) {
     if (node.then && !validIds.has(node.then)) {
       throw new Error(`Dialogue contains invalid reference: ${node.then} in node ${node.id}:${dialogue.root.id}`);
     }
-    if (node.resposes) {
+    if (node.responses) {
       node.responses.forEach((response) => {
         if (response.then && !validIds.has(response.then)) {
           throw new Error(`Dialogue contains invalid reference: ${response.then} in node ${node.id}:${dialogue.root.id}`);
