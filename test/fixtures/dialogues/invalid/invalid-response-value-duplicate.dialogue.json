@@ -1,0 +1,12 @@
+{
+  "id": "invalid-response-value-duplicate",
+  "items": [
+    {
+      "text": "Pick one",
+      "responses": [
+        { "text": "Yes", "value": "same" },
+        { "text": "No",  "value": "same" }
+      ]
+    }
+  ]
+}

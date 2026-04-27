@@ -64,6 +64,7 @@ Example:
       "text": "Response text",
       "class": ["aClass", "anotherClass"],
       "set": ["flag7", "flag8"],
+      "value": "yes",
       "thenText": "Text to display after selecting this response",
       "then": "node_id"
     }
@@ -97,6 +98,7 @@ A response object has these properties:
 - `text` (string | object, required): The text to display.
 - `class` (string | array, optional): One or more classes that are set when the response is displayed.
 - `set` (string | array, optional): One or more flags that are set when the response is selected.
+- `value` (string, optional): A stable identifier for this response. If any response in a set has a `value`, all responses in that set must have one, and all values within the set must be unique.
 - `thenText` (string | object, optional): A text that will be displayed after the response is selected.
 - `thenClass` (string | array, optional): One or more classes that are set when the `thenText` is displayed.
 - `then` (string, optional): The ID of the next node to transition to.

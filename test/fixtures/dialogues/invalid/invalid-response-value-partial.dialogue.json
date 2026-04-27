@@ -1,0 +1,12 @@
+{
+  "id": "invalid-response-value-partial",
+  "items": [
+    {
+      "text": "Pick one",
+      "responses": [
+        { "text": "Yes", "value": "yes" },
+        { "text": "No" }
+      ]
+    }
+  ]
+}

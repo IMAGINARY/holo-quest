@@ -12,6 +12,12 @@ import cycleResponseSelfDialogue
 import cycleRandomDialogue from './fixtures/dialogues/invalid/invalid-cycle-random.dialogue.json';
 import duplicateIdDialogue from './fixtures/dialogues/invalid/invalid-duplicate-id.dialogue.json';
 import invalidReferenceDialogue from './fixtures/dialogues/invalid/invalid-reference.dialogue.json';
+import invalidResponseValuePartialDialogue
+  from './fixtures/dialogues/invalid/invalid-response-value-partial.dialogue.json';
+import invalidResponseValueDuplicateDialogue
+  from './fixtures/dialogues/invalid/invalid-response-value-duplicate.dialogue.json';
+import responseWithValuesDialogue
+  from './fixtures/dialogues/responses/response-with-values.dialogue.json';
 
 describe('Dialogue validation', () => {
   describe('ids', () => {
@@ -54,6 +60,23 @@ describe('Dialogue validation', () => {
 
     it('should not detect cycles from sibling nodes with a parent that is not a sequence', () => {
       const dialogue = Dialogue.fromJson(cycleRandomDialogue);
+      expect(() => validateDialogue(dialogue)).to.not.throw();
+    });
+  });
+
+  describe('response values', () => {
+    it('should detect responses where some have values and others do not', () => {
+      const dialogue = Dialogue.fromJson(invalidResponseValuePartialDialogue);
+      expect(() => validateDialogue(dialogue)).to.throw('inconsistent values');
+    });
+
+    it('should detect duplicate response values within a set', () => {
+      const dialogue = Dialogue.fromJson(invalidResponseValueDuplicateDialogue);
+      expect(() => validateDialogue(dialogue)).to.throw("duplicate response value 'same'");
+    });
+
+    it('should accept responses where all have unique values', () => {
+      const dialogue = Dialogue.fromJson(responseWithValuesDialogue);
       expect(() => validateDialogue(dialogue)).to.not.throw();
     });
   });

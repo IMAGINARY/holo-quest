@@ -39,8 +39,37 @@ function checkInvalidReferences(dialogue) {
 }
 
 /**
+ * Throws if any statement's responses violate value constraints:
+ *  - if any response in a set has a `value`, all must have one
+ *  - all values within a single response set must be unique
+ *
+ * @param {Dialogue} dialogue
+ * @throws {Error}
+ */
+function checkResponseValues(dialogue) {
+  dialogue.nodes.forEach((node) => {
+    if (!node.responses || node.responses.length === 0) return;
+
+    const withValue = node.responses.filter((r) => r.value !== undefined);
+    if (withValue.length === 0) return;
+
+    if (withValue.length !== node.responses.length) {
+      throw new Error(`Dialogue has responses with inconsistent values (some set, some not) in node ${node.id}:${dialogue.root.id}`);
+    }
+
+    const seen = new Set();
+    withValue.forEach((r) => {
+      if (seen.has(r.value)) {
+        throw new Error(`Dialogue has duplicate response value '${r.value}' in node ${node.id}:${dialogue.root.id}`);
+      }
+      seen.add(r.value);
+    });
+  });
+}
+
+/**
  * Runs all structural validations on a parsed dialogue: duplicate ids,
- * invalid references, and cycles.
+ * invalid references, response values, and cycles.
  *
  * @param {Dialogue} dialogue
  * @throws {Error}
@@ -48,5 +77,6 @@ function checkInvalidReferences(dialogue) {
 export default function validateDialogue(dialogue) {
   checkDuplicateIds(dialogue);
   checkInvalidReferences(dialogue);
+  checkResponseValues(dialogue);
   checkCyclesInDialogue(dialogue);
 }

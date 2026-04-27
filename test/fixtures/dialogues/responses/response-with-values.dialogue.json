@@ -1,0 +1,12 @@
+{
+  "id": "response-with-values",
+  "items": [
+    {
+      "text": "Pick one",
+      "responses": [
+        { "text": "Yes", "value": "yes" },
+        { "text": "No",  "value": "no" }
+      ]
+    }
+  ]
+}
