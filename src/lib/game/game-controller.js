@@ -4,6 +4,7 @@ import KeyboardInputMgr from '../input/keyboard-input-mgr';
 import FlagStore from '../model/flag-store';
 import DialogueEffectFactory from '../model/dialogues/effects/dialogue-effect-factory';
 import DialogueSequencer from '../model/dialogues/dialogue-sequencer';
+import DialogueIteratorContext from '../model/dialogues/dialogue-iterator-context';
 import GameUiController from './game-ui-controller';
 
 export default class GameController {
@@ -29,6 +30,8 @@ export default class GameController {
       this.dialogueEffectFactory,
       this.gameUiController
     );
+    this.dialogueSequencer.events.on('terminate', this.handleGameEnded.bind(this));
+    this.dialogueIteratorContext = new DialogueIteratorContext(this.flags);
 
     this.commands = {
       toggleLang: () => this.toggleLang(),
@@ -60,25 +63,20 @@ export default class GameController {
     this.setLang(initialLang);
   }
 
-  startGame() {
-    if (this.gameInProgress) {
-      this.endGame();
-    }
-    this.resetState();
-    this.gameInProgress = true;
-  }
-
   /**
-   * Resets all transient per-game state (zustand game-state store and flag
-   * store). Called when a new game starts.
+   * Reads `config.shortcuts` and registers each shortcut with the keyboard input manager.
+   * Shortcut strings follow the `[Modifier+]*KeyCode` grammar documented in `config/shortcuts.yml`.
    */
-  resetState() {
-    useGameState.getState().reset();
-    this.flags.clear();
-  }
-
-  endGame() {
-    this.gameInProgress = false;
+  initKeyboardHandlers() {
+    const shortcuts = this.config.shortcuts ?? {};
+    Object.entries(shortcuts).forEach(([commandId, shortcutString]) => {
+      const command = this.commands[commandId];
+      if (!command) {
+        logger.warn(`GameController: shortcut '${shortcutString}' references unknown command '${commandId}'`);
+        return;
+      }
+      this.keyboardInputMgr.addShortcut(shortcutString, command);
+    });
   }
 
   /**
@@ -102,12 +100,52 @@ export default class GameController {
   }
 
   /**
+   * Advances to the next language in `config.game.languages`, wrapping around at the end.
+   * If the current language isn't in the list, falls back to the first entry.
+   */
+  toggleLang() {
+    const current = this.getLang();
+    const index = this.languages.indexOf(current);
+    const next = this.languages[(index + 1) % this.languages.length];
+    this.setLang(next);
+  }
+
+  /**
    * Stores the loaded story script on the controller for later use.
    *
    * @param {object} story The parsed story object.
    */
   setStory(story) {
     this.story = story;
+  }
+
+  startGame() {
+    if (this.gameInProgress) {
+      this.endGame();
+    }
+    this.resetState();
+    this.gameInProgress = true;
+
+    this.dialogueSequencer.play(this.story, this.dialogueIteratorContext);
+  }
+
+  /**
+   * Resets all transient per-game state (zustand game-state store and flag
+   * store). Called when a new game starts.
+   */
+  resetState() {
+    useGameState.getState().reset();
+    this.flags.clear();
+    this.dialogueIteratorContext.clearState();
+  }
+
+  endGame() {
+    this.dialogueSequencer.terminate();
+  }
+
+  handleGameEnded() {
+    this.gameInProgress = false;
+    this.startGame();
   }
 
   /**
@@ -124,32 +162,5 @@ export default class GameController {
   // eslint-disable-next-line class-methods-use-this
   hideRestartDialog() {
     useGameState.getState().setRestartDialogVisible(false);
-  }
-
-  /**
-   * Advances to the next language in `config.game.languages`, wrapping around at the end.
-   * If the current language isn't in the list, falls back to the first entry.
-   */
-  toggleLang() {
-    const current = this.getLang();
-    const index = this.languages.indexOf(current);
-    const next = this.languages[(index + 1) % this.languages.length];
-    this.setLang(next);
-  }
-
-  /**
-   * Reads `config.shortcuts` and registers each shortcut with the keyboard input manager.
-   * Shortcut strings follow the `[Modifier+]*KeyCode` grammar documented in `config/shortcuts.yml`.
-   */
-  initKeyboardHandlers() {
-    const shortcuts = this.config.shortcuts ?? {};
-    Object.entries(shortcuts).forEach(([commandId, shortcutString]) => {
-      const command = this.commands[commandId];
-      if (!command) {
-        logger.warn(`GameController: shortcut '${shortcutString}' references unknown command '${commandId}'`);
-        return;
-      }
-      this.keyboardInputMgr.addShortcut(shortcutString, command);
-    });
   }
 }

@@ -118,14 +118,12 @@ export default function GameView({ config, controller }) {
         </HoloDisplay.Front>
         <HoloDisplay.Back />
       </HoloDisplay>
-      {input !== null && (
-        <button
-          type="button"
-          className="absolute inset-0 z-10 cursor-pointer bg-transparent"
-          onClick={requestLock}
-          aria-label="Activate spinner"
-        />
-      )}
+      <button
+        type="button"
+        className="absolute inset-0 z-10 cursor-pointer bg-transparent"
+        onClick={requestLock}
+        aria-label="Activate spinner"
+      />
     </div>
   );
 }

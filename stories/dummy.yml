@@ -1,10 +1,31 @@
-- text:
-    en: 'You think for a while...\nWhat is your response?'
-    de: 'Du denkst eine Weile nach...\nWas ist deine Antwort?'
-  responses:
-    - text:
-        en: 'Not for now'
-        de: 'Nicht jetzt'
-    - text:
-        en: 'Yes, I agree'
-        de: 'Ja, ich stimme zu'
+id: dummy
+items:
+  - id: intro
+    text:
+      en: "You stand on a path.\nYou see a house towards the north."
+      de: "Du stehst auf einem Weg.\nDu siehst eine Haus in der Nord-Aussicht."
+    responses:
+      - text:
+          en: "Go south"
+          de: "Süd"
+        thenText:
+          en: "You don't want to go back south."
+          de: "Du willst nicht zurück nach Süden."
+        then: intro
+      - text:
+          en: "Go north"
+          de: "Nord"
+        then: house
+  - id: house
+    text:
+      en: "You are in front of the house.\nThe door is closed."
+      de: "Du bist vor dem Haus.\nDie Tür ist geschlossen."
+    responses:
+      - text:
+          en: "Open the door"
+          de: "Tür öffnen"
+        then: end
+  - id: end
+    text:
+      en: "You are safe inside the house."
+      de: "Du bist sicher im Haus."

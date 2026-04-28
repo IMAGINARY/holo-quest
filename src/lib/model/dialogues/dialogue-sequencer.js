@@ -191,11 +191,10 @@ export default class DialogueSequencer {
    * Emits 'terminate'.
    */
   terminate() {
-    this.events.emit('terminate');
     this.terminateAllEffects();
     this.setUiState(null);
-    this.uiController.hide();
     this.dialogueIterator = null;
     this.dialogue = null;
+    this.events.emit('terminate');
   }
 }
