@@ -3,6 +3,7 @@ import HoloDisplay from './holo-display';
 import SpeechText, { Speeds } from './speech-text';
 import { OptionRail, useSpinnerController, usePointerLock } from './spinner-ui';
 import RestartDialog from './restart-dialog';
+import Fade from './fade';
 import useGameState from '../stores/game-state';
 import { getText } from '../helpers/i18n';
 
@@ -95,7 +96,7 @@ export default function GameView({ config, controller }) {
               />
             </div>
           )}
-          {input !== null && (
+          <Fade show={input !== null} duration={350}>
             <div
               className="absolute w-full flex justify-center"
               style={{
@@ -111,7 +112,7 @@ export default function GameView({ config, controller }) {
                 confirmationProgress={confirmationProgress}
               />
             </div>
-          )}
+          </Fade>
           {restartDialogVisible && (
             <RestartDialog config={config} lang={lang} controller={controller} />
           )}
