@@ -15,11 +15,18 @@ export default function OptionRail({
   const keys = Object.keys(options).map(Number).sort((a, b) => a - b);
   const minKey = keys[0];
   const maxKey = keys[keys.length - 1];
-  const clampedPos = clamp(position, minKey, maxKey);
+  // Always include 0 in the rendered span: 0 is the implicit neutral
+  // marker, so single-sided option sets (e.g. {1: "..."}) must still
+  // leave room for it.
+  const effectiveMin = Math.min(0, minKey);
+  const effectiveMax = Math.max(0, maxKey);
+  const clampedPos = clamp(position, effectiveMin, effectiveMax);
   const absVel = Math.min(1, Math.abs(velocity));
 
-  const totalWidth = (maxKey - minKey) * layout.stepWidth + 2 * layout.railPaddingX;
-  const keyToX = (key) => layout.railPaddingX + (key - minKey) * layout.stepWidth;
+  const totalWidth = (effectiveMax - effectiveMin) * layout.stepWidth
+    + 2 * layout.railPaddingX;
+  const keyToX = (key) => layout.railPaddingX
+    + (key - effectiveMin) * layout.stepWidth;
   const cursorX = keyToX(clampedPos);
 
   const cursorRadius = lerp(cursor.radiusAtRest, cursor.radiusAtMax, absVel);

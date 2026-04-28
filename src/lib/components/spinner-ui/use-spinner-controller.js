@@ -146,12 +146,16 @@ export function useSpinnerController({
       // 8. Update position
       p.position += p.velocity * dt;
 
-      // 9. Clamp position + boundary stop
-      if (p.position < c.min) {
-        p.position = c.min;
+      // 9. Clamp position + boundary stop. Widen to include 0 so the
+      // neutral resting position is always reachable, even when all
+      // option keys sit on one side of 0.
+      const effectiveMin = Math.min(0, c.min);
+      const effectiveMax = Math.max(0, c.max);
+      if (p.position < effectiveMin) {
+        p.position = effectiveMin;
         p.velocity = 0;
-      } else if (p.position > c.max) {
-        p.position = c.max;
+      } else if (p.position > effectiveMax) {
+        p.position = effectiveMax;
         p.velocity = 0;
       }
 
