@@ -184,7 +184,7 @@ export default class DialogueIterator {
     if (!items) return [];
     return items.filter((item) => {
       try {
-        return (item.cond === undefined || items.cond === null || item.cond.trim() === ''
+        return (item.cond === undefined || item.cond === null || item.cond.trim() === ''
           || this.conditionParser.evaluate(item.cond));
       } catch (e) {
         throw new Error(`Error parsing condition: ${item.cond} (${this.activeNode.id}:${this.dialogue.root.id}): ${e.message}`);
