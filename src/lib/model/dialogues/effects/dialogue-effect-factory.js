@@ -4,7 +4,7 @@ export default class DialogueEffectFactory {
   /**
    * Constructor
    *
-   * @param {PlayerApp} app
+   * @param {GameController} app
    */
   constructor(app) {
     this.app = app;

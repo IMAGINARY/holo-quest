@@ -33,6 +33,7 @@ export default class GameController {
     this.dialogueSequencer.events.on('terminate', this.handleGameEnded.bind(this));
     this.dialogueIteratorContext = new DialogueIteratorContext(this.flags);
 
+    // noinspection JSUnusedGlobalSymbols
     this.commands = {
       toggleLang: () => this.toggleLang(),
       showRestartDialog: () => this.showRestartDialog(),
@@ -113,7 +114,7 @@ export default class GameController {
   /**
    * Stores the loaded story script on the controller for later use.
    *
-   * @param {object} story The parsed story object.
+   * @param {Dialogue} story The parsed story object.
    */
   setStory(story) {
     this.story = story;
