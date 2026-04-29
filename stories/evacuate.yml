@@ -544,25 +544,25 @@ items:
         You arrive soaking wet at your friend's place. 
         She prepares warm tea for you. How did everyone else get on?
 
-        END
-
-        May we use your choices ANONYMOUSLY for a scientific study?
+        THE END
+#
+#        May we use your choices ANONYMOUSLY for a scientific study?
       de: |
         Du kommst klatschnass bei deiner Freundin an. 
         Sie macht dir einen warmen Tee. Wie ist es wohl anderen ergegangen?
         
         ENDE
-        
-        Dürfen wir deine Entscheidungen ANONYM für eine wissenschaftliche Studie verwenden?
-    responses:
-      - text:
-          en: Yes
-          de: Ja
-        then: umfrage
-      - text:
-          en: No, restart
-          de: Nein, zum Neustart
-        then: start
+#
+#        Dürfen wir deine Entscheidungen ANONYM für eine wissenschaftliche Studie verwenden?
+#    responses:
+#      - text:
+#          en: Yes
+#          de: Ja
+#        then: umfrage
+#      - text:
+#          en: No, restart
+#          de: Nein, zum Neustart
+#        then: start
   - id: umfrage
     text:
       en: Would you like to answer 3 quick questions about yourself?
@@ -686,35 +686,33 @@ items:
         then: start
   - id: ende-notunterkunft
     text:
-      en: >-
-        There are 72 people in the shelter. The snack bar next door has prepared
-        15 kg of potato salad. What happens tomorrow? Maybe breakfast?
+      en: |
+        There are 72 people in the shelter. 
+        The snack bar next door has prepared 15 kg of potato salad. 
+        What happens tomorrow? Maybe breakfast?
 
-
-        END
-
-
-        May we use your choices ANONYMOUSLY for a scientific study?
-      de: >-
-        Ihr seid 72 Personen in der Notunterkunft. Der Imbiss nebenan spendiert
-        15 kg Kartoffelsalat. Wie geht es morgen weiter? Vielleicht mit
-        Frühstück?
-
+        THE END
+#
+#
+#        May we use your choices ANONYMOUSLY for a scientific study?
+      de: |
+        Ihr seid 72 Personen in der Notunterkunft. 
+        Der Imbiss nebenan spendiert 15 kg Kartoffelsalat. 
+        Wie geht es morgen weiter? Vielleicht mit Frühstück?
 
         ENDE
-
-
-        Dürfen wir deine Entscheidungen ANONYM für eine wissenschaftliche Studie
-        verwenden?
-    responses:
-      - text:
-          en: Yes
-          de: Ja
-        then: umfrage
-      - text:
-          en: No, restart
-          de: Nein, zum Neustart
-        then: start
+#
+#        Dürfen wir deine Entscheidungen ANONYM für eine wissenschaftliche Studie
+#        verwenden?
+#    responses:
+#      - text:
+#          en: Yes
+#          de: Ja
+#        then: umfrage
+#      - text:
+#          en: No, restart
+#          de: Nein, zum Neustart
+#        then: start
   - id: polizei-hilft
     text:
       en: A policewoman sees that you are afraid. She guides you to an emergency
@@ -732,34 +730,32 @@ items:
         then: ende-hotel
   - id: ende-hotel
     text:
-      en: >-
-        You get the last room and are too nervous to sleep. What happens
-        tomorrow?
+      en: |
+        You get the last room and are too nervous to sleep. 
+        What happens tomorrow?
 
-
-        END
-
-
-        May we use your choices ANONYMOUSLY for a scientific study?
-      de: >-
-        Du bekommst das letzte Zimmer und bist zu aufgeregt, um zu schlafen. Wie
-        geht es morgen weiter?
-
+        THE END
+#
+#
+#        May we use your choices ANONYMOUSLY for a scientific study?
+      de: |
+        Du bekommst das letzte Zimmer und bist zu aufgeregt, um zu schlafen. 
+        Wie geht es morgen weiter?
 
         ENDE
-
-
-        Dürfen wir deine Entscheidungen ANONYM für eine wissenschaftliche Studie
-        verwenden?
-    responses:
-      - text:
-          en: Yes
-          de: Ja
-        then: umfrage
-      - text:
-          en: No, restart
-          de: Nein, zum Neustart
-        then: start
+#
+#
+#        Dürfen wir deine Entscheidungen ANONYM für eine wissenschaftliche Studie
+#        verwenden?
+#    responses:
+#      - text:
+#          en: Yes
+#          de: Ja
+#        then: umfrage
+#      - text:
+#          en: No, restart
+#          de: Nein, zum Neustart
+#        then: start
   - id: emoji-weiter3
     text:
       en: What do you think?
@@ -796,94 +792,93 @@ items:
         then: ende-notunterkunft-help
   - id: verwandte
     text:
-      en: >-
-        You take your car and pick up your cousins. You drive to the family
-        country home. How will the situation develop?
+      en: |
+        You take your car and pick up your cousins. 
+        You drive to the family country home. 
+        How will the situation develop?
 
-
-        END
-
-
-        May we use your choices ANONYMOUSLY for a scientific study?
-      de: >-
-        Du nimmst dein Auto und holst deine Cousine ab. Ihr fahrt zur Familie
-        aufs Land. Wie wird sich die Situation entwickeln?
-
+        THE END
+#
+#
+#        May we use your choices ANONYMOUSLY for a scientific study?
+      de: |
+        Du nimmst dein Auto und holst deine Cousine ab. 
+        Ihr fahrt zur Familie aufs Land. 
+        Wie wird sich die Situation entwickeln?
 
         ENDE
-
-
-        Dürfen wir deine Entscheidungen ANONYM für eine wissenschaftliche Studie
-        verwenden?
-    responses:
-      - text:
-          en: Yes
-          de: Ja
-        then: umfrage
-      - text:
-          en: No, restart
-          de: Nein, zum Neustart
-        then: start
+#
+#
+#        Dürfen wir deine Entscheidungen ANONYM für eine wissenschaftliche Studie
+#        verwenden?
+#    responses:
+#      - text:
+#          en: Yes
+#          de: Ja
+#        then: umfrage
+#      - text:
+#          en: No, restart
+#          de: Nein, zum Neustart
+#        then: start
   - id: ende-land
     text:
-      en: >-
-        The direct route was blocked. After a few detours, you arrive at the
-        family country home. Do you feel relaxed here?
+      en: |
+        The direct route was blocked. 
+        After a few detours, you arrive at the family country home. 
+        Do you feel relaxed here?
 
-
-        END
-
-
-        May we use your choices ANONYMOUSLY for a scientific study?
-      de: >-
-        Die direkte Route war gesperrt. Nach Umwegen kommst du im Familienhaus
-        auf dem Land an. Fühlst du dich hier entspannt?
-
+        THE END
+#
+#
+#        May we use your choices ANONYMOUSLY for a scientific study?
+      de: |
+        Die direkte Route war gesperrt. 
+        Nach Umwegen kommst du im Familienhaus auf dem Land an. 
+        Fühlst du dich hier entspannt?
 
         ENDE
-
-
-        Dürfen wir deine Entscheidungen ANONYM für eine wissenschaftliche Studie
-        verwenden?
-    responses:
-      - text:
-          en: Yes
-          de: Ja
-        then: umfrage
-      - text:
-          en: No, restart
-          de: Nein, zum Neustart
-        then: start
+#
+#
+#        Dürfen wir deine Entscheidungen ANONYM für eine wissenschaftliche Studie
+#        verwenden?
+#    responses:
+#      - text:
+#          en: Yes
+#          de: Ja
+#        then: umfrage
+#      - text:
+#          en: No, restart
+#          de: Nein, zum Neustart
+#        then: start
   - id: ende-notunterkunft-help
     text:
-      en: >-
-        In the emergency shelter. You talk to others and assist newcomers. What
-        else can you do?
+      en: |
+        In the emergency shelter. 
+        You talk to others and assist newcomers. 
+        What else can you do?
 
-
-        END
-
-
-        May we use your choices ANONYMOUSLY for a scientific study?
-      de: >-
-        In der Notunterkunft. Du sprichst mit anderen und hilfst
-        Neuankömmlingen. Was kannst du noch tun?
-
+        THE END
+#
+#        May we use your choices ANONYMOUSLY for a scientific study?
+      de: |
+        In der Notunterkunft. 
+        Du sprichst mit anderen und hilfst Neuankömmlingen. 
+        Was kannst du noch tun?
 
         ENDE
-
-
-        Dürfen wir deine Entscheidungen ANONYM für eine wissenschaftliche Studie
-        verwenden?
-    responses:
-      - text:
-          en: Yes
-          de: Ja
-        then: umfrage
-      - text:
-          en: No, restart
-          de: Nein, zum Neustart
-        then: start
+#
+#
+#        Dürfen wir deine Entscheidungen ANONYM für eine wissenschaftliche Studie
+#        verwenden?
+#    responses:
+#      - text:
+#          en: Yes
+#          de: Ja
+#        then: umfrage
+#      - text:
+#          en: No, restart
+#          de: Nein, zum Neustart
+#        then: start
   - id: verlassen
     text:
       en: |
@@ -963,34 +958,34 @@ items:
         then: ende-notunterkunft-eskortiert
   - id: ende-notunterkunft-eskortiert
     text:
-      en: >-
-        In the old sports hall. You're cold. You're hungry. You gave the
-        emergency workers a lot of extra work. Will you be able to sleep here?
+      en: |
+        In the old sports hall. You're cold. You're hungry. 
+        You gave the emergency workers a lot of extra work. 
+        Will you be able to sleep here?
 
-
-        END
-
-
-        May we use your choices ANONYMOUSLY for a scientific study?
-      de: >-
-        In der alten Turnhalle. Dir ist kalt. Du bist hungrig. Du hast den
-        Einsatzkräften viel Arbeit gemacht. Wirst du hier schlafen können?
-
+        THE END
+#
+#
+#        May we use your choices ANONYMOUSLY for a scientific study?
+      de: |
+        In der alten Turnhalle. Dir ist kalt. Du bist hungrig. 
+        Du hast den Einsatzkräften viel Arbeit gemacht. 
+        Wirst du hier schlafen können?
 
         ENDE
-
-
-        Dürfen wir deine Entscheidungen ANONYM für eine wissenschaftliche Studie
-        verwenden?
-    responses:
-      - text:
-          en: Yes
-          de: Ja
-        then: umfrage
-      - text:
-          en: No, restart
-          de: Nein, zum Neustart
-        then: start
+#
+#
+#        Dürfen wir deine Entscheidungen ANONYM für eine wissenschaftliche Studie
+#        verwenden?
+#    responses:
+#      - text:
+#          en: Yes
+#          de: Ja
+#        then: umfrage
+#      - text:
+#          en: No, restart
+#          de: Nein, zum Neustart
+#        then: start
   - id: familie
     text:
       en: You call your cousins who live nearby. You decide together what to do next.
