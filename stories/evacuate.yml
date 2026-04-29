@@ -1,0 +1,1490 @@
+id: evacuate
+items:
+  - id: start
+    text:
+      en: |
+        Your story begins. 
+        Are you ready?
+      de: |
+        Deine Geschichte beginnt. 
+        Bist du bereit?
+    responses:
+      - text:
+          en: Yes
+          de: Ja
+        then: ready
+  - id: ready
+    text:
+      en: |
+        It is Friday. You just got home and are ready for the weekend! 
+        What time is it?
+      de: |
+        Es ist Freitag. Du bist zu Hause und reif fürs Wochenende! 
+        Wie spät ist es?
+    responses:
+      - text:
+          en: 4 pm
+          de: 16 Uhr
+        then: abendprogramm
+      - text:
+          en: 5 pm
+          de: 17 Uhr
+        then: abendprogramm
+      - text:
+          en: 6 pm
+          de: 18 Uhr
+        then: abendprogramm
+      - text:
+          en: 7 pm
+          de: 19 Uhr
+        then: abendprogramm
+      - text:
+          en: 8 pm
+          de: 20 Uhr
+        then: abendprogramm
+  - id: abendprogramm
+    text:
+      en: "Your plan for the evening is:"
+      de: "Dein Plan für den Abend ist:"
+    responses:
+      - text:
+          en: gaming
+          de: zocken
+        then: ein-videospiel-spielen
+      - text:
+          en: reading
+          de: lesen
+        then: ein-buch-lesen
+      - text:
+          en: going out
+          de: ausgehen
+        then: ausgehen
+#      - text:
+#          en: sleeping
+#          de: schlafen
+#        then: schlafen
+#      - text:
+#          en: working
+#          de: arbeiten
+#        then: arbeiten
+#      - text:
+#          en: watching TV
+#          de: fernsehen
+#        then: eine-serie-schauen
+      - text:
+          en: cooking
+          de: kochen
+        then: abendessen-kochen
+#      - text:
+#          en: diary writing
+#          de: Tagebuch schreiben
+#        then: tagebuch-schreiben
+#      - text:
+#          en: tidying up
+#          de: aufräumen
+#        then: aufraeumen
+#      - text:
+#          en: listening to music
+#          de: Musik hören
+#        then: musik-hoeren
+#      - text:
+#          en: holiday planning
+#          de: Urlaub planen
+#        then: urlaub-planen
+  - id: ein-videospiel-spielen
+    text:
+      en: |
+        The final boss is almost defeated. 
+        A text from your neighbor flashes up on your phone: 
+        "ARE YOU OK?"'
+      de: |
+        Der Endgegner ist fast besiegt. 
+        Auf dem Handy blinkt eine Nachricht von deinem Nachbarn: 
+        “ALLES OK BEI DIR?”
+    responses:
+      - text:
+          en: '"Yes, you?"'
+          de: “Ja, bei dir?”
+        then: weitermachen2
+      - text:
+          en: Write back later
+          de: Ich antworte später
+        then: weitermachen
+  - id: weitermachen2
+    text:
+      en: |
+        Minutes pass, no answer. 
+        Suddenly, you hear sirens. 
+        What goes through your mind?
+      de: |
+        Einige Minuten später, keine Antwort. 
+        Plötzlich hörst du Sirenengeheul. 
+        Was geht dir durch den Kopf?
+    responses:
+      - text:
+          en: |
+            ARGHH, 
+            I hate sirens!
+          de: |
+            Ahhhh, ich 
+            hasse Sirenen!
+        then: ich-hasse-sirenen
+      - text:
+          en: | 
+            Maybe something 
+            happened?
+          de: |
+            Ist vielleicht 
+            was passiert?
+        then: oh-ist-was-passiert
+      - text:
+          en: |
+            Pretty 
+            annoying
+          de: |
+            Ganz schön 
+            nervig
+        then: ganz-schoen-laut-und-nervig
+      - text:
+          en: |
+            Surely a 
+            test alarm
+          de: |
+            Sicher ein 
+            Probealarm
+        then: bestimmt-ein-fehlalarm
+  - id: ich-hasse-sirenen
+    text:
+      en: Your heart is racing.
+      de: Dein Herz rast.
+    responses:
+      - text:
+          en: Breath slowly
+          de: Ich atme langsam durch
+        then: ich-schliesse-die-fenster-zur-strasse
+      - text:
+          en: Put headphones on
+          de: Ich setze Kopfhörer auf
+        then: ich-setze-kopfhoerer-auf
+      - text:
+          en: Back to my activity
+          de: Weiter mit dem Abendprogramm
+        then: ich-mache-nichts
+  - id: ich-schliesse-die-fenster-zur-strasse
+    text:
+      en: The siren has stopped. How do you feel?
+      de: Die Sirene hat aufgehört. Wie fühlst du dich?
+    responses:
+      - text:
+          en: panicked
+          de: In Panik
+        then: emoji-weiter
+#      - text:
+#          en: terrified
+#          de: Verängstigt
+#        then: emoji-weiter
+      - text:
+          en: stressed
+          de: Gestresst
+        then: emoji-weiter
+      - text:
+          en: confused
+          de: Verwirrt
+        then: emoji-weiter
+      - text:
+          en: alert
+          de: Wachsam
+        then: emoji-weiter
+      - text:
+          en: calm
+          de: Gelassen
+        then: emoji-weiter
+#      - text:
+#          en: bored
+#          de: Gelangweilt
+#        then: emoji-weiter
+  - id: emoji-weiter
+    text:
+      en: What do you do now?
+      de: Was machst du jetzt?
+    responses:
+      - text:
+          en: |
+            Scroll through 
+            social media
+          de: |
+            Ich scrolle auf 
+            Social Media
+        then: social-media
+      - text:
+          en: |
+            Look out 
+            the window
+          de: |
+            Ich schaue aus 
+            dem Fenster
+        then: fenster
+      - text:
+          en: |
+            Go back to 
+            my activity
+          de: |
+            Zurück zum 
+            Abendprogramm
+        then: weiter
+  - id: social-media
+    text:
+      en: '"Another world war bomb found -- youngsters play with fireworks -- a
+        chemical plant is on fire -- again a leak in our ice skating rink --
+        song contest delayed"'
+      de: '"Weltkriegsbombe gefunden -- Jugendliche spielen mit Feuerwerk --
+        Chemiewerk steht in Flammen -- Schon wieder ein Leck in der Eislaufbahn
+        -- Song Contest verschoben“'
+    responses:
+      - text:
+          en: Continue my evening
+          de: Ich mache weiter
+        then: weiter
+  - id: weiter
+    text:
+      en: |
+        Your phone rings, and the battery dies. 
+        You plug it in and open the app:
+      de: |
+        Dein Handy klingelt, im selben Moment geht der Akku aus. 
+        Du lädst es und öffnest die App:
+    responses:
+      - text:
+          en: Instagram
+          de: Instagram
+        then: nina-nein
+      - text:
+          en: Signal
+          de: Signal
+        then: nina-nein
+#      - text:
+#          en: TikTok
+#          de: TikTok
+#        then: nina-nein
+      - text:
+          en: NINA
+          de: NINA
+        then: nina-ja
+      - text:
+          en: WhatsApp
+          de: WhatsApp
+        then: nina-nein
+      - text:
+          en: X
+          de: X
+        then: nina-nein
+#      - text:
+#          en: YouTube
+#          de: YouTube
+#        then: nina-nein
+  - id: nina-nein
+    text:
+      en: |
+        A lot of posts, videos, and messages, 
+        the siren sounds again.
+      de: |
+        Viele Posts, Videos und Nachrichten. 
+        Die Sirene ertönt erneut.
+    responses:
+      - text:
+          en: |
+            Seach local 
+            social media posts
+          de: |
+            Ich suche lokale 
+            Posts in Social Media
+        then: social-media-2
+      - text:
+          en: |
+            Check local 
+            internet news
+          de: |
+            Ich checke 
+            das Internet
+        then: internet
+      - text:
+          en: |
+            Wait a 
+            little longer
+          de: |
+            Ich warte 
+            noch etwas
+        then: warten
+  - id: social-media-2
+    text:
+      en: |
+        "Danger! Evacuate! Fire! Act now! 
+        Toxic cloud! This is real! Not fake!"
+      de: |
+        "Gefahr! Evakuierung! Brand! Umgehend handeln! 
+        Giftige Wolke! Das ist real! No Fake!"
+    responses:
+      - text:
+          en: |
+            Check local 
+            internet news
+          de: |
+            Ich checke lokale 
+            News im Internet
+        then: internet
+      - text:
+          en: |
+            Pack my 
+            things
+          de: |
+            Ich packe 
+            meine Sachen
+        then: packen
+      - text:
+          en: |
+            Wait a 
+            little longer
+          de: |
+            Ich warte 
+            noch etwas
+        then: durchsage
+  - id: internet
+    text:
+      en: |
+        The chemical plant in your area is on fire. 
+        You see footage of emergency services. 
+        Your neighborhood is being evacuated.
+      de: |
+        Das Chemiewerk in deinem Viertel brennt. 
+        Du siehst Bilder von Einsatzkräften. 
+        Die Gegend wird evakuiert.
+    responses:
+      - text:
+          en: |
+            Go to my 
+            neighbor
+          de: |
+            Ich gehe 
+            zum Nachbarn
+        then: nachbar
+      - text:
+          en: |
+            Contact 
+            family
+          de: |
+            Ich kontaktiere 
+            meine Familie
+        then: familie
+      - text:
+          en: |
+            Pack my 
+            things
+          de: |
+            Ich packe 
+            meine Sachen
+        then: packen
+      - text:
+          en: |
+            Leave 
+            the flat
+          de: |
+            Ich verlasse 
+            die Wohnung
+        then: verlassen
+      - text:
+          en: |
+            Wait a 
+            little longer
+          de: |
+            Ich warte 
+            noch etwas
+        then: durchsage
+  - id: nachbar
+    text:
+      en: |
+        You find your neighbor, who is just being picked up by a friend. 
+        They thank you for checking. What's next?
+      de: |
+        Du findest deinen Nachbarn, der gerade von einem Freund abgeholt wird. 
+        Sie bedanken sich fürs Nachschauen. Und jetzt?
+    responses:
+      - text:
+          en: |
+            Pack my 
+            things
+          de: |
+            Ich packe 
+            meine Sachen
+        then: packen
+      - text:
+          en: |
+            Leave 
+            the flat
+          de: |
+            Ich verlasse 
+            die Wohnung
+        then: verlassen
+      - text:
+          en: |
+            Wait a 
+            little longer
+          de: |
+            Ich warte 
+            noch etwas
+        then: durchsage
+  - id: packen
+    text:
+      en: |
+        Emergency bag ready! 
+        Keys, phone, clothes, toiletries...
+      de: |
+        Das Notfallgepäck ist dabei! 
+        Schlüssel, Handy, Kleidung, Hygienesachen, ...
+    responses:
+      - text:
+          en: |
+            Leave 
+            the flat
+          de: |
+            Ich verlasse 
+            die Wohnung
+        then: strassenszene
+  - id: strassenszene
+    text:
+      en: |
+        You're on the street. What's that smell? 
+        You hear sirens, and blue lights are reflected in the puddles. 
+        How do you feel?
+      de: |
+        Du bist auf der Straße. Riecht die Luft komisch? 
+        Du hörst Sirenen, Blaulicht spiegelt sich in den Pfützen. 
+        Wie fühlst du dich?
+    responses:
+      - text:
+          en: panicked
+          de: In Panik
+        then: emoji-weiter2
+#      - text:
+#          en: terrified
+#          de: Verängstigt
+#        then: emoji-weiter2
+      - text:
+          en: stressed
+          de: Gestresst
+        then: emoji-weiter2
+      - text:
+          en: confused
+          de: Verwirrt
+        then: emoji-weiter3
+      - text:
+          en: alert
+          de: Wachsam
+        then: emoji-weiter3
+      - text:
+          en: calm
+          de: Ruhig
+        then: emoji-weiter3
+  - id: emoji-weiter2
+    text:
+      en: What are you afraid of?
+      de: Wovor hast du Angst?
+    responses:
+      - text:
+          en: |
+            Someone will 
+            break into 
+            my flat
+          de: |
+            Dass jemand 
+            in meine Wohnung 
+            einbricht
+        then: entscheidung-strasse
+      - text:
+          en: |
+            No idea 
+            where to sleep 
+            tonight
+          de: |
+            Dass ich nicht 
+            weiß, wo ich 
+            übernachten soll
+        then: polizei-hilft
+      - text:
+          en: |
+            I'm doing 
+            something wrong
+          de: |
+            Dass ich etwas 
+            falsch mache
+        then: polizei-hilft
+      - text:
+          en: |
+            None of this 
+            is real
+          de: |
+            Dass das alles 
+            nicht echt ist
+        then: entscheidung-strasse
+  - id: entscheidung-strasse
+    text:
+      en: You continue walking. Where to now?
+      de: Du läufst weiter. Wohin jetzt?
+    responses:
+      - text:
+          en: Cycle to a friend
+          de: Ich radle zu meiner Freundin
+        then: ende-freundin
+      - text:
+          en: Follow the evacuation route to a shelter
+          de: Ich folge der Fluchtroute in eine Notunterkunft
+        then: ende-notunterkunft
+  - id: ende-freundin
+    text:
+      en: |
+        You arrive soaking wet at your friend's place. 
+        She prepares warm tea for you. How did everyone else get on?
+
+        END
+
+        May we use your choices ANONYMOUSLY for a scientific study?
+      de: |
+        Du kommst klatschnass bei deiner Freundin an. 
+        Sie macht dir einen warmen Tee. Wie ist es wohl anderen ergegangen?
+        
+        ENDE
+        
+        Dürfen wir deine Entscheidungen ANONYM für eine wissenschaftliche Studie verwenden?
+    responses:
+      - text:
+          en: Yes
+          de: Ja
+        then: umfrage
+      - text:
+          en: No, restart
+          de: Nein, zum Neustart
+        then: start
+  - id: umfrage
+    text:
+      en: Would you like to answer 3 quick questions about yourself?
+      de: Möchtest du uns noch 3 Fragen zu dir beantworten?
+    responses:
+      - text:
+          en: Yes
+          de: Ja
+        then: frage-1
+      - text:
+          en: No, restart
+          de: Nein, zum Neustart
+        then: start
+  - id: frage-1
+    text:
+      en: "Question 1/3: How old are you?"
+      de: "Frage 1/3: Wie alt bist du?"
+    responses:
+      - text:
+          en: Under 18
+          de: unter 18
+        then: frage-2
+      - text:
+          en: 18–24
+          de: 18-24
+        then: frage-2
+      - text:
+          en: 25–34
+          de: 15-34
+        then: frage-2
+      - text:
+          en: 35–44
+          de: 35-44
+        then: frage-2
+      - text:
+          en: 45–54
+          de: 45-54
+        then: frage-2
+      - text:
+          en: 55–64
+          de: 55-64
+        then: frage-2
+      - text:
+          en: 65 or older
+          de: 65 oder älter
+        then: frage-2
+      - text:
+          en: Prefer not to say
+          de: keine Angabe
+        then: frage-2
+  - id: frage-2
+    text:
+      en: "Question 2/3: What gender do you identify as?"
+      de: "Frage 2/3: Mit welchem Geschlecht identifizierst du dich?"
+    responses:
+      - text:
+          en: Woman
+          de: Frau
+        then: frage-3
+      - text:
+          en: Man
+          de: Mann
+        then: frage-3
+      - text:
+          en: Non-binary / other
+          de: Divers
+        then: frage-3
+      - text:
+          en: Prefer not to say
+          de: keine Angabe
+        then: frage-3
+  - id: frage-3
+    text:
+      en: "Question 3/3: What is your highest level of education?"
+      de: "Frage 3/3: Was ist dein höchster Bildungsabschluss?"
+    responses:
+      - text:
+          en: Left school without qualifications
+          de: Schule beendet ohne Abschluß
+        then: danke
+      - text:
+          en: Still in school
+          de: Noch in der Schule ohne Abschluß
+        then: danke
+      - text:
+          en: Secondary school certificate
+          de: Volks/Hauptschulabschluss
+        then: danke
+      - text:
+          en: GCSEs or equivalent
+          de: Mittlere Reife, Realschul - oder gleichwertiger Abschluss
+        then: danke
+      - text:
+          en: A-levels or equivalent
+          de: Fachabitur, Fachhoschulreife
+        then: danke
+      - text:
+          en: Vocational / technical qualification
+          de: Abitur, Hochschulreife
+        then: danke
+      - text:
+          en: University degree
+          de: Fachhochschul-/Hochschulabschluss
+        then: danke
+      - text:
+          en: Postgraduate / doctorate
+          de: Promotion
+        then: danke
+      - text:
+          en: Prefer not to say
+          de: keine Angabe
+        then: danke
+  - id: danke
+    text:
+      en: Thank you!
+      de: Danke!
+    responses:
+      - text:
+          en: Back to the start
+          de: Zurück zum Start
+        then: start
+  - id: ende-notunterkunft
+    text:
+      en: >-
+        There are 72 people in the shelter. The snack bar next door has prepared
+        15 kg of potato salad. What happens tomorrow? Maybe breakfast?
+
+
+        END
+
+
+        May we use your choices ANONYMOUSLY for a scientific study?
+      de: >-
+        Ihr seid 72 Personen in der Notunterkunft. Der Imbiss nebenan spendiert
+        15 kg Kartoffelsalat. Wie geht es morgen weiter? Vielleicht mit
+        Frühstück?
+
+
+        ENDE
+
+
+        Dürfen wir deine Entscheidungen ANONYM für eine wissenschaftliche Studie
+        verwenden?
+    responses:
+      - text:
+          en: Yes
+          de: Ja
+        then: umfrage
+      - text:
+          en: No, restart
+          de: Nein, zum Neustart
+        then: start
+  - id: polizei-hilft
+    text:
+      en: A policewoman sees that you are afraid. She guides you to an emergency
+        shelter.
+      de: Eine Polizistin erkennt deine Angst. Sie begleitet dich zu einer
+        Notunterkunft.
+    responses:
+      - text:
+          en: Go with her
+          de: Ich gehe mit
+        then: ende-notunterkunft
+      - text:
+          en: Rather take a hotel
+          de: Ich nehme lieber ein Hotel
+        then: ende-hotel
+  - id: ende-hotel
+    text:
+      en: >-
+        You get the last room and are too nervous to sleep. What happens
+        tomorrow?
+
+
+        END
+
+
+        May we use your choices ANONYMOUSLY for a scientific study?
+      de: >-
+        Du bekommst das letzte Zimmer und bist zu aufgeregt, um zu schlafen. Wie
+        geht es morgen weiter?
+
+
+        ENDE
+
+
+        Dürfen wir deine Entscheidungen ANONYM für eine wissenschaftliche Studie
+        verwenden?
+    responses:
+      - text:
+          en: Yes
+          de: Ja
+        then: umfrage
+      - text:
+          en: No, restart
+          de: Nein, zum Neustart
+        then: start
+  - id: emoji-weiter3
+    text:
+      en: What do you think?
+      de: Was denkst du?
+    responses:
+      - text:
+          en: Are there other people in danger?
+          de: Sind Menschen in Gefahr?
+        then: entscheidung-strasse2
+      - text:
+          en: How can I help?
+          de: Wie kann ich helfen?
+        then: entscheidung-strasse2
+      - text:
+          en: Who should I inform?
+          de: Wen soll ich informieren?
+        then: entscheidung-strasse2
+  - id: entscheidung-strasse2
+    text:
+      en: You continue walking. Where to now?
+      de: Du läufst weiter. Aber wohin jetzt?
+    responses:
+      - text:
+          en: Pick up my cousins
+          de: Ich hole meine Cousine ab
+        then: verwandte
+      - text:
+          en: Drive to the family country home
+          de: Ich fahre zur Familie aufs Land
+        then: ende-land
+      - text:
+          en: Follow the evacuation route to a shelter
+          de: Ich folge der Fluchtroute in eine Notunterkunft
+        then: ende-notunterkunft-help
+  - id: verwandte
+    text:
+      en: >-
+        You take your car and pick up your cousins. You drive to the family
+        country home. How will the situation develop?
+
+
+        END
+
+
+        May we use your choices ANONYMOUSLY for a scientific study?
+      de: >-
+        Du nimmst dein Auto und holst deine Cousine ab. Ihr fahrt zur Familie
+        aufs Land. Wie wird sich die Situation entwickeln?
+
+
+        ENDE
+
+
+        Dürfen wir deine Entscheidungen ANONYM für eine wissenschaftliche Studie
+        verwenden?
+    responses:
+      - text:
+          en: Yes
+          de: Ja
+        then: umfrage
+      - text:
+          en: No, restart
+          de: Nein, zum Neustart
+        then: start
+  - id: ende-land
+    text:
+      en: >-
+        The direct route was blocked. After a few detours, you arrive at the
+        family country home. Do you feel relaxed here?
+
+
+        END
+
+
+        May we use your choices ANONYMOUSLY for a scientific study?
+      de: >-
+        Die direkte Route war gesperrt. Nach Umwegen kommst du im Familienhaus
+        auf dem Land an. Fühlst du dich hier entspannt?
+
+
+        ENDE
+
+
+        Dürfen wir deine Entscheidungen ANONYM für eine wissenschaftliche Studie
+        verwenden?
+    responses:
+      - text:
+          en: Yes
+          de: Ja
+        then: umfrage
+      - text:
+          en: No, restart
+          de: Nein, zum Neustart
+        then: start
+  - id: ende-notunterkunft-help
+    text:
+      en: >-
+        In the emergency shelter. You talk to others and assist newcomers. What
+        else can you do?
+
+
+        END
+
+
+        May we use your choices ANONYMOUSLY for a scientific study?
+      de: >-
+        In der Notunterkunft. Du sprichst mit anderen und hilfst
+        Neuankömmlingen. Was kannst du noch tun?
+
+
+        ENDE
+
+
+        Dürfen wir deine Entscheidungen ANONYM für eine wissenschaftliche Studie
+        verwenden?
+    responses:
+      - text:
+          en: Yes
+          de: Ja
+        then: umfrage
+      - text:
+          en: No, restart
+          de: Nein, zum Neustart
+        then: start
+  - id: verlassen
+    text:
+      en: |
+        You head out to the street. A thunderstorm is starting. 
+        You realize you forgot your phone.
+      de: |
+        Du läufst auf die Straße. Es fängt an zu gewittern. 
+        Dir fällt auf, dass du dein Handy beim Laden vergessen hast.
+    responses:
+      - text:
+          en: Quickly go back up
+          de: Ich gehe schnell zurück
+        then: handy-zurueck2
+      - text:
+          en: Doesn't matter, keep walking
+          de: Egal, ich will einfach weg
+        then: weg
+  - id: handy-zurueck2
+    text:
+      en: You grab the phone, close the windows, turn off the water and gas, and
+        switch off the lights. Where to now?
+      de: Du nimmst das Handy mit, schließt die Fenster, drehst Wasser und Gas ab und
+        machst das Licht aus. Wohin jetzt?
+    responses:
+      - text:
+          en: Pick up my cousins
+          de: Ich hole meine Cousine ab
+        then: verwandte
+      - text:
+          en: Drive to the family country home
+          de: Ich fahre zur Familie aufs Land
+        then: ende-land
+      - text:
+          en: Take a hotel
+          de: Ich nehme ein Hotel
+        then: ende-hotel
+  - id: weg
+    text:
+      en: Where to? What do you do?
+      de: Wohin? Was machst du?
+    responses:
+      - text:
+          en: Cycle to a friend
+          de: Ich radle zu meiner Freundin
+        then: ende-freundin
+      - text:
+          en: Take a hotel
+          de: Ich nehme ein Hotel
+        then: ende-hotel
+  - id: durchsage
+    text:
+      en: You hear an evacuation announcement over a megaphone from the street. It's
+        getting loud in the building.
+      de: Du hörst eine Evakuierungs-Durchsage mit Megafon von der Straße. Es wird
+        laut im Treppenhaus.
+    responses:
+      - text:
+          en: Leave the flat
+          de: Ich verlasse die Wohnung
+        then: strassenszene
+      - text:
+          en: |
+            Stay, an evacuation 
+            never happened before
+          de: |
+            So eine Evakuierung 
+            gab es noch nie, ich bleibe
+        then: bleiben
+  - id: bleiben
+    text:
+      en: The fire brigade rings your doorbell. They escort you out of the flat.
+      de: Feuerwehrleute klingeln bei dir. Sie begleiten dich aus der Wohnung.
+    responses:
+      - text:
+          en: Taken to emergency shelter!
+          de: Eskortiert zur Notunterkunft!
+        then: ende-notunterkunft-eskortiert
+  - id: ende-notunterkunft-eskortiert
+    text:
+      en: >-
+        In the old sports hall. You're cold. You're hungry. You gave the
+        emergency workers a lot of extra work. Will you be able to sleep here?
+
+
+        END
+
+
+        May we use your choices ANONYMOUSLY for a scientific study?
+      de: >-
+        In der alten Turnhalle. Dir ist kalt. Du bist hungrig. Du hast den
+        Einsatzkräften viel Arbeit gemacht. Wirst du hier schlafen können?
+
+
+        ENDE
+
+
+        Dürfen wir deine Entscheidungen ANONYM für eine wissenschaftliche Studie
+        verwenden?
+    responses:
+      - text:
+          en: Yes
+          de: Ja
+        then: umfrage
+      - text:
+          en: No, restart
+          de: Nein, zum Neustart
+        then: start
+  - id: familie
+    text:
+      en: You call your cousins who live nearby. You decide together what to do next.
+      de: Du rufst deine Cousine an, die in der Nähe wohnt. Ihr plant die nächsten
+        Schritte gemeinsam.
+    responses:
+      - text:
+          en: Pack my things
+          de: Ich packe meine Sachen
+        then: packen
+      - text:
+          en: Leave the flat
+          de: Ich verlasse die Wohnung
+        then: verlassen
+  - id: warten
+    text:
+      en: How long do you wait?
+      de: Wieviel Zeit wartest du?
+    responses:
+      - text:
+          en: 5 minutes
+          de: 5 Minuten
+        then: x-minuten
+      - text:
+          en: 10 minutes
+          de: 10 Minuten
+        then: x-minuten
+      - text:
+          en: 15 minutes
+          de: 15 Minuten
+        then: x-minuten
+      - text:
+          en: 20 minutes
+          de: 20 Minuten
+        then: x-minuten
+  - id: x-minuten
+    text:
+      en: 'Cell broadcast on your phone: "DANGER! Chemical fire requires evacuation.
+        Leave the evacuation zone immediately. Follow instructions from
+        emergency services."'
+      de: 'Cell Broadcast am Handy: "GEFAHR! Wegen Chemiebrand Evakuierung
+        erforderlich. Verlassen Sie sofort das Evakuierungsgebiet Schönhausen.
+        Hören Sie auf Anweisungen der Einsatzkräfte."'
+    responses:
+      - text:
+          en: Leave the flat
+          de: Ich verlasse die Wohnung
+        then: verlassen
+      - text:
+          en: Wait a little longer
+          de: Ich warte noch etwas
+        then: durchsage
+  - id: nina-ja
+    text:
+      en: |
+        The warning app NINA alerts: 
+        "Chemical fire. Highest alert. Evacuate within 2000m. 
+        Leave your home. Status: current."
+      de: |
+        Die Warn-app NINA meldet: 
+        "Chemiebrand. Höchste Warnstufe. Evakuierung im Radius von 2000 m erforderlich. 
+        Verlassen Sie Ihre Wohnung. Gültig: aktuell."
+    responses:
+      - text:
+          en: | 
+            Go to 
+            my neighbor
+          de: |
+            Ich gehe 
+            zum Nachbarn
+        then: nachbar
+      - text:
+          en: | 
+            Contact 
+            family
+          de: |
+            Ich kontaktiere 
+            meine Familie
+        then: familie
+      - text:
+          en: | 
+            Check local 
+            internet news
+          de: |
+            Ich checke lokale 
+            News im Internet
+        then: internet
+      - text:
+          en: | 
+            Pack 
+            my things
+          de: |
+            Ich packe 
+            meine Sachen
+        then: packen
+      - text:
+          en: | 
+            I leave 
+            the flat
+          de: |
+            Ich verlasse 
+            die Wohnung
+        then: verlassen
+  - id: fenster
+    text:
+      en: Outside, it's unsettled. You can see some smoke. It's starting to rain.
+      de: Draußen ist es unruhig. Du siehst etwas Rauch. Es beginnt zu regnen.
+    responses:
+      - text:
+          en: Continue my evening
+          de: Ich mache weiter
+        then: weiter
+  - id: ich-setze-kopfhoerer-auf
+    text:
+      en: The siren has stopped. How do you feel?
+      de: Die Sirene hat aufgehört. Wie fühlst du dich?
+    responses:
+      - text:
+          en: panicked
+          de: In Panik
+        then: emoji-weiter
+#      - text:
+#          en: terrified
+#          de: Verängstigt
+#        then: emoji-weiter
+      - text:
+          en: stressed
+          de: Gestresst
+        then: emoji-weiter
+      - text:
+          en: confused
+          de: Verwirrt
+        then: emoji-weiter
+      - text:
+          en: alert
+          de: Wachsam
+        then: emoji-weiter
+      - text:
+          en: calm
+          de: Ruhig
+        then: emoji-weiter
+  - id: ich-mache-nichts
+    text:
+      en: The siren has stopped. How do you feel?
+      de: Die Sirene hat aufgehört. Wie fühlst du dich?
+    responses:
+      - text:
+          en: panicked
+          de: In Panik
+        then: emoji-weiter
+#      |
+
+      - text:
+          en: stressed
+          de: Gestresst
+        then: emoji-weiter
+      - text:
+          en: confused
+          de: Verwirrt
+        then: emoji-weiter
+      - text:
+          en: alert
+          de: Wachsam
+        then: emoji-weiter
+      - text:
+          en: calm
+          de: Ruhig
+        then: emoji-weiter
+  - id: oh-ist-was-passiert
+    text:
+      en: Someone will sort it out.
+      de: Jemand wird sich schon darum kümmern.
+    responses:
+      - text:
+          en: |
+            Close the 
+            street windows
+          de: |
+            Ich schließe die 
+            Fenster zur Straße
+        then: ich-schliesse-die-fenster-zur-strasse
+      - text:
+          en: |
+            Put 
+            headphones on
+          de: |
+            Ich setze 
+            Kopfhörer auf
+        then: ich-setze-kopfhoerer-auf
+      - text:
+          en: |
+            Back to 
+            my activity
+          de: |
+            Weiter mit 
+            dem Abendprogramm
+        then: ich-mache-nichts
+  - id: ganz-schoen-laut-und-nervig
+    text:
+      en: Nothing disturbs you.
+      de: Du lässt dich nicht stören.
+    responses:
+      - text:
+          en: |
+            Close the 
+            street windows
+          de: |
+            Ich schließe die 
+            Fenster zur Straße
+        then: ich-schliesse-die-fenster-zur-strasse
+      - text:
+          en: |
+            Put 
+            headphones on
+          de: |
+            Ich setze 
+            Kopfhörer auf
+        then: ich-setze-kopfhoerer-auf
+      - text:
+          en: |
+            Back to 
+            my activity
+          de: |
+            Weiter mit 
+            dem Abendprogramm
+        then: ich-mache-nichts
+  - id: bestimmt-ein-fehlalarm
+    text:
+      en: You are glad they do test alarms.
+      de: Du findest es gut, dass es Probealarme gibt.
+    responses:
+      - text:
+          en: |
+            Close the
+            street windows
+          de: |
+            Ich schließe 
+            die Fenster zur Straße
+        then: ich-schliesse-die-fenster-zur-strasse
+      - text:
+          en: |
+            Put 
+            headphones on
+          de: |
+            Ich setze 
+            Kopfhörer auf
+        then: ich-setze-kopfhoerer-auf
+      - text:
+          en: |
+            Back to 
+            my activity
+          de: |
+            Weiter mit 
+            dem Abendprogramm
+        then: ich-mache-nichts
+  - id: weitermachen
+    text:
+      en: Minutes pass. Suddenly, you hear sirens. What goes through your mind?
+      de: Es vergehen ein paar Minuten. Plötzlich hörst du Sirenengeheul. Was geht dir
+        durch den Kopf?
+    responses:
+      - text:
+          en: |
+            ARGHH, 
+            I hate sirens!
+          de: |
+            Ahhhh, 
+            ich hasse Sirenen!
+        then: ich-hasse-sirenen
+      - text:
+          en: |
+            Maybe something 
+            happened?
+          de: |
+            Ist vielleicht 
+            was passiert?
+        then: oh-ist-was-passiert
+      - text:
+          en: |
+            Pretty 
+            annoying
+          de: |
+            Ganz schön 
+            nervig
+        then: ganz-schoen-laut-und-nervig
+      - text:
+          en: |
+            Surely a 
+            test alarm
+          de: |
+            Sicher ein 
+            Probealarm
+        then: bestimmt-ein-fehlalarm
+  - id: ein-buch-lesen
+    text:
+      en: |
+        Just one more chapter! 
+        A text from your neighbor flashes up on your phone:
+        "ARE YOU OK?"
+      de: |
+        Nur noch ein Kapitel! 
+        Auf dem Handy blinkt eine Nachricht von deinem Nachbarn: 
+        “ALLES OK BEI DIR?”
+    responses:
+      - text:
+          en: '"Yes, you?"'
+          de: “Ja, bei dir?”
+        then: weitermachen2
+      - text:
+          en: Write back later
+          de: Ich antworte später
+        then: weitermachen
+  - id: ausgehen
+    text:
+      en: |
+        You try on the fifth outfit. 
+        A text from your neighbor flashes up on your phone: 
+        "ARE YOU OK?"
+      de: |
+        Du probierst das fünfte Outfit an. 
+        Auf dem Handy blinkt eine Nachricht von deinem Nachbarn: 
+        “ALLES OK BEI DIR?”
+    responses:
+      - text:
+          en: '"Yes, you?"'
+          de: “Ja, bei dir?”
+        then: weitermachen2
+      - text:
+          en: Write back later
+          de: Ich antworte später
+        then: weitermachen
+  - id: schlafen
+    text:
+      en: |
+        The pyjamas are so cosy! 
+        A text from your neighbor flashes up on your phone: 
+        "ARE YOU OK?"
+      de: |
+        Der Pyjama ist so gemütlich! 
+        Auf dem Handy blinkt eine Nachricht von deinem Nachbarn: 
+        “ALLES OK BEI DIR?”
+    responses:
+      - text:
+          en: '"Yes, you?"'
+          de: “Ja, bei dir?”
+        then: weitermachen2
+      - text:
+          en: Write back later
+          de: Ich antworte später
+        then: weitermachen
+  - id: arbeiten
+    text:
+      en: |
+        Only 50 unread emails left... 
+        A text from your neighbor flashes up on your phone: 
+        "ARE YOU OK?"
+      de: |
+        Nur noch 50 ungelesene E-Mails... 
+        Auf dem Handy blinkt eine Nachricht von deinem Nachbarn: 
+        “ALLES OK BEI DIR?”
+    responses:
+      - text:
+          en: '"Yes, you?"'
+          de: “Ja, bei dir?”
+        then: weitermachen2
+      - text:
+          en: Write back later
+          de: Ich antworte später
+        then: weitermachen
+  - id: eine-serie-schauen
+    text:
+      en: |
+        Today, a new crime series! 
+        A text from your neighbor flashes up on your phone: 
+        "ARE YOU OK?"
+      de: |
+        Heute eine neue Krimiserie! 
+        Auf dem Handy blinkt eine Nachricht von deinem Nachbarn: 
+        “ALLES OK BEI DIR?”
+    responses:
+      - text:
+          en: '"Yes, you?"'
+          de: “Ja, bei dir?”
+        then: weitermachen2
+      - text:
+          en: Write back later
+          de: Ich antworte später
+        then: weitermachen
+  - id: abendessen-kochen
+    text:
+      en: |
+        The tomato sauce is bubbling away. 
+        A text from your neighbor flashes up on your phone: 
+        "ARE YOU OK?"
+      de: |
+        Die Tomatensoße blubbert. 
+        Auf dem Handy blinkt eine Nachricht von deinem Nachbarn: 
+        “ALLES OK BEI DIR?”
+    responses:
+      - text:
+          en: '"Yes, you?"'
+          de: “Ja, bei dir?”
+        then: weitermachen2
+      - text:
+          en: Write back later
+          de: Ich antworte später
+        then: weitermachen
+  - id: tagebuch-schreiben
+    text:
+      en: |
+        "Dear diary! ..." 
+        A text from your neighbor flashes up on your phone: 
+        "ARE YOU OK?"'
+      de: |
+        "Liebes Tagebuch! ..."
+        Auf dem Handy blinkt eine Nachricht von deinem Nachbarn: 
+        “ALLES OK BEI DIR?”'
+    responses:
+      - text:
+          en: '"Yes, you?"'
+          de: “Ja, bei dir?”
+        then: weitermachen2
+      - text:
+          en: Write back later
+          de: Ich antworte später
+        then: weitermachen
+  - id: aufraeumen
+    text:
+      en: |
+        Vacuum cleaner on. 
+        A text from your neighbor flashes up on your phone: 
+        "ARE YOU OK?"
+      de: |
+        Staubsauger an. 
+        Auf dem Handy blinkt eine Nachricht von deinem Nachbarn: 
+        “ALLES OK BEI DIR?”
+    responses:
+      - text:
+          en: '"Yes, you?"'
+          de: “Ja, bei dir?”
+        then: weitermachen2
+      - text:
+          en: Write back later
+          de: Ich antworte später
+        then: weitermachen
+  - id: musik-hoeren
+    text:
+      en: |
+        You're lost in the drum solo. 
+        A text from your neighbor flashes up on your phone: 
+        "ARE YOU OK?"
+      de: |
+        Du schwelgst im Schlagzeug-Solo. 
+        Auf dem Handy blinkt eine Nachricht von deinem Nachbarn: 
+        “ALLES OK BEI DIR?”
+    responses:
+      - text:
+          en: '"Yes, you?"'
+          de: “Ja, bei dir?”
+        then: weitermachen2
+      - text:
+          en: Write back later
+          de: Ich antworte später
+        then: weitermachen
+  - id: urlaub-planen
+    text:
+      en: |
+        Wow, already 20 tabs open with hotel deals. 
+        A text from your neighbor flashes up on your phone: 
+        "ARE YOU OK?"
+      de: |
+        Wow, schon 20 Tabs mit Hotelangeboten. 
+        Auf dem Handy blinkt eine Nachricht von deinem Nachbarn: 
+        “ALLES OK BEI DIR?”
+    responses:
+      - text:
+          en: '"Yes, you?"'
+          de: “Ja, bei dir?”
+        then: weitermachen2
+      - text:
+          en: Write back later
+          de: Ich antworte später
+        then: weitermachen
+  - id: datenerheben
+    text:
+      en: May we use your choices ANONYMOUSLY for a scientific study?
+      de: Dürfen wir deine Entscheidungen ANONYM für eine wissenschaftliche Studie
+        verwenden?
+    responses:
+      - text:
+          en: Yes
+          de: Ja
+        then: umfrage
+      - text:
+          en: No, restart
+          de: Nein, zum Neustart
+        then: start
