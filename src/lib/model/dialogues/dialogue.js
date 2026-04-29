@@ -11,6 +11,11 @@ export default class Dialogue {
     this.nodes = [];
     /** @type {Object<string, Object>} Lookup map of nodes keyed by their id. */
     this.nodesById = {};
+    /**
+     * @type {Array<Object>} Statement nodes in JSON document order — used for
+     * developer-mode preview navigation, not narrative playback.
+     */
+    this.statementNodes = [];
   }
 
   /**
@@ -69,6 +74,12 @@ export default class Dialogue {
     newDialogue.nodes.forEach((node) => {
       newDialogue.nodesById[node.id] = node;
     });
+
+    const collectStatements = (node, out) => {
+      if (node.type === 'statement') out.push(node);
+      if (node.items) node.items.forEach((item) => collectStatements(item, out));
+    };
+    collectStatements(newDialogue.root, newDialogue.statementNodes);
 
     return newDialogue;
   }

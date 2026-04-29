@@ -187,6 +187,58 @@ export default class DialogueSequencer {
   }
 
   /**
+   * Developer-mode: jump to the next statement node in JSON document order.
+   *
+   * Bypasses narrative branching entirely. Does NOT apply flag assignments,
+   * cycle updates, or effect side effects. Resuming narrative playback after
+   * a preview jump yields inconsistent state — restart the game to recover.
+   *
+   * No-op if no dialogue is active or already at the last statement.
+   */
+  previewNextStatement() {
+    this.previewStatement(+1);
+  }
+
+  /**
+   * Developer-mode: jump to the previous statement node in JSON document order.
+   * See {@link previewNextStatement} for caveats.
+   */
+  previewPrevStatement() {
+    this.previewStatement(-1);
+  }
+
+  /**
+   * @private
+   * @param {number} direction +1 for next statement, -1 for previous.
+   */
+  previewStatement(direction) {
+    if (!this.dialogue || !this.dialogueIterator) return;
+
+    const { statementNodes } = this.dialogue;
+    if (statementNodes.length === 0) return;
+
+    const current = this.dialogueIterator.getActiveNode();
+    const currentIndex = current ? statementNodes.indexOf(current) : -1;
+
+    let targetIndex;
+    if (currentIndex === -1) {
+      targetIndex = direction > 0 ? 0 : statementNodes.length - 1;
+    } else {
+      targetIndex = currentIndex + direction;
+      if (targetIndex < 0 || targetIndex >= statementNodes.length) return;
+    }
+
+    // UI cleanup normally happens inside state.onInput() via clearScreen().
+    // Replacing the state directly skips that, so do it here.
+    this.uiController.clearScreen();
+    this.terminateAllEffects();
+    this.setUiState(null);
+
+    this.dialogueIterator.jumpTo(statementNodes[targetIndex]);
+    this.setUiState(new DialogueSequencerTextState(this));
+  }
+
+  /**
    * Forcibly stops the dialogue, terminating all effects and clearing state.
    * Emits 'terminate'.
    */

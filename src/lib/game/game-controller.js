@@ -37,6 +37,8 @@ export default class GameController {
     this.commands = {
       toggleLang: () => this.toggleLang(),
       showRestartDialog: () => this.showRestartDialog(),
+      previewNextStatement: () => this.dialogueSequencer.previewNextStatement(),
+      previewPrevStatement: () => this.dialogueSequencer.previewPrevStatement(),
     };
     this.keyboardInputMgr = new KeyboardInputMgr();
     this.initKeyboardHandlers();

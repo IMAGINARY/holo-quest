@@ -174,6 +174,23 @@ export default class DialogueIterator {
   }
 
   /**
+   * Moves the cursor directly to a node without applying any narrative side
+   * effects (no `set` processing, no parent traversal, no cycle updates).
+   *
+   * Intended for developer-mode preview navigation. Do NOT use during
+   * narrative playback — it bypasses all flag and cycle bookkeeping.
+   *
+   * @param {Object|null} node A node from this iterator's dialogue, or null.
+   * @throws Error if the node does not belong to this iterator's dialogue.
+   */
+  jumpTo(node) {
+    if (node !== null && this.dialogue.nodesById[node.id] !== node) {
+      throw new Error(`jumpTo: node '${node?.id}' is not part of this dialogue (${this.dialogue.root.id})`);
+    }
+    this.activeNode = node;
+  }
+
+  /**
    * Filters items to only those whose conditions are met.
    *
    * @private
