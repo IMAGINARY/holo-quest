@@ -374,7 +374,7 @@ items:
           de: |
             Ich gehe 
             zum Nachbarn
-        then: nachbar
+        then: bg-hallway
       - text:
           en: |
             Contact 
