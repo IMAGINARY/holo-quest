@@ -3,6 +3,7 @@ import HoloDisplay from './holo-display';
 import SpeechText, { Speeds } from './speech-text';
 import { OptionRail, useSpinnerController, usePointerLock } from './spinner-ui';
 import RestartDialog from './restart-dialog';
+import DevStatusBar from './dev-status-bar';
 import Fade from './fade';
 import useGameState from '../stores/game-state';
 import { getText } from '../helpers/i18n';
@@ -116,6 +117,7 @@ export default function GameView({ config, controller }) {
           {restartDialogVisible && (
             <RestartDialog config={config} lang={lang} controller={controller} />
           )}
+          <DevStatusBar config={config} />
         </HoloDisplay.Front>
         <HoloDisplay.Back />
       </HoloDisplay>

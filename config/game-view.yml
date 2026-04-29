@@ -11,3 +11,15 @@ gameView:
   defaultInputColor: '#cccccc'
   # Default text size for the input control (in em units)
   defaultInputSize: 3
+  # Dev-mode on-screen-display bar (bottom-left); invisible when no message
+  devStatusBar:
+    # Text size (in em units)
+    textSize: 3
+    # Text color
+    textColor: '#ffff00'
+    # Background color
+    bgColor: '#660000'
+    # How long the message stays fully visible before auto-clearing (ms)
+    displayDurationMs: 2000
+    # Fade in/out transition duration (ms)
+    fadeDurationMs: 350

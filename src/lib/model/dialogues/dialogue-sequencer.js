@@ -2,6 +2,7 @@ import EventEmitter from 'eventemitter3';
 import DialogueIterator from './dialogue-iterator';
 import DialogueSequencerTextState from './dialogue-sequencer-states/text-state';
 import DialogueSequencerEffectState from './dialogue-sequencer-states/effect-state';
+import useDevStatus from '../../stores/dev-status';
 
 /**
  * Drives dialogue playback by iterating through the dialogue tree and
@@ -234,8 +235,10 @@ export default class DialogueSequencer {
     this.terminateAllEffects();
     this.setUiState(null);
 
-    this.dialogueIterator.jumpTo(statementNodes[targetIndex]);
+    const target = statementNodes[targetIndex];
+    this.dialogueIterator.jumpTo(target);
     this.setUiState(new DialogueSequencerTextState(this));
+    useDevStatus.getState().show(`Preview: ${target.id}`);
   }
 
   /**
