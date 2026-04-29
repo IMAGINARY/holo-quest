@@ -37,6 +37,7 @@
     "vitest": "^4.0.18"
   },
   "dependencies": {
+    "@fontsource/averia-sans-libre": "^5.2.7",
     "@sentry/browser": "^10.38.0",
     "@vitejs/plugin-react": "^5.1.4",
     "ajv": "^8.18.0",

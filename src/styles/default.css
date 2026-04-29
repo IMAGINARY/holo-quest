@@ -1,3 +1,5 @@
+@import "@fontsource/averia-sans-libre";
+@import "@fontsource/averia-sans-libre/700.css";
 @import "tailwindcss";
 @import "./speech-text.css";
 
