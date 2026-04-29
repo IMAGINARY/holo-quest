@@ -101,7 +101,7 @@ export default function OptionRail({
                 color: labelColor,
                 fontSize: label.fontSizeMin,
                 whiteSpace: 'pre-line',
-                minWidth: `${layout.stepWidth * 0.8}px`,
+                minWidth: `${layout.stepWidth * 0.9}px`,
               }}
             >
               {options[key]}

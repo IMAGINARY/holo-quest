@@ -83,7 +83,7 @@ export default function GameView({ config, controller }) {
         <HoloDisplay.Front>
           {resolvedText !== null && (
             <div
-              className="absolute w-full text-center"
+              className="absolute w-[90%] ml-[5%] text-center"
               style={{
                 top: `${speechTextTopPercent}%`,
                 color: defaultTextColor,

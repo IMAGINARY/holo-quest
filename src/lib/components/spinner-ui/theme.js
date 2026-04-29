@@ -68,7 +68,7 @@ export default {
     color: '#ffffff',
   },
   layout: {
-    stepWidth: 250,
+    stepWidth: 260,
     railPaddingX: 40,
     height: 60,
   },
