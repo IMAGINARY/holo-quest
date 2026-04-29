@@ -6,6 +6,7 @@ import DialogueEffectFactory from '../model/dialogues/effects/dialogue-effect-fa
 import DialogueSequencer from '../model/dialogues/dialogue-sequencer';
 import DialogueIteratorContext from '../model/dialogues/dialogue-iterator-context';
 import GameUiController from './game-ui-controller';
+import SoundManager from '../sound/sound-manager';
 
 export default class GameController {
   /**
@@ -24,6 +25,7 @@ export default class GameController {
     this.gameInProgress = false;
     this.flags = new FlagStore();
 
+    this.soundManager = new SoundManager(this.config);
     this.dialogueEffectFactory = new DialogueEffectFactory(this);
     this.gameUiController = new GameUiController(this.config, this);
     this.dialogueSequencer = new DialogueSequencer(

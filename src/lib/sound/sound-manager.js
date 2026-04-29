@@ -60,6 +60,29 @@ export default class SoundManager {
   }
 
   /**
+   * Plays a one-shot sound directly from a path, without pre-registration.
+   *
+   * Howler caches decoded audio buffers across `Howl` instances with matching `src`, so
+   * creating a fresh instance per call is cheap. One-shot sounds auto-unload when they
+   * finish; looping sounds run until the caller stops/unloads them.
+   *
+   * @param {string|string[]} path The audio file path, or an array of paths for fallback formats.
+   * @param {object} [options]
+   * @param {boolean} [options.loop=false] Whether the sound should loop.
+   * @returns {Howl} The `Howl` instance — caller is responsible for `stop()`/`unload()`
+   *  on cleanup (looping sounds only; one-shots self-unload on natural end).
+   */
+  // eslint-disable-next-line class-methods-use-this
+  playByPath(path, { loop = false } = {}) {
+    const src = Array.isArray(path) ? path : [path];
+    const howl = new Howl({ src, autoplay: true, loop });
+    if (!loop) {
+      howl.once('end', () => howl.unload());
+    }
+    return howl;
+  }
+
+  /**
    * Plays a sound or sprite.
    *
    * @param {string} id The resource ID, optionally followed by a dot and sprite ID
