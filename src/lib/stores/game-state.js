@@ -13,6 +13,11 @@ import {
  * @typedef {Object} GameState
  * @property {LangText|null} text - Dialogue text currently displayed to the
  *   player.
+ * @property {number} textVersion - Monotonically increasing counter bumped on
+ *   every `setText` call, even when called with the same reference. Lets
+ *   consumers force a remount when a text node is re-shown after a restart
+ *   (where the dialogue tree's node reference is unchanged across game runs
+ *   and would otherwise look identical to React). Not reset by `reset()`.
  * @property {InputControl|null} input - Player input control (type + options).
  * @property {(text: LangText|null) => void} setText - Replace the current
  *   dialogue text.
@@ -43,6 +48,7 @@ const initialTransientState = {
 const useGameState = create(
   immer((set) => ({
     ...initialTransientState,
+    textVersion: 0,
     lang: 'en',
 
     /**
@@ -53,8 +59,12 @@ const useGameState = create(
      */
     setText: (text) => {
       assertLangText(text, 'setText');
-      // eslint-disable-next-line no-param-reassign
-      set((state) => { state.text = text; });
+      set((state) => {
+        // eslint-disable-next-line no-param-reassign
+        state.text = text;
+        // eslint-disable-next-line no-param-reassign
+        state.textVersion += 1;
+      });
     },
 
     /**

@@ -37,7 +37,7 @@ function useFadingBackground(path, duration) {
 
 export default function GameView({ config, controller }) {
   const {
-    text, input, backgroundPath, lang, restartDialogVisible,
+    text, textVersion, input, backgroundPath, lang, restartDialogVisible,
   } = useGameState();
 
   const {
@@ -75,14 +75,14 @@ export default function GameView({ config, controller }) {
     [controller]
   );
 
-  // Drives SpeechText remount on narrative-text change but not on lang swap:
+  // Drives SpeechText remount on every `setText` call but not on lang swap.
   // SpeechText preserves reveal progress across segment changes, so passing
-  // the same key during a translation swap keeps that progress; a new `text`
-  // produces a new key, forcing a fresh reveal.
-  const textKey = useMemo(
-    () => (text === null ? null : JSON.stringify(text)),
-    [text]
-  );
+  // the same key during a translation swap keeps that progress. `textVersion`
+  // bumps on every `setText`, including re-shows of the same node reference
+  // (which happens when restart lands the new game on the same slide that
+  // was already displayed) — keying on it forces a fresh reveal in those
+  // cases too, where comparing `text` identity would not.
+  const textKey = text === null ? null : textVersion;
 
   const resolvedOptions = useMemo(
     () => (input === null
