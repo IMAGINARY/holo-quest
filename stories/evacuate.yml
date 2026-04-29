@@ -114,11 +114,11 @@ items:
       - text:
           en: '"Yes, you?"'
           de: “Ja, bei dir?”
-        then: weitermachen2
+        then: weitermachen2-audio
       - text:
           en: Write back later
           de: Ich antworte später
-        then: weitermachen
+        then: weitermachen-audio
   - id: weitermachen2-audio
     type: effect
     effect:
@@ -279,6 +279,7 @@ items:
       de: |
         Dein Handy klingelt, im selben Moment geht der Akku aus. 
         Du lädst es und öffnest die App:
+    sound: stories/evacuate/audio/ring-off.aac
     responses:
       - text:
           en: Instagram
@@ -316,6 +317,7 @@ items:
       de: |
         Viele Posts, Videos und Nachrichten. 
         Die Sirene ertönt erneut.
+    sound: stories/evacuate/audio/siren.mp3
     responses:
       - text:
           en: |
@@ -501,6 +503,7 @@ items:
         Du bist auf der Straße. Riecht die Luft komisch? 
         Du hörst Sirenen, Blaulicht spiegelt sich in den Pfützen. 
         Wie fühlst du dich?
+    sound: stories/evacuate/audio/ambulance.aac
     responses:
       - text:
           en: panicked
@@ -928,6 +931,14 @@ items:
       options:
         path: stories/evacuate/images/street.png
       phase: start
+    then: verlassen-audio
+  - id: verlassen-audio
+    type: effect
+    effect:
+      type: sound
+      options:
+        path: stories/evacuate/audio/storm.aac
+      phase: start
     then: verlassen
   - id: verlassen
     text:
@@ -1006,6 +1017,7 @@ items:
           en: Taken to emergency shelter!
           de: Eskortiert zur Notunterkunft!
         then: ende-notunterkunft-eskortiert
+    sound: stories/evacuate/audio/dingdong.aac
   - id: ende-notunterkunft-eskortiert
     text:
       en: |
@@ -1079,6 +1091,7 @@ items:
       de: 'Cell Broadcast am Handy: "GEFAHR! Wegen Chemiebrand Evakuierung
         erforderlich. Verlassen Sie sofort das Evakuierungsgebiet Schönhausen.
         Hören Sie auf Anweisungen der Einsatzkräfte."'
+    sound: stories/evacuate/audio/alert-tone.mp3
     responses:
       - text:
           en: Leave the flat
@@ -1373,7 +1386,7 @@ items:
       - text:
           en: Write back later
           de: Ich antworte später
-        then: weitermachen
+        then: weitermachen-audio
   - id: ausgehen
     text:
       en: |
@@ -1393,7 +1406,7 @@ items:
       - text:
           en: Write back later
           de: Ich antworte später
-        then: weitermachen
+        then: weitermachen-audio
   - id: schlafen
     text:
       en: |
@@ -1413,7 +1426,7 @@ items:
       - text:
           en: Write back later
           de: Ich antworte später
-        then: weitermachen
+        then: weitermachen-audio
   - id: arbeiten
     text:
       en: |
@@ -1433,7 +1446,7 @@ items:
       - text:
           en: Write back later
           de: Ich antworte später
-        then: weitermachen
+        then: weitermachen-audio
   - id: eine-serie-schauen
     text:
       en: |
@@ -1453,7 +1466,7 @@ items:
       - text:
           en: Write back later
           de: Ich antworte später
-        then: weitermachen
+        then: weitermachen-audio
   - id: abendessen-kochen
     text:
       en: |
@@ -1473,7 +1486,7 @@ items:
       - text:
           en: Write back later
           de: Ich antworte später
-        then: weitermachen
+        then: weitermachen-audio
   - id: tagebuch-schreiben
     text:
       en: |
@@ -1493,7 +1506,7 @@ items:
       - text:
           en: Write back later
           de: Ich antworte später
-        then: weitermachen
+        then: weitermachen-audio
   - id: aufraeumen
     text:
       en: |
@@ -1513,7 +1526,7 @@ items:
       - text:
           en: Write back later
           de: Ich antworte später
-        then: weitermachen
+        then: weitermachen-audio
   - id: musik-hoeren
     text:
       en: |
@@ -1533,7 +1546,7 @@ items:
       - text:
           en: Write back later
           de: Ich antworte später
-        then: weitermachen
+        then: weitermachen-audio
   - id: urlaub-planen
     text:
       en: |
@@ -1553,7 +1566,7 @@ items:
       - text:
           en: Write back later
           de: Ich antworte später
-        then: weitermachen
+        then: weitermachen-audio
   - id: datenerheben
     text:
       en: May we use your choices ANONYMOUSLY for a scientific study?
