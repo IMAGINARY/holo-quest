@@ -69,6 +69,7 @@ export default function GameView({ config, controller }) {
   const {
     position, velocity, confirmationProgress,
   } = useSpinnerController({
+    ...config.spinner,
     enabled: !restartDialogVisible,
     min: inputMin,
     max: inputMax,

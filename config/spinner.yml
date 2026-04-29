@@ -1,0 +1,19 @@
+spinner:
+  # Mouse-movement → input-force scaler
+  sensitivity: 0.0125
+  # Hard cap on rail velocity (units/sec)
+  maxVelocity: 15
+  # Per-second velocity decay coefficient
+  friction: 0.35
+  # Strength of damping inside a discrete option's well
+  wellStrength: 10
+  # Gentle pull toward nearest option once velocity is low
+  pullStrength: 20
+  # Velocity threshold below which capture-pull engages
+  captureSpeed: 0.75
+  # Velocity & distance threshold to declare an option "settled"
+  settleThreshold: 0.05
+  # Input force needed to break out of a settled option
+  stickyForce: 15
+  # Seconds an option must stay settled before onConfirm fires
+  confirmationDelay: 2

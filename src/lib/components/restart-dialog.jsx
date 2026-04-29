@@ -22,6 +22,7 @@ export default function RestartDialog({ config, lang, controller }) {
   );
 
   const { position, velocity, confirmationProgress } = useSpinnerController({
+    ...config.spinner,
     min: CANCEL,
     max: CONFIRM,
     step: 1,
