@@ -1,6 +1,8 @@
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
-import { assertString, assertLangText, assertInputControl } from '../model/type-guards';
+import {
+  assertString, assertStringOrNull, assertLangText, assertInputControl,
+} from '../model/type-guards';
 
 /**
  * @import { LangText } from '../model/type-guards'
@@ -16,6 +18,10 @@ import { assertString, assertLangText, assertInputControl } from '../model/type-
  *   dialogue text.
  * @property {(input: InputControl|null) => void} setInput - Replace the current
  *   input control.
+ * @property {string|null} backgroundPath - Path to the background image shown
+ *   on the back screen, or null when no background is set.
+ * @property {(path: string|null) => void} setBackgroundPath - Replace the
+ *   current background image path.
  * @property {string} lang - Active language code (e.g. 'en', 'de').
  * @property {(lang: string) => void} setLang - Change the active language.
  * @property {boolean} restartDialogVisible - Whether the restart-game dialog
@@ -30,6 +36,7 @@ import { assertString, assertLangText, assertInputControl } from '../model/type-
 const initialTransientState = {
   text: null,
   input: null,
+  backgroundPath: null,
   restartDialogVisible: false,
 };
 
@@ -60,6 +67,18 @@ const useGameState = create(
       assertInputControl(input, 'setInput');
       // eslint-disable-next-line no-param-reassign
       set((state) => { state.input = input; });
+    },
+
+    /**
+     * Replace the current background image path.
+     *
+     * @param {string|null} path - Image path, or null to clear.
+     * @throws {TypeError} If path is not a string or null.
+     */
+    setBackgroundPath: (path) => {
+      assertStringOrNull(path, 'setBackgroundPath');
+      // eslint-disable-next-line no-param-reassign
+      set((state) => { state.backgroundPath = path; });
     },
 
     /**

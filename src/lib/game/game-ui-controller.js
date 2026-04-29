@@ -61,6 +61,11 @@ export default class GameUiController {
     useGameState.getState().setInput(null);
   }
 
+  // eslint-disable-next-line class-methods-use-this
+  setBackgroundPath(path) {
+    useGameState.getState().setBackgroundPath(path);
+  }
+
   clearScreen() {
     this.hideText();
     this.hideInput();
