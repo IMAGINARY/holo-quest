@@ -26,6 +26,13 @@ export default class SoundEffect extends DialogueEffect {
     doneCallback();
   }
 
+  onEnding(doneCallback) {
+    if (this.howl) {
+      this.howl.stop();
+    }
+    doneCallback();
+  }
+
   terminate() {
     if (this.howl) {
       this.howl.stop();

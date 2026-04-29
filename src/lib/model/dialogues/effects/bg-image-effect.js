@@ -22,6 +22,11 @@ export default class BgImageEffect extends DialogueEffect {
     doneCallback();
   }
 
+  onEnding(doneCallback) {
+    this.app.gameUiController.setBackgroundPath(null);
+    doneCallback();
+  }
+
   terminate() {
     this.app.gameUiController.setBackgroundPath(null);
   }
