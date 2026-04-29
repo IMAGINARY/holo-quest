@@ -9,6 +9,9 @@ import DialogueSequencerResponseState from './response-state';
 export default class DialogueSequencerTextState extends DialogueSequencerState {
   onBegin() {
     this.uiController.showText(this.activeNode.text);
+    if (this.activeNode.sound) {
+      this.uiController.playSound(this.activeNode.sound);
+    }
   }
 
   onTextShown() {

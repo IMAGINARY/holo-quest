@@ -2,5 +2,6 @@ node_modules
 .env
 .claude/settings.local.json
 /dist
+/stories/evacuate/audio
 /work
 !**/.gitkeep

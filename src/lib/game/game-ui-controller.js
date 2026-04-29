@@ -66,9 +66,27 @@ export default class GameUiController {
     useGameState.getState().setBackgroundPath(path);
   }
 
+  playSound(sound) {
+    this.stopSound();
+    const path = typeof sound === 'string' ? sound : sound?.path;
+    const loop = typeof sound === 'object' && sound !== null ? Boolean(sound.loop) : false;
+    if (path) {
+      this.activeSoundHowl = this.gameController.soundManager.playByPath(path, { loop });
+    }
+  }
+
+  stopSound() {
+    if (this.activeSoundHowl) {
+      this.activeSoundHowl.stop();
+      this.activeSoundHowl.unload();
+      this.activeSoundHowl = null;
+    }
+  }
+
   clearScreen() {
     this.hideText();
     this.hideInput();
+    this.stopSound();
   }
 
   handleTextShown() {

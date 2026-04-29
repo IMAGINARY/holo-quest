@@ -247,6 +247,7 @@ export default class DialogueSequencer {
    */
   terminate() {
     this.terminateAllEffects();
+    this.uiController.stopSound();
     this.setUiState(null);
     this.dialogueIterator = null;
     this.dialogue = null;

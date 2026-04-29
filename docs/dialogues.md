@@ -56,6 +56,7 @@ Example:
   "type": "statement",
   "cond": "flag1 | (^flag2 & flag3)",
   "text": "Dialogue text",
+  "sound": { "path": "stories/example/audio/voice.mp3", "loop": false },
   "class": ["aClass", "anotherClass"],
   "set": ["flag3", "flag4"],
   "responses": [
@@ -77,6 +78,7 @@ Example:
 Statement nodes have these properties:
 
 - `text` (string | object, required): The text to display.
+- `sound` (string | object, optional): A sound to play while the statement is active. Either a string (path to a sound file) or an object with `path` (string, required) and `loop` (boolean, optional, default `false`). The sound starts when the bubble appears and stops when the player advances past the statement (continue input or response selection). The `thenText` shown after a response is *not* covered by the statement's sound. For sound that should keep playing independently across multiple nodes, use the `sound` effect instead (see [Effect nodes](#effect-nodes)).
 - `class` (string | array, optional): One or more classes that are set when the text is displayed.
 - `responses` (array, optional): An array of response objects.
 - `responseFlag` (string, optional): The id of a flag that will be set to the `value` of the selected response. Requires every response in the node to have a `value` (validation will fail otherwise). Pairs naturally with conditions like `responseFlag = "yes"`.

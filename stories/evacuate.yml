@@ -109,6 +109,7 @@ items:
         Der Endgegner ist fast besiegt. 
         Auf dem Handy blinkt eine Nachricht von deinem Nachbarn: 
         “ALLES OK BEI DIR?”
+    sound: stories/evacuate/audio/notification.aac
     responses:
       - text:
           en: '"Yes, you?"'
@@ -118,6 +119,14 @@ items:
           en: Write back later
           de: Ich antworte später
         then: weitermachen
+  - id: weitermachen2-audio
+    type: effect
+    effect:
+      type: sound
+      options:
+        path: stories/evacuate/audio/siren.mp3
+      phase: start
+    then: weitermachen2
   - id: weitermachen2
     text:
       en: |
@@ -128,6 +137,7 @@ items:
         Einige Minuten später, keine Antwort. 
         Plötzlich hörst du Sirenengeheul. 
         Was geht dir durch den Kopf?
+#    sound: stories/evacuate/audio/siren.mp3
     responses:
       - text:
           en: |
@@ -169,15 +179,23 @@ items:
       - text:
           en: Breath slowly
           de: Ich atme langsam durch
-        then: ich-schliesse-die-fenster-zur-strasse
+        then: ich-schliesse-die-fenster-zur-strasse-audio
       - text:
           en: Put headphones on
           de: Ich setze Kopfhörer auf
-        then: ich-setze-kopfhoerer-auf
+        then: ich-setze-kopfhoerer-auf-audio
       - text:
           en: Back to my activity
           de: Weiter mit dem Abendprogramm
-        then: ich-mache-nichts
+        then: ich-mache-nichts-audio
+  - id: ich-schliesse-die-fenster-zur-strasse-audio
+    type: effect
+    effect:
+      type: sound
+      options:
+        path: stories/evacuate/audio/siren.mp3
+      phase: end
+    then: ich-schliesse-die-fenster-zur-strasse
   - id: ich-schliesse-die-fenster-zur-strasse
     text:
       en: The siren has stopped. How do you feel?
@@ -1130,6 +1148,14 @@ items:
           en: Continue my evening
           de: Ich mache weiter
         then: weiter
+  - id: ich-setze-kopfhoerer-auf-audio
+    type: effect
+    effect:
+      type: sound
+      options:
+        path: stories/evacuate/audio/siren.mp3
+      phase: end
+    then: ich-setze-kopfhoerer-auf
   - id: ich-setze-kopfhoerer-auf
     text:
       en: The siren has stopped. How do you feel?
@@ -1159,6 +1185,14 @@ items:
           en: calm
           de: Ruhig
         then: emoji-weiter
+  - id: ich-mache-nichts-audio
+    type: effect
+    effect:
+      type: sound
+      options:
+        path: stories/evacuate/audio/siren.mp3
+      phase: end
+    then: ich-mache-nichts
   - id: ich-mache-nichts
     text:
       en: The siren has stopped. How do you feel?
@@ -1198,7 +1232,7 @@ items:
           de: |
             Ich schließe die 
             Fenster zur Straße
-        then: ich-schliesse-die-fenster-zur-strasse
+        then: ich-schliesse-die-fenster-zur-strasse-audio
       - text:
           en: |
             Put 
@@ -1206,7 +1240,7 @@ items:
           de: |
             Ich setze 
             Kopfhörer auf
-        then: ich-setze-kopfhoerer-auf
+        then: ich-setze-kopfhoerer-auf-audio
       - text:
           en: |
             Back to 
@@ -1214,7 +1248,7 @@ items:
           de: |
             Weiter mit 
             dem Abendprogramm
-        then: ich-mache-nichts
+        then: ich-mache-nichts-audio
   - id: ganz-schoen-laut-und-nervig
     text:
       en: Nothing disturbs you.
@@ -1227,7 +1261,7 @@ items:
           de: |
             Ich schließe die 
             Fenster zur Straße
-        then: ich-schliesse-die-fenster-zur-strasse
+        then: ich-schliesse-die-fenster-zur-strasse-audio
       - text:
           en: |
             Put 
@@ -1235,7 +1269,7 @@ items:
           de: |
             Ich setze 
             Kopfhörer auf
-        then: ich-setze-kopfhoerer-auf
+        then: ich-setze-kopfhoerer-auf-audio
       - text:
           en: |
             Back to 
@@ -1243,7 +1277,7 @@ items:
           de: |
             Weiter mit 
             dem Abendprogramm
-        then: ich-mache-nichts
+        then: ich-mache-nichts-audio
   - id: bestimmt-ein-fehlalarm
     text:
       en: You are glad they do test alarms.
@@ -1256,7 +1290,7 @@ items:
           de: |
             Ich schließe 
             die Fenster zur Straße
-        then: ich-schliesse-die-fenster-zur-strasse
+        then: ich-schliesse-die-fenster-zur-strasse-audio
       - text:
           en: |
             Put 
@@ -1264,7 +1298,7 @@ items:
           de: |
             Ich setze 
             Kopfhörer auf
-        then: ich-setze-kopfhoerer-auf
+        then: ich-setze-kopfhoerer-auf-audio
       - text:
           en: |
             Back to 
@@ -1272,12 +1306,21 @@ items:
           de: |
             Weiter mit 
             dem Abendprogramm
-        then: ich-mache-nichts
+        then: ich-mache-nichts-audio
+  - id: weitermachen-audio
+    type: effect
+    effect:
+      type: sound
+      options:
+        path: stories/evacuate/audio/siren.mp3
+      phase: start
+    then: weitermachen
   - id: weitermachen
     text:
       en: Minutes pass. Suddenly, you hear sirens. What goes through your mind?
       de: Es vergehen ein paar Minuten. Plötzlich hörst du Sirenengeheul. Was geht dir
         durch den Kopf?
+#    sound: stories/evacuate/audio/siren.mp3
     responses:
       - text:
           en: |
@@ -1321,11 +1364,12 @@ items:
         Nur noch ein Kapitel! 
         Auf dem Handy blinkt eine Nachricht von deinem Nachbarn: 
         “ALLES OK BEI DIR?”
+    sound: stories/evacuate/audio/notification.aac
     responses:
       - text:
           en: '"Yes, you?"'
           de: “Ja, bei dir?”
-        then: weitermachen2
+        then: weitermachen2-audio
       - text:
           en: Write back later
           de: Ich antworte später
@@ -1340,11 +1384,12 @@ items:
         Du probierst das fünfte Outfit an. 
         Auf dem Handy blinkt eine Nachricht von deinem Nachbarn: 
         “ALLES OK BEI DIR?”
+    sound: stories/evacuate/audio/notification.aac
     responses:
       - text:
           en: '"Yes, you?"'
           de: “Ja, bei dir?”
-        then: weitermachen2
+        then: weitermachen2-audio
       - text:
           en: Write back later
           de: Ich antworte später
@@ -1359,11 +1404,12 @@ items:
         Der Pyjama ist so gemütlich! 
         Auf dem Handy blinkt eine Nachricht von deinem Nachbarn: 
         “ALLES OK BEI DIR?”
+    sound: stories/evacuate/audio/notification.aac
     responses:
       - text:
           en: '"Yes, you?"'
           de: “Ja, bei dir?”
-        then: weitermachen2
+        then: weitermachen2-audio
       - text:
           en: Write back later
           de: Ich antworte später
@@ -1378,11 +1424,12 @@ items:
         Nur noch 50 ungelesene E-Mails... 
         Auf dem Handy blinkt eine Nachricht von deinem Nachbarn: 
         “ALLES OK BEI DIR?”
+    sound: stories/evacuate/audio/notification.aac
     responses:
       - text:
           en: '"Yes, you?"'
           de: “Ja, bei dir?”
-        then: weitermachen2
+        then: weitermachen2-audio
       - text:
           en: Write back later
           de: Ich antworte später
@@ -1397,11 +1444,12 @@ items:
         Heute eine neue Krimiserie! 
         Auf dem Handy blinkt eine Nachricht von deinem Nachbarn: 
         “ALLES OK BEI DIR?”
+    sound: stories/evacuate/audio/notification.aac
     responses:
       - text:
           en: '"Yes, you?"'
           de: “Ja, bei dir?”
-        then: weitermachen2
+        then: weitermachen2-audio
       - text:
           en: Write back later
           de: Ich antworte später
@@ -1416,11 +1464,12 @@ items:
         Die Tomatensoße blubbert. 
         Auf dem Handy blinkt eine Nachricht von deinem Nachbarn: 
         “ALLES OK BEI DIR?”
+    sound: stories/evacuate/audio/notification.aac
     responses:
       - text:
           en: '"Yes, you?"'
           de: “Ja, bei dir?”
-        then: weitermachen2
+        then: weitermachen2-audio
       - text:
           en: Write back later
           de: Ich antworte später
@@ -1434,12 +1483,13 @@ items:
       de: |
         "Liebes Tagebuch! ..."
         Auf dem Handy blinkt eine Nachricht von deinem Nachbarn: 
-        “ALLES OK BEI DIR?”'
+        “ALLES OK BEI DIR?”
+    sound: stories/evacuate/audio/notification.aac
     responses:
       - text:
           en: '"Yes, you?"'
           de: “Ja, bei dir?”
-        then: weitermachen2
+        then: weitermachen2-audio
       - text:
           en: Write back later
           de: Ich antworte später
@@ -1454,11 +1504,12 @@ items:
         Staubsauger an. 
         Auf dem Handy blinkt eine Nachricht von deinem Nachbarn: 
         “ALLES OK BEI DIR?”
+    sound: stories/evacuate/audio/notification.aac
     responses:
       - text:
           en: '"Yes, you?"'
           de: “Ja, bei dir?”
-        then: weitermachen2
+        then: weitermachen2-audio
       - text:
           en: Write back later
           de: Ich antworte später
@@ -1473,11 +1524,12 @@ items:
         Du schwelgst im Schlagzeug-Solo. 
         Auf dem Handy blinkt eine Nachricht von deinem Nachbarn: 
         “ALLES OK BEI DIR?”
+    sound: stories/evacuate/audio/notification.aac
     responses:
       - text:
           en: '"Yes, you?"'
           de: “Ja, bei dir?”
-        then: weitermachen2
+        then: weitermachen2-audio
       - text:
           en: Write back later
           de: Ich antworte später
@@ -1492,11 +1544,12 @@ items:
         Wow, schon 20 Tabs mit Hotelangeboten. 
         Auf dem Handy blinkt eine Nachricht von deinem Nachbarn: 
         “ALLES OK BEI DIR?”
+    sound: stories/evacuate/audio/notification.aac
     responses:
       - text:
           en: '"Yes, you?"'
           de: “Ja, bei dir?”
-        then: weitermachen2
+        then: weitermachen2-audio
       - text:
           en: Write back later
           de: Ich antworte später
