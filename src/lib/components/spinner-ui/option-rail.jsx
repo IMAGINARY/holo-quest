@@ -96,10 +96,12 @@ export default function OptionRail({
               style={{
                 left: x,
                 top: railY - label.offsetY,
-                transform: `translateX(-50%) scale(${scale})`,
+                transform: `translateX(-50%) translateY(-100%) scale(${scale})`,
+                transformOrigin: 'center bottom',
                 color: labelColor,
                 fontSize: label.fontSizeMin,
-                whiteSpace: 'nowrap',
+                whiteSpace: 'pre-line',
+                minWidth: `${layout.stepWidth * 0.8}px`,
               }}
             >
               {options[key]}

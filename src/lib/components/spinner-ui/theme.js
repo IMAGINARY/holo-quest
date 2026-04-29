@@ -56,11 +56,11 @@ export default {
   },
   label: {
     fontSizeMin: 30,
-    fontSizeMax: 38,
+    fontSizeMax: 36,
     colorFar: neutral[400],
     colorNearMoving: neutral[150],
     colorNearResting: '#ffffff',
-    offsetY: 90,
+    offsetY: 45,
     proximityRange: 0.5,
   },
   ring: {
@@ -68,7 +68,7 @@ export default {
     color: '#ffffff',
   },
   layout: {
-    stepWidth: 220,
+    stepWidth: 250,
     railPaddingX: 40,
     height: 60,
   },
