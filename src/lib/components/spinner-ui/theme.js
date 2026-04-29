@@ -57,7 +57,7 @@ export default {
   label: {
     fontSizeMin: 30,
     fontSizeMax: 36,
-    colorFar: neutral[400],
+    colorFar: neutral[200],
     colorNearMoving: neutral[150],
     colorNearResting: '#ffffff',
     offsetY: 45,
