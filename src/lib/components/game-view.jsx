@@ -26,7 +26,7 @@ export default function GameView({ config, controller }) {
   );
 
   const segments = useMemo(
-    () => (resolvedText !== null ? [{ string: resolvedText, speed: Speeds.normal }] : null),
+    () => (resolvedText !== null ? [{ string: resolvedText, speed: Speeds.fast }] : null),
     [resolvedText]
   );
 
