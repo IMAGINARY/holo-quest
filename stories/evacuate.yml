@@ -12,7 +12,15 @@ items:
       - text:
           en: Yes
           de: Ja
-        then: ready
+        then: bg-living_room
+  - id: bg-living_room
+    type: effect
+    effect:
+      type: bg_image
+      options:
+        path: stories/evacuate/images/living-room.png
+      phase: start
+    then: ready
   - id: ready
     text:
       en: |
@@ -390,7 +398,7 @@ items:
           de: |
             Ich verlasse 
             die Wohnung
-        then: verlassen
+        then: bg-street-2
       - text:
           en: |
             Wait a 
@@ -399,6 +407,14 @@ items:
             Ich warte 
             noch etwas
         then: durchsage
+  - id: bg-hallway
+    type: effect
+    effect:
+      type: bg_image
+      options:
+        path: stories/evacuate/images/hallway.png
+      phase: start
+    then: nachbar
   - id: nachbar
     text:
       en: |
@@ -423,7 +439,7 @@ items:
           de: |
             Ich verlasse 
             die Wohnung
-        then: verlassen
+        then: bg-street-2
       - text:
           en: |
             Wait a 
@@ -448,7 +464,15 @@ items:
           de: |
             Ich verlasse 
             die Wohnung
-        then: strassenszene
+        then: bg-street
+  - id: bg-street
+    type: effect
+    effect:
+      type: bg_image
+      options:
+        path: stories/evacuate/images/street.png
+      phase: start
+    then: strassenszene
   - id: strassenszene
     text:
       en: |
@@ -879,6 +903,14 @@ items:
 #          en: No, restart
 #          de: Nein, zum Neustart
 #        then: start
+  - id: bg-street-2
+    type: effect
+    effect:
+      type: bg_image
+      options:
+        path: stories/evacuate/images/street.png
+      phase: start
+    then: verlassen
   - id: verlassen
     text:
       en: |
@@ -938,7 +970,7 @@ items:
       - text:
           en: Leave the flat
           de: Ich verlasse die Wohnung
-        then: strassenszene
+        then: bg-street
       - text:
           en: |
             Stay, an evacuation 
@@ -999,7 +1031,7 @@ items:
       - text:
           en: Leave the flat
           de: Ich verlasse die Wohnung
-        then: verlassen
+        then: bg-street-2
   - id: warten
     text:
       en: How long do you wait?
@@ -1033,7 +1065,7 @@ items:
       - text:
           en: Leave the flat
           de: Ich verlasse die Wohnung
-        then: verlassen
+        then: bg-street-2
       - text:
           en: Wait a little longer
           de: Ich warte noch etwas
@@ -1056,7 +1088,7 @@ items:
           de: |
             Ich gehe 
             zum Nachbarn
-        then: nachbar
+        then: bg-hallway
       - text:
           en: | 
             Contact 
@@ -1088,7 +1120,7 @@ items:
           de: |
             Ich verlasse 
             die Wohnung
-        then: verlassen
+        then: bg-street-2
   - id: fenster
     text:
       en: Outside, it's unsettled. You can see some smoke. It's starting to rain.

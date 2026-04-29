@@ -16,7 +16,7 @@ gameView:
     # Fade in/out transition duration (ms). Also used as the gap between
     # fade-out and fade-in when swapping from one image to another, so a
     # full image-to-image transition takes 2× this value.
-    fadeDurationMs: 350
+    fadeDurationMs: 3000
   # Dev-mode on-screen-display bar (bottom-left); invisible when no message
   devStatusBar:
     # Text size (in em units)

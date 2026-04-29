@@ -34,7 +34,11 @@ export default defineConfig({
         {
           src: 'config/*.yml',
           dest: 'config',
-        }
+        },
+        {
+          src: 'stories/*',
+          dest: 'stories',
+        },
       ],
     }),
   ],

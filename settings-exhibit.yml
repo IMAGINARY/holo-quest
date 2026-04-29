@@ -1,3 +1,7 @@
 spinner:
   stickyForce: 5
   sensitivity: 0.005
+holoDisplay:
+  screens:
+    back:
+      brightness: 1
