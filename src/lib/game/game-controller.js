@@ -32,7 +32,7 @@ export default class GameController {
       this.dialogueEffectFactory,
       this.gameUiController
     );
-    this.dialogueSequencer.events.on('terminate', this.handleGameEnded.bind(this));
+    this.dialogueSequencer.events.on('end', this.handleGameEnded.bind(this));
     this.dialogueIteratorContext = new DialogueIteratorContext(this.flags);
 
     // noinspection JSUnusedGlobalSymbols

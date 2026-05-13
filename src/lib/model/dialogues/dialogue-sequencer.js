@@ -8,7 +8,9 @@ import useDevStatus from '../../stores/dev-status';
  * Drives dialogue playback by iterating through the dialogue tree and
  * delegating presentation to UI states (text, effect, response).
  *
- * Emits 'end' when the dialogue finishes and 'terminate' when forcibly stopped.
+ * Emits 'end' when the dialogue finishes naturally (after cleanup).
+ * Emits 'terminate' when stopped forcibly via terminate(); also fires during
+ * natural completion (before 'end') as part of that cleanup.
  */
 export default class DialogueSequencer {
   /**
@@ -101,8 +103,8 @@ export default class DialogueSequencer {
 
   /** @private */
   onDialogueEnd() {
-    this.events.emit('end');
     this.terminate();
+    this.events.emit('end');
   }
 
   /**
