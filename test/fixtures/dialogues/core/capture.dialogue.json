@@ -1,0 +1,12 @@
+{
+  "id": "capture",
+  "items": [
+    {
+      "text": "Hello world!"
+    }
+  ],
+  "capture": {
+    "cond": "consent = 1",
+    "flags": ["survey-*", "ending", "q?"]
+  }
+}

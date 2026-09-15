@@ -8,6 +8,9 @@
     },
     "items": {
       "$ref": "#/definitions/nodeList"
+    },
+    "capture": {
+      "$ref": "#/definitions/capture"
     }
   },
   "required": [
@@ -118,6 +121,20 @@
       "minItems": 0,
       "maxItems": 100
     },
+    "flag_pattern": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100,
+      "pattern": "^[a-zA-Z_*?][.a-zA-Z0-9_*?-]*$"
+    },
+    "flag_patterns": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/flag_pattern"
+      },
+      "minItems": 1,
+      "maxItems": 100
+    },
     "flag_assignments": {
       "type": "array",
       "items": {
@@ -136,6 +153,21 @@
       "type": "string",
       "minLength": 1,
       "maxLength": 1000
+    },
+    "capture": {
+      "type": "object",
+      "properties": {
+        "cond": {
+          "$ref": "#/definitions/condition"
+        },
+        "flags": {
+          "$ref": "#/definitions/flag_patterns"
+        }
+      },
+      "required": [
+        "flags"
+      ],
+      "additionalProperties": false
     },
     "sequence": {
       "type": "object",

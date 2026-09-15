@@ -1,0 +1,11 @@
+{
+  "id": "invalid-capture-no-flags",
+  "items": [
+    {
+      "text": "Capture without flags!"
+    }
+  ],
+  "capture": {
+    "cond": "consent = 1"
+  }
+}

@@ -9,7 +9,7 @@ Tree-structured dialogue engine: parses JSON dialogue definitions, validates the
 - **`dialogue-iterator-context.js`** — `DialogueIteratorContext`; runtime state wrapping an external `FlagStore` + cycle position tracking
 - **`dialogue-sequencer.js`** — `DialogueSequencer`; playback controller that drives the iterator, manages UI states and effects, emits `'end'`/`'terminate'` events
 - **`condition-parser.js`** — `ConditionParser`; expression evaluator using `expressionparser` lib
-- **`dialogue-safe-builder.js`** — `safeBuildDialogueFromItems`; error-tolerant builder that returns a placeholder dialogue on failure
+- **`dialogue-safe-builder.js`** — `safeBuildDialogue`; error-tolerant builder (takes the whole definition, so root-level properties like `capture` are kept) that returns a placeholder dialogue on failure
 
 ### Validation (three layers, run in order)
 

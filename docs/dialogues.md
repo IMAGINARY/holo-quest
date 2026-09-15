@@ -12,14 +12,20 @@ Example:
 {
   "id": "dialogue_id",
   "items": [
-  ]
+  ],
+  "capture": {
+    "cond": "consent = 1",
+    "flags": ["survey-*", "ending"]
+  }
 }
 ```
 
-A dialogue has two properties:
+A dialogue has three properties:
 
 - **id**: (string) The dialogue's id.
 - **items**: (array) An array of node objects.
+- **capture**: (object, optional) Flags whose values are captured at the end of the game (see
+    [Capture](#capture)).
 
 ## Nodes
 
@@ -257,6 +263,42 @@ in different ways:
 - `flag -= n`: Subtracts n from the flag's value (where n is a number literal).
 
 Flags accept decimal numbers, including negative values.
+
+## Capture
+
+A dialogue can declare flags whose values are captured (sent to an external data store) at the end
+of the game.
+
+Example:
+
+```json
+{
+  "capture": {
+    "cond": "consent = 1",
+    "flags": ["survey-*", "ending"]
+  }
+}
+```
+
+A capture object has these properties:
+
+- `cond` (string, optional): A logical expression (see [Expressions](#expressions)). Flags are
+    only captured if it's true. If it's not set, flags are always captured.
+- `flags` (array, required): One or more flag names or patterns. A flag is captured if its name
+    matches any of them.
+
+No other properties are allowed, so a misspelled `cond` fails validation instead of silently
+capturing flags unconditionally.
+
+Patterns can use these wildcards:
+
+- `*`: Matches any sequence of characters, including none.
+- `?`: Matches exactly one character.
+
+Matching is case-sensitive and must cover the whole flag name. For example, `survey-*` matches
+`survey-age` but not `pre-survey-age`, and `q?` matches `q1` but not `q10`.
+
+The engine doesn't act on `capture` yet: the property is validated but otherwise ignored.
 
 ## Restrictions
 

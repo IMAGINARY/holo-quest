@@ -17,23 +17,25 @@ function emptyDialogue(id) {
 }
 
 /**
- * Builds a {@link Dialogue} from items, falling back to a placeholder on error.
+ * Builds a {@link Dialogue} from a dialogue definition, falling back to a placeholder on error.
  * Validation and parse errors are logged rather than thrown.
  *
- * @param {string} id - Dialogue identifier.
- * @param {Array<Object>} items - Dialogue item definitions.
+ * The whole definition is passed to {@link Dialogue.fromJson}, so root-level properties such as
+ * `capture` are validated and kept. Any validation error (including one in `capture`) replaces
+ * the entire dialogue with the placeholder.
+ *
+ * @param {Object} definition - Dialogue definition (`id`, `items` and optional root-level
+ *  properties, see docs/dialogues.md).
  * @returns {Dialogue}
  */
-export default function safeBuildDialogueFromItems(id, items) {
+export default function safeBuildDialogue(definition) {
+  const { id, items } = definition;
   try {
     if (items.length === 0) {
       logger.error(`Dialogue with id ${id} has no items`);
       return emptyDialogue(id);
     }
-    return Dialogue.fromJson({
-      id,
-      items,
-    });
+    return Dialogue.fromJson(definition);
   } catch (e) {
     if (e.errors) {
       const errorText = [];

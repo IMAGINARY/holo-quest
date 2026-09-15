@@ -1,0 +1,12 @@
+{
+  "id": "invalid-capture-unknown-property",
+  "items": [
+    {
+      "text": "Capture with a misspelled cond!"
+    }
+  ],
+  "capture": {
+    "condition": "consent = 1",
+    "flags": ["survey-*"]
+  }
+}

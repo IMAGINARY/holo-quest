@@ -1,0 +1,11 @@
+{
+  "id": "invalid-capture-pattern",
+  "items": [
+    {
+      "text": "Capture with an invalid pattern!"
+    }
+  ],
+  "capture": {
+    "flags": ["survey age"]
+  }
+}

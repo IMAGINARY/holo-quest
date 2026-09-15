@@ -5,6 +5,7 @@ import TestDialogueIteratorContext from './lib/test-dialogue-iterator-context';
 import getDialogueTrace from './lib/get-dialogue-trace';
 import helloWorldDialogue from './fixtures/dialogues/core/hello-world.dialogue.json';
 import helloThenWorldDialogue from './fixtures/dialogues/core/then.dialogue.json';
+import captureDialogue from './fixtures/dialogues/core/capture.dialogue.json';
 import sequenceDialogue from './fixtures/dialogues/sequences/sequence.dialogue.json';
 import nestedSequencesDialogue from './fixtures/dialogues/sequences/nested-sequences.dialogue.json';
 import sequenceWithSkipDialogue
@@ -47,6 +48,12 @@ import thenTextResponseI18nDialogue
 import invalidTypeDialogue from './fixtures/dialogues/invalid/invalid-type.dialogue.json';
 import invalidThenDialogue from './fixtures/dialogues/invalid/invalid-then.dialogue.json';
 import invalidCondDialogue from './fixtures/dialogues/invalid/invalid-cond.dialogue.json';
+import invalidCaptureNoFlagsDialogue
+  from './fixtures/dialogues/invalid/invalid-capture-no-flags.dialogue.json';
+import invalidCapturePatternDialogue
+  from './fixtures/dialogues/invalid/invalid-capture-pattern.dialogue.json';
+import invalidCaptureUnknownPropertyDialogue
+  from './fixtures/dialogues/invalid/invalid-capture-unknown-property.dialogue.json';
 
 describe('DialogueIterator', () => {
   describe('core functionality', () => {
@@ -416,9 +423,29 @@ describe('DialogueIterator', () => {
     });
   });
 
+  describe('capture', () => {
+    it('should accept a capture with a condition and flag patterns', () => {
+      const dialogue = Dialogue.fromJson(captureDialogue);
+      expect(dialogue.root.capture.flags).to.deep.equal(['survey-*', 'ending', 'q?']);
+    });
+  });
+
   describe('invalid dialogues', () => {
     it('should throw an exception if a node has an invalid type', () => {
       expect(() => Dialogue.fromJson(invalidTypeDialogue)).to.throw('validation failed');
+    });
+
+    it('should throw an exception if a capture has no flags', () => {
+      expect(() => Dialogue.fromJson(invalidCaptureNoFlagsDialogue)).to.throw('validation failed');
+    });
+
+    it('should throw an exception if a capture has an invalid flag pattern', () => {
+      expect(() => Dialogue.fromJson(invalidCapturePatternDialogue)).to.throw('validation failed');
+    });
+
+    it('should throw an exception if a capture has an unknown property', () => {
+      expect(() => Dialogue.fromJson(invalidCaptureUnknownPropertyDialogue))
+        .to.throw('validation failed');
     });
 
     it('should throw an exception if a node tries to transition to a non-existant node', () => {

@@ -4,14 +4,14 @@ import initStandaloneApp from './lib/init/init-standalone-app';
 import registerDialogueEffects from './lib/init/register-dialogue-effects';
 import GameView from './lib/components/game-view';
 import GameController from './lib/game/game-controller';
-import safeBuildDialogueFromItems from './lib/model/dialogues/dialogue-safe-builder';
+import safeBuildDialogue from './lib/model/dialogues/dialogue-safe-builder';
 
 const { config, story } = await initStandaloneApp();
 registerDialogueEffects();
 // eslint-disable-next-line no-console
 console.log('Ready.');
 
-const parsedStory = safeBuildDialogueFromItems(story.id, story.items);
+const parsedStory = safeBuildDialogue(story);
 const controller = new GameController(config);
 controller.setStory(parsedStory);
 
