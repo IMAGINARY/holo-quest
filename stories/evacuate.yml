@@ -607,7 +607,6 @@ items:
 #      - text:
 #          en: No, restart
 #          de: Nein, zum Neustart
-#        then: start
   - id: umfrage
     text:
       en: Would you like to answer 3 quick questions about yourself?
@@ -620,7 +619,6 @@ items:
       - text:
           en: No, restart
           de: Nein, zum Neustart
-        then: start
   - id: frage-1
     text:
       en: "Question 1/3: How old are you?"
@@ -728,7 +726,6 @@ items:
       - text:
           en: Back to the start
           de: Zurück zum Start
-        then: start
   - id: ende-notunterkunft
     text:
       en: |
@@ -757,7 +754,6 @@ items:
 #      - text:
 #          en: No, restart
 #          de: Nein, zum Neustart
-#        then: start
   - id: polizei-hilft
     text:
       en: A policewoman sees that you are afraid. She guides you to an emergency
@@ -800,7 +796,6 @@ items:
 #      - text:
 #          en: No, restart
 #          de: Nein, zum Neustart
-#        then: start
   - id: emoji-weiter3
     text:
       en: What do you think?
@@ -864,7 +859,6 @@ items:
 #      - text:
 #          en: No, restart
 #          de: Nein, zum Neustart
-#        then: start
   - id: ende-land
     text:
       en: |
@@ -894,7 +888,6 @@ items:
 #      - text:
 #          en: No, restart
 #          de: Nein, zum Neustart
-#        then: start
   - id: ende-notunterkunft-help
     text:
       en: |
@@ -923,7 +916,6 @@ items:
 #      - text:
 #          en: No, restart
 #          de: Nein, zum Neustart
-#        then: start
   - id: bg-street-2
     type: effect
     effect:
@@ -1047,7 +1039,6 @@ items:
 #      - text:
 #          en: No, restart
 #          de: Nein, zum Neustart
-#        then: start
   - id: familie
     text:
       en: You call your cousins who live nearby. You decide together what to do next.
@@ -1580,4 +1571,3 @@ items:
       - text:
           en: No, restart
           de: Nein, zum Neustart
-        then: start
