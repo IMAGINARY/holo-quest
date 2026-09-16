@@ -1,4 +1,6 @@
 import checkCyclesInDialogue from './dialogue-validation-cycles';
+import ConditionParser from './condition-parser';
+import FlagStore from '../flag-store';
 
 /**
  * Throws if any two nodes in the dialogue share the same id.
@@ -90,8 +92,28 @@ function checkResponseFlag(dialogue) {
 }
 
 /**
+ * Throws if the dialogue's `capture.cond` is not a parseable condition expression.
+ *
+ * Evaluated against an empty flag store, so unknown flags resolve to 0: this catches syntax
+ * errors and invalid terms, but not a misspelled flag name (an unset flag is a legal term).
+ *
+ * @param {Dialogue} dialogue
+ * @throws {Error}
+ */
+function checkCapture(dialogue) {
+  const { capture } = dialogue.root;
+  if (!capture?.cond?.trim()) return;
+
+  try {
+    new ConditionParser({ flags: new FlagStore() }).evaluate(capture.cond);
+  } catch (e) {
+    throw new Error(`Dialogue has an invalid capture condition: ${capture.cond} in ${dialogue.root.id}: ${e.message}`);
+  }
+}
+
+/**
  * Runs all structural validations on a parsed dialogue: duplicate ids,
- * invalid references, response values, response flags, and cycles.
+ * invalid references, response values, response flags, capture condition, and cycles.
  *
  * @param {Dialogue} dialogue
  * @throws {Error}
@@ -101,5 +123,6 @@ export default function validateDialogue(dialogue) {
   checkInvalidReferences(dialogue);
   checkResponseValues(dialogue);
   checkResponseFlag(dialogue);
+  checkCapture(dialogue);
   checkCyclesInDialogue(dialogue);
 }

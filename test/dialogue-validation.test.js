@@ -26,6 +26,9 @@ import responseWithValuesDialogue
   from './fixtures/dialogues/responses/response-with-values.dialogue.json';
 import responseFlagDialogue
   from './fixtures/dialogues/responses/response-flag.dialogue.json';
+import invalidCaptureCondDialogue
+  from './fixtures/dialogues/invalid/invalid-capture-cond.dialogue.json';
+import captureDialogue from './fixtures/dialogues/core/capture.dialogue.json';
 
 describe('Dialogue validation', () => {
   describe('ids', () => {
@@ -106,6 +109,18 @@ describe('Dialogue validation', () => {
 
     it('should accept a responseFlag when all responses have unique values', () => {
       const dialogue = Dialogue.fromJson(responseFlagDialogue);
+      expect(() => validateDialogue(dialogue)).to.not.throw();
+    });
+  });
+
+  describe('capture', () => {
+    it('should detect a capture condition that cannot be parsed', () => {
+      const dialogue = Dialogue.fromJson(invalidCaptureCondDialogue);
+      expect(() => validateDialogue(dialogue)).to.throw('invalid capture condition');
+    });
+
+    it('should accept a valid capture condition', () => {
+      const dialogue = Dialogue.fromJson(captureDialogue);
       expect(() => validateDialogue(dialogue)).to.not.throw();
     });
   });

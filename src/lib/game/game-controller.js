@@ -5,6 +5,8 @@ import FlagStore from '../model/flag-store';
 import DialogueEffectFactory from '../model/dialogues/effects/dialogue-effect-factory';
 import DialogueSequencer from '../model/dialogues/dialogue-sequencer';
 import DialogueIteratorContext from '../model/dialogues/dialogue-iterator-context';
+import ConditionParser from '../model/dialogues/condition-parser';
+import selectCapturedFlags from '../model/dialogues/flag-capture';
 import GameUiController from './game-ui-controller';
 import SoundManager from '../sound/sound-manager';
 
@@ -33,6 +35,7 @@ export default class GameController {
       this.gameUiController
     );
     this.dialogueSequencer.events.on('end', this.handleGameEnded.bind(this));
+    this.dialogueSequencer.events.on('terminate', this.captureFlags.bind(this));
     this.dialogueIteratorContext = new DialogueIteratorContext(this.flags);
 
     // noinspection JSUnusedGlobalSymbols
@@ -151,6 +154,75 @@ export default class GameController {
   handleGameEnded() {
     this.gameInProgress = false;
     this.startGame();
+  }
+
+  /**
+   * Evaluates the story's `capture` declaration and hands the matching flags off for
+   * persistence.
+   *
+   * Runs once per game, on the sequencer's `terminate` event, which fires both when the story
+   * ends naturally and when a game is cut short by a restart — in both cases before
+   * `resetState()` clears the flag store.
+   *
+   * Never throws: this runs inside an event emit that the restart path depends on, so an
+   * escaping exception would leave the kiosk with no way to start the next game.
+   *
+   * Logs the decision and its reason, but never flag values — captured flags can hold personal
+   * survey answers.
+   */
+  captureFlags() {
+    try {
+      const capture = this.story?.root?.capture;
+      if (!capture) {
+        logger.info('GameController: the story declares no capture; nothing persisted');
+        return;
+      }
+
+      const cond = capture.cond?.trim() ? capture.cond : null;
+      if (cond !== null) {
+        let condMet;
+        try {
+          condMet = new ConditionParser(this.dialogueIteratorContext).evaluate(cond);
+        } catch (e) {
+          logger.warn("GameController: capture condition '%s' failed to evaluate (%s); nothing persisted", cond, e.message);
+          return;
+        }
+        if (!condMet) {
+          logger.info("GameController: capture condition '%s' is false; nothing persisted", cond);
+          return;
+        }
+      }
+
+      const capturedFlags = selectCapturedFlags(capture.flags, this.flags.all());
+      const capturedCount = Object.keys(capturedFlags).length;
+      if (capturedCount === 0) {
+        logger.info('GameController: no flag matched the %d capture pattern(s); nothing persisted', capture.flags.length);
+        return;
+      }
+
+      logger.info('GameController: persisting %d flag(s) matched by %d capture pattern(s)', capturedCount, capture.flags.length);
+      this.submitCapturedFlags(capturedFlags);
+    } catch (e) {
+      logger.error('GameController: flag capture failed (%s); nothing persisted', e.message);
+    }
+  }
+
+  /**
+   * Hands captured flag values off for persistence.
+   *
+   * Placeholder: this will delegate to a library that transparently forwards the payload to a
+   * cloud service, together with a hash of the story that produced them as a content version.
+   * Until then it deliberately drops the payload.
+   *
+   * The payload is a fresh object, unaffected by the flag store reset that follows, so an
+   * implementation may retain it across the restart.
+   *
+   * @param {Object<string, number|string>} flags Flags selected by {@link captureFlags}. Values
+   *  may be personal and must never be logged or sent to error reporting.
+   */
+  // eslint-disable-next-line class-methods-use-this
+  submitCapturedFlags(flags) {
+    logger.debug('GameController: submitCapturedFlags is a placeholder; %d flag(s) discarded', Object.keys(flags).length);
   }
 
   /**

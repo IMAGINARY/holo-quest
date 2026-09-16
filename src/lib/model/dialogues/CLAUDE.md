@@ -10,11 +10,12 @@ Tree-structured dialogue engine: parses JSON dialogue definitions, validates the
 - **`dialogue-sequencer.js`** — `DialogueSequencer`; playback controller that drives the iterator, manages UI states and effects, emits `'end'`/`'terminate'` events
 - **`condition-parser.js`** — `ConditionParser`; expression evaluator using `expressionparser` lib
 - **`dialogue-safe-builder.js`** — `safeBuildDialogue`; error-tolerant builder (takes the whole definition, so root-level properties like `capture` are kept) that returns a placeholder dialogue on failure
+- **`flag-capture.js`** — `selectCapturedFlags`; matches flag names against the patterns in a dialogue's `capture.flags` (also exports `flagPatternToRegExp`)
 
 ### Validation (three layers, run in order)
 
 - **`dialogue-schema-validation.js`** — JSON Schema validation via AJV (lazily compiled)
-- **`dialogue-validation.js`** — Structural checks: duplicate IDs, invalid `then` references, cycles
+- **`dialogue-validation.js`** — Structural checks: duplicate IDs, invalid `then` references, `capture.cond` syntax, cycles
 - **`dialogue-validation-cycles.js`** — Directed graph cycle detection via `find-cycle/directed`
 
 ### Sequencer UI States (`dialogue-sequencer-states/`)
@@ -50,7 +51,7 @@ All states implement the `onBegin`/`onEnd` lifecycle from the base class.
 4. Iterator skips non-interactive nodes (sequence/random/cycle/first) via `next()`
 5. On `statement` → TextState → speech bubble → (optional) ResponseState → (optional) ThenState
 6. On `effect` → EffectState → creates/ends effect via factory
-7. After UI completes → `endUi()` → iterator advances → loop until end → emits `'end'`, calls `terminate()`
+7. After UI completes → `endUi()` → iterator advances → loop until end → `terminate()` (emits `'terminate'`, which runs `GameController.captureFlags()` while the flags are still set) → emits `'end'` → `GameController.handleGameEnded()` restarts the game
 
 ## Flag Assignments (`set` property)
 
@@ -59,7 +60,7 @@ All states implement the `onBegin`/`onEnd` lifecycle from the base class.
 - `"flag += 1"` — increment
 - `"flag -= 1"` — decrement
 
-Values clamped to [0, 999] by `FlagStore`.
+Values are not clamped or otherwise constrained by `FlagStore`; they can be negative or decimal, and `responseFlag` stores a string.
 
 ## Condition Language
 
@@ -79,7 +80,7 @@ Values clamped to [0, 999] by `FlagStore`.
 
 - `DialogueIteratorContext` wraps `FlagStore` from `../flag-store.js`
 - `DialogueSequencer` talks to a `uiController` (UI interface): `showSpeech`, `hideSpeech`, `speedUpSpeech`, `showPressToContinue`, `showResponseOptions`, `hideResponseOptions`, `getSelectedResponseId`, `setTopTitle`, `hide`; overlay exposes `events` (EventEmitter with `'textShown'`)
-- Each file exports a single default export
+- Each file exports a single default export (`flag-capture.js` additionally exports `flagPatternToRegExp` for testing)
 
 ## Related Files
 
@@ -89,3 +90,5 @@ Values clamped to [0, 999] by `FlagStore`.
 - **`test/dialogues.test.js`** — main test suite with fixtures in `test/fixtures/dialogues/`
 - **`test/condition-parser.test.js`** — condition expression tests
 - **`test/dialogue-validation.test.js`** — validation tests
+- **`test/flag-capture.test.js`** — flag pattern matching tests
+- **`src/lib/game/game-controller.js`** — owns the `FlagStore` and runs capture on the sequencer's `'terminate'` event

@@ -1,0 +1,12 @@
+{
+  "id": "invalid-capture-cond",
+  "items": [
+    {
+      "text": "Hello world!"
+    }
+  ],
+  "capture": {
+    "cond": "consent = $",
+    "flags": ["ending"]
+  }
+}

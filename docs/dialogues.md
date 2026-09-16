@@ -298,7 +298,20 @@ Patterns can use these wildcards:
 Matching is case-sensitive and must cover the whole flag name. For example, `survey-*` matches
 `survey-age` but not `pre-survey-age`, and `q?` matches `q1` but not `q10`.
 
-The engine doesn't act on `capture` yet: the property is validated but otherwise ignored.
+Be careful with a pattern of `*` on its own: it captures *every* flag in the store, including any
+the engine sets itself, such as the values written through `responseFlag`. Prefer a shared prefix
+like `survey-*` so that adding a flag elsewhere in the story can't silently widen what is captured.
+
+At the end of a story the engine evaluates `cond` and selects the flags matching `flags`.
+Forwarding them to the external data store is not implemented yet, so nothing leaves the device.
+
+Nothing is captured if the story declares no `capture`, if `cond` is false or fails to evaluate, or
+if no flag matches any pattern. Each of those decisions is logged at `info` level together with its
+reason; flag values are never written to the log.
+
+Capture also runs when a play-through is cut short by a restart, with whatever flags are set at that
+point. A story that only wants data from completed runs should say so in `cond` — for example by
+gating on a flag set on the final node.
 
 ## Restrictions
 
