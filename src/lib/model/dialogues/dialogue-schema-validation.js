@@ -12,7 +12,10 @@ import schema from '../../../../specs/dialogue.schema.json';
  */
 export default function validateDialogueDefinition(dialogueDefinition) {
   if (!validateDialogueDefinition.validate) {
-    const ajv = new Ajv();
+    // allErrors so a content mistake reports its real cause: because `node` is a
+    // `oneOf`, the first error is otherwise always the unrelated `sequence` branch
+    // complaining about a missing `items`.
+    const ajv = new Ajv({ allErrors: true });
     validateDialogueDefinition.validate = ajv.compile(schema);
   }
   const valid = validateDialogueDefinition.validate(dialogueDefinition);
