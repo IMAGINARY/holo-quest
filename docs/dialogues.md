@@ -394,6 +394,10 @@ gating on a flag set on the final node.
 
 ## Restrictions
 
+These rules are enforced when the dialogue is built, not while it plays. A story that breaks one of
+them fails to load and stops the app with a fatal error, rather than running until the broken part
+is reached.
+
 ### IDs must be unique
 
 Node IDs, and the ID of the dialogue itself, must be unique within a dialogue.

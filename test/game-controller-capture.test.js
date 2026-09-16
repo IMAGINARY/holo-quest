@@ -5,7 +5,7 @@ import logger from 'loglevel';
 import GameController from '../src/lib/game/game-controller';
 import FlagStore from '../src/lib/model/flag-store';
 import DialogueIteratorContext from '../src/lib/model/dialogues/dialogue-iterator-context';
-import safeBuildDialogue from '../src/lib/model/dialogues/dialogue-safe-builder';
+import Dialogue from '../src/lib/model/dialogues/dialogue';
 import captureDialogue from './fixtures/dialogues/core/capture.dialogue.json';
 import helloWorldDialogue from './fixtures/dialogues/core/hello-world.dialogue.json';
 
@@ -23,7 +23,7 @@ function makeController(definition = captureDialogue) {
     controller.flags,
     { strict: true }
   );
-  controller.story = definition === null ? undefined : safeBuildDialogue(definition);
+  controller.story = definition === null ? undefined : Dialogue.fromJson(definition);
   controller.submitted = [];
   controller.submitCapturedFlags = (flags) => { controller.submitted.push(flags); };
   return controller;

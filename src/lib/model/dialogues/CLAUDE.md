@@ -10,13 +10,12 @@ Tree-structured dialogue engine: parses JSON dialogue definitions, validates the
 - **`dialogue-sequencer.js`** — `DialogueSequencer`; playback controller that drives the iterator, manages UI states and effects, emits `'end'`/`'terminate'` events
 - **`condition-parser.js`** — `ConditionParser`; expression evaluator using `expressionparser` lib
 - **`condition-type-error.js`** — `ConditionTypeError`; raised for ill-typed operands, so lenient mode can tell a content mistake from a syntax error
-- **`dialogue-safe-builder.js`** — `safeBuildDialogue`; error-tolerant builder (takes the whole definition, so root-level properties like `capture` are kept) that returns a placeholder dialogue on failure
 - **`flag-capture.js`** — `selectCapturedFlags`; matches flag names against the patterns in a dialogue's `capture.flags` (also exports `flagPatternToRegExp`)
 
 ### Validation (three layers, run in order)
 
 - **`dialogue-schema-validation.js`** — JSON Schema validation via AJV (lazily compiled)
-- **`dialogue-validation.js`** — Structural checks: duplicate IDs, invalid `then` references, response values (all-or-none, unique, one type per `responseFlag` across the dialogue), `capture.cond` syntax, cycles. **Not currently called from `src/`** — these run in tests only; the schema layer is the one that runs in production
+- **`dialogue-validation.js`** — Structural checks: duplicate IDs, invalid `then` references, response values (all-or-none, unique, one type per `responseFlag` across the dialogue), `capture.cond` syntax, cycles. Runs at the end of `Dialogue.fromJson`, after the schema layer, so both layers run on the production load path
 - **`dialogue-validation-cycles.js`** — Directed graph cycle detection via `find-cycle/directed`
 
 ### Sequencer UI States (`dialogue-sequencer-states/`)
@@ -46,13 +45,12 @@ All states implement the `onBegin`/`onEnd` lifecycle from the base class.
 
 ## Execution Flow
 
-1. `Dialogue.fromJson(json)` — schema-validates, deep-copies, links parents, normalizes types/ids
-2. `validateDialogue(dialogue)` — checks duplicate IDs, invalid references, response values, cycles. Note: **not wired into this flow today** — nothing in `src/` calls it, so only step 1's schema validation runs in the shipped app
-3. `DialogueSequencer.play(dialogue, context, options)` — creates iterator, calls `runUntilInteractivity`
-4. Iterator skips non-interactive nodes (sequence/random/cycle/first) via `next()`
-5. On `statement` → TextState → speech bubble → (optional) ResponseState → (optional) ThenState
-6. On `effect` → EffectState → creates/ends effect via factory
-7. After UI completes → `endUi()` → iterator advances → loop until end → `terminate()` (emits `'terminate'`, which runs `GameController.captureFlags()` while the flags are still set) → emits `'end'` → `GameController.handleGameEnded()` restarts the game
+1. `Dialogue.fromJson(json)` — schema-validates, deep-copies, links parents, normalizes types/ids, then runs `validateDialogue` on the built tree (duplicate IDs, invalid references, response values, `responseFlag` types, `capture.cond`, cycles). Throws on any failure, so a `Dialogue` that exists is structurally valid. `src/main.jsx` calls it directly and lets the throw reach the fatal-error handler installed by `initStandaloneApp`
+2. `DialogueSequencer.play(dialogue, context, options)` — creates iterator, calls `runUntilInteractivity`
+3. Iterator skips non-interactive nodes (sequence/random/cycle/first) via `next()`
+4. On `statement` → TextState → speech bubble → (optional) ResponseState → (optional) ThenState
+5. On `effect` → EffectState → creates/ends effect via factory
+6. After UI completes → `endUi()` → iterator advances → loop until end → `terminate()` (emits `'terminate'`, which runs `GameController.captureFlags()` while the flags are still set) → emits `'end'` → `GameController.handleGameEnded()` restarts the game
 
 ## Flag Assignments (`set` property)
 

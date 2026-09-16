@@ -1,4 +1,5 @@
 import validateDialogueDefinition from './dialogue-schema-validation';
+import validateDialogue from './dialogue-validation';
 
 /**
  * Represents a parsed dialogue tree with nodes linked by parent/child relationships.
@@ -31,7 +32,11 @@ export default class Dialogue {
   /**
    * Create a Dialogue from a JSON dialogue definition
    *
-   * @throws {Ajv.ValidationError}
+   * Both validation layers run here: the schema check on the raw definition, and the
+   * structural check on the built tree. A Dialogue that exists is therefore always valid.
+   *
+   * @throws {Ajv.ValidationError} if the definition does not match the schema.
+   * @throws {Error} if the built dialogue is structurally invalid (see dialogue-validation.js).
    * @param {Object} data A JSON dialogue definition (see doc/dialogues.md)
    * @returns {Dialogue}
    */
@@ -80,6 +85,9 @@ export default class Dialogue {
       if (node.items) node.items.forEach((item) => collectStatements(item, out));
     };
     collectStatements(newDialogue.root, newDialogue.statementNodes);
+
+    // Last, because it needs the fully built tree: nodes, nodesById and root.id.
+    validateDialogue(newDialogue);
 
     return newDialogue;
   }

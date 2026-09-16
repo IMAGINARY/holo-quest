@@ -57,7 +57,6 @@ import helloWorldI18nDialogue from './fixtures/dialogues/i18n/hello-world-i18n.d
 import thenTextResponseI18nDialogue
   from './fixtures/dialogues/i18n/thentext-response-i18n.dialogue.json';
 import invalidTypeDialogue from './fixtures/dialogues/invalid/invalid-type.dialogue.json';
-import invalidThenDialogue from './fixtures/dialogues/invalid/invalid-then.dialogue.json';
 import invalidCondDialogue from './fixtures/dialogues/invalid/invalid-cond.dialogue.json';
 import invalidCaptureNoFlagsDialogue
   from './fixtures/dialogues/invalid/invalid-capture-no-flags.dialogue.json';
@@ -545,8 +544,11 @@ describe('DialogueIterator', () => {
         .to.throw('validation failed');
     });
 
+    // Dialogue.fromJson now rejects a dangling `then` at construction, so the bad reference is
+    // injected afterwards: the iterator's own guard is defensive depth, not a reachable path.
     it('should throw an exception if a node tries to transition to a non-existant node', () => {
-      const dialogue = Dialogue.fromJson(invalidThenDialogue);
+      const dialogue = Dialogue.fromJson(helloThenWorldDialogue);
+      dialogue.getNode('world').then = 'non-existant';
       const context = new TestDialogueIteratorContext();
       const iterator = new DialogueIterator(dialogue, context);
       expect(() => getDialogueTrace(iterator)).to.throw('Can\'t find node id: non-existant');

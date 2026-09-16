@@ -1,6 +1,5 @@
 import { describe, it, expect } from 'vitest';
 import Dialogue from '../src/lib/model/dialogues/dialogue';
-import validateDialogue from '../src/lib/model/dialogues/dialogue-validation';
 import cycleThenDialogue from './fixtures/dialogues/invalid/invalid-cycle-then.dialogue.json';
 import cycleResponseDialogue
   from './fixtures/dialogues/invalid/invalid-cycle-response.dialogue.json';
@@ -36,60 +35,57 @@ import invalidCaptureCondDialogue
   from './fixtures/dialogues/invalid/invalid-capture-cond.dialogue.json';
 import captureDialogue from './fixtures/dialogues/core/capture.dialogue.json';
 
+// Structural validation runs at the end of Dialogue.fromJson, after the schema layer,
+// so an invalid dialogue throws at construction rather than needing a separate pass.
 describe('Dialogue validation', () => {
   describe('ids', () => {
     it('should detect duplicate ids', () => {
-      const dialogue = Dialogue.fromJson(duplicateIdDialogue);
-      expect(() => validateDialogue(dialogue)).to.throw('Dialogue contains duplicate node id');
+      expect(() => Dialogue.fromJson(duplicateIdDialogue))
+        .to.throw('Dialogue contains duplicate node id');
     });
 
     it('should detect invalid references to other nodes', () => {
-      const dialogue = Dialogue.fromJson(invalidReferenceDialogue);
-      expect(() => validateDialogue(dialogue)).to.throw('Dialogue contains invalid reference');
+      expect(() => Dialogue.fromJson(invalidReferenceDialogue))
+        .to.throw('Dialogue contains invalid reference');
     });
   });
 
   describe('cycles', () => {
     it('should detect cycles through \'then\' properties', () => {
-      const dialogue = Dialogue.fromJson(cycleThenDialogue);
-      expect(() => validateDialogue(dialogue)).to.throw('Dialogue contains a cycle');
+      expect(() => Dialogue.fromJson(cycleThenDialogue)).to.throw('Dialogue contains a cycle');
     });
 
     it('should detect cycles through \'then\' properties in responses', () => {
-      const dialogue = Dialogue.fromJson(cycleResponseDialogue);
-      expect(() => validateDialogue(dialogue)).to.throw('Dialogue contains a cycle');
+      expect(() => Dialogue.fromJson(cycleResponseDialogue)).to.throw('Dialogue contains a cycle');
     });
 
     it('should detect cycles through sibling nodes in sequences', () => {
-      const dialogue = Dialogue.fromJson(cycleSequenceDialogue);
-      expect(() => validateDialogue(dialogue)).to.throw('Dialogue contains a cycle');
+      expect(() => Dialogue.fromJson(cycleSequenceDialogue)).to.throw('Dialogue contains a cycle');
     });
 
     it('should detect cycles if a node redirects to itself', () => {
-      const dialogue = Dialogue.fromJson(cycleSelfDialogue);
-      expect(() => validateDialogue(dialogue)).to.throw('Dialogue contains a cycle');
+      expect(() => Dialogue.fromJson(cycleSelfDialogue)).to.throw('Dialogue contains a cycle');
     });
 
     it('should detect cycles if a node redirects to itself from a response', () => {
-      const dialogue = Dialogue.fromJson(cycleResponseSelfDialogue);
-      expect(() => validateDialogue(dialogue)).to.throw('Dialogue contains a cycle');
+      expect(() => Dialogue.fromJson(cycleResponseSelfDialogue))
+        .to.throw('Dialogue contains a cycle');
     });
 
     it('should not detect cycles from sibling nodes with a parent that is not a sequence', () => {
-      const dialogue = Dialogue.fromJson(cycleRandomDialogue);
-      expect(() => validateDialogue(dialogue)).to.not.throw();
+      expect(() => Dialogue.fromJson(cycleRandomDialogue)).to.not.throw();
     });
   });
 
   describe('response values', () => {
     it('should detect responses where some have values and others do not', () => {
-      const dialogue = Dialogue.fromJson(invalidResponseValuePartialDialogue);
-      expect(() => validateDialogue(dialogue)).to.throw('inconsistent values');
+      expect(() => Dialogue.fromJson(invalidResponseValuePartialDialogue))
+        .to.throw('inconsistent values');
     });
 
     it('should detect duplicate response values within a set', () => {
-      const dialogue = Dialogue.fromJson(invalidResponseValueDuplicateDialogue);
-      expect(() => validateDialogue(dialogue)).to.throw("duplicate response value 'same'");
+      expect(() => Dialogue.fromJson(invalidResponseValueDuplicateDialogue))
+        .to.throw("duplicate response value 'same'");
     });
 
     it('should reject a response set that mixes value types', () => {
@@ -98,8 +94,7 @@ describe('Dialogue validation', () => {
     });
 
     it('should accept responses where all have unique values', () => {
-      const dialogue = Dialogue.fromJson(responseWithValuesDialogue);
-      expect(() => validateDialogue(dialogue)).to.not.throw();
+      expect(() => Dialogue.fromJson(responseWithValuesDialogue)).to.not.throw();
     });
   });
 
@@ -108,8 +103,8 @@ describe('Dialogue validation', () => {
       expect(() => Dialogue.fromJson(invalidResponseFlagIdDialogue)).to.throw('validation failed');
     });
 
-    // The schema now rejects these before the structural pass can run, which matters
-    // because the schema is the only validation layer on the production load path.
+    // The schema rejects these before the structural pass can run. Both layers now run on
+    // the production load path, so which one reports it matters less than that one does.
     it('should detect a responseFlag on a node where some responses are missing values', () => {
       expect(() => Dialogue.fromJson(invalidResponseFlagWithoutValuesDialogue))
         .to.throw('validation failed');
@@ -121,32 +116,29 @@ describe('Dialogue validation', () => {
     });
 
     it('should detect two nodes writing different value types to the same responseFlag', () => {
-      const dialogue = Dialogue.fromJson(invalidResponseFlagTypeConflictDialogue);
       // Asserted without naming a node: `dialogue.nodes` is not in document order,
       // so either node may be the one reported as conflicting.
-      expect(() => validateDialogue(dialogue)).to.throw("responseFlag 'mood'");
+      expect(() => Dialogue.fromJson(invalidResponseFlagTypeConflictDialogue))
+        .to.throw("responseFlag 'mood'");
     });
 
     it('should accept a responseFlag when all responses have unique values', () => {
-      const dialogue = Dialogue.fromJson(responseFlagDialogue);
-      expect(() => validateDialogue(dialogue)).to.not.throw();
+      expect(() => Dialogue.fromJson(responseFlagDialogue)).to.not.throw();
     });
 
     it('should accept a responseFlag whose responses all have numeric values', () => {
-      const dialogue = Dialogue.fromJson(responseFlagNumberDialogue);
-      expect(() => validateDialogue(dialogue)).to.not.throw();
+      expect(() => Dialogue.fromJson(responseFlagNumberDialogue)).to.not.throw();
     });
   });
 
   describe('capture', () => {
     it('should detect a capture condition that cannot be parsed', () => {
-      const dialogue = Dialogue.fromJson(invalidCaptureCondDialogue);
-      expect(() => validateDialogue(dialogue)).to.throw('invalid capture condition');
+      expect(() => Dialogue.fromJson(invalidCaptureCondDialogue))
+        .to.throw('invalid capture condition');
     });
 
     it('should accept a valid capture condition', () => {
-      const dialogue = Dialogue.fromJson(captureDialogue);
-      expect(() => validateDialogue(dialogue)).to.not.throw();
+      expect(() => Dialogue.fromJson(captureDialogue)).to.not.throw();
     });
   });
 });
