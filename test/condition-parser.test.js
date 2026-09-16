@@ -1,6 +1,7 @@
 import {
-  describe, it, expect, beforeAll, beforeEach,
+  describe, it, expect, beforeAll, beforeEach, afterEach, vi,
 } from 'vitest';
+import logger from 'loglevel';
 import ConditionParser from '../src/lib/model/dialogues/condition-parser';
 import FlagStore from '../src/lib/model/flag-store';
 
@@ -10,6 +11,9 @@ describe('ConditionParser', () => {
   beforeAll(() => {
     context = {
       flags: new FlagStore(),
+      // Pinned rather than inherited from the build, so these expectations
+      // don't depend on import.meta.env.DEV.
+      strict: true,
     };
     parser = new ConditionParser(context);
   });
@@ -235,6 +239,103 @@ describe('ConditionParser', () => {
     });
   });
 
+  describe('string flags', () => {
+    it('should compare strings for equality', () => {
+      parser.context.flags.set('colour', 'red');
+      expect(parser.evaluate('colour = "red"')).to.equal(1);
+      expect(parser.evaluate('colour = "blue"')).to.equal(0);
+      expect(parser.evaluate('colour != "blue"')).to.equal(1);
+      expect(parser.evaluate('"red" = colour')).to.equal(1);
+    });
+
+    it('should never equate a string with a number', () => {
+      parser.context.flags.set('answer', '3');
+      expect(parser.evaluate('answer = 3')).to.equal(0);
+      expect(parser.evaluate('answer != 3')).to.equal(1);
+      expect(parser.evaluate('answer = "3"')).to.equal(1);
+    });
+
+    it('should treat an unset flag as equal to no string', () => {
+      expect(parser.evaluate('missing = "red"')).to.equal(0);
+      expect(parser.evaluate('missing != "red"')).to.equal(1);
+    });
+
+    it('should compare strings lexicographically', () => {
+      parser.context.flags.set('a', 'apple');
+      parser.context.flags.set('b', 'banana');
+      expect(parser.evaluate('a < b')).to.equal(1);
+      expect(parser.evaluate('b < a')).to.equal(0);
+      expect(parser.evaluate('a <= "apple"')).to.equal(1);
+      expect(parser.evaluate('b >= "apple"')).to.equal(1);
+    });
+
+    it('should reject an ordering comparison between a string and a number', () => {
+      parser.context.flags.set('colour', 'red');
+      expect(() => parser.evaluate('colour < 5')).to.throw('cannot compare');
+    });
+
+    it('should treat a non-empty string as true and the empty string as false', () => {
+      parser.context.flags.set('colour', 'red');
+      parser.context.flags.set('blank', '');
+      expect(parser.evaluate('colour')).to.equal(1);
+      expect(parser.evaluate('blank')).to.equal(0);
+      expect(parser.evaluate('^colour')).to.equal(0);
+      expect(parser.evaluate('^blank')).to.equal(1);
+      expect(parser.evaluate('colour & ^blank')).to.equal(1);
+      expect(parser.evaluate('blank | colour')).to.equal(1);
+    });
+
+    it('should reject a math function applied to a string', () => {
+      parser.context.flags.set('colour', 'red');
+      expect(() => parser.evaluate('FLOOR(colour)')).to.throw('FLOOR: expected number');
+    });
+
+    it('should count non-empty string flags but not empty ones', () => {
+      parser.context.flags.set('survey-a', 'yes');
+      parser.context.flags.set('survey-b', '');
+      parser.context.flags.set('survey-c', 2);
+      expect(parser.evaluate('COUNT("survey-")')).to.equal(2);
+    });
+
+    it('should still ignore zero and negative numeric flags when counting', () => {
+      parser.context.flags.set('n-zero', 0);
+      parser.context.flags.set('n-neg', -3);
+      parser.context.flags.set('n-pos', 1);
+      expect(parser.evaluate('COUNT("n-")')).to.equal(1);
+    });
+  });
+
+  describe('lenient mode', () => {
+    let lenient = null;
+
+    beforeEach(() => {
+      vi.spyOn(logger, 'warn').mockImplementation(() => {});
+      vi.spyOn(logger, 'error').mockImplementation(() => {});
+      lenient = new ConditionParser({ flags: context.flags, strict: false });
+    });
+
+    afterEach(() => {
+      vi.restoreAllMocks();
+    });
+
+    it('should treat an ill-typed condition as false and warn', () => {
+      context.flags.set('colour', 'red');
+      expect(lenient.evaluate('FLOOR(colour)')).to.equal(0);
+      expect(lenient.evaluate('colour < 5')).to.equal(0);
+      expect(logger.warn).toHaveBeenCalled();
+    });
+
+    it('should treat a malformed condition as false and log an error', () => {
+      expect(lenient.evaluate('colour = $')).to.equal(0);
+      expect(logger.error).toHaveBeenCalled();
+    });
+
+    it('should still evaluate valid conditions normally', () => {
+      context.flags.set('colour', 'red');
+      expect(lenient.evaluate('colour = "red"')).to.equal(1);
+    });
+  });
+
   it('should fail with invalid syntax', () => {
     expect(() => parser.evaluate('(a')).to.throw('Mismatched Grouping (unexpected "(")');
     expect(() => parser.evaluate('a & b)')).to.throw('Mismatched Grouping (unexpected closing ")")');
@@ -243,7 +344,7 @@ describe('ConditionParser', () => {
     expect(() => parser.evaluate('a &')).to.throw('Invalid term: &');
     expect(() => parser.evaluate('^')).to.throw('Invalid term: ^');
     expect(() => parser.evaluate('a b')).to.throw('Unexpected token "a"');
-    expect(() => parser.evaluate('COUNT(1)')).to.throw('Expected string');
-    expect(() => parser.evaluate('COUNT(cat)')).to.throw('Expected string');
+    expect(() => parser.evaluate('COUNT(1)')).to.throw('COUNT: expected string');
+    expect(() => parser.evaluate('COUNT(cat)')).to.throw('COUNT: expected string');
   });
 });

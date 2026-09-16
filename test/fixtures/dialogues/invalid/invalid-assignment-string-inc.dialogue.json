@@ -1,0 +1,9 @@
+{
+  "id": "invalid-assignment-string-inc",
+  "items": [
+    {
+      "text": "A",
+      "set": ["score += \"x\""]
+    }
+  ]
+}

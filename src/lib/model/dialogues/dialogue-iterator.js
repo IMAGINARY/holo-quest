@@ -1,9 +1,23 @@
 import ConditionParser from './condition-parser';
+import { logger } from '../../helpers/logger';
 
 /**
  * Iterates through a dialogue tree.
  */
 export default class DialogueIterator {
+  /**
+   * Flag assignment grammar.
+   *
+   * The flag id is non-greedy (the trailing `?`) so that e.g. "my-flag-=1"
+   * parses as flag "my-flag" with operator "-=", rather than flag "my-flag-"
+   * with operator "=".
+   *
+   * A string literal is only accepted after `=`; `+=` and `-=` are
+   * numeric-only. Literals admit neither `"` nor `\`, which keeps the
+   * backslash free for a future escape syntax.
+   */
+  static ASSIGNMENT_RE = /^(?<flag>[a-zA-Z_][.a-zA-Z0-9_-]*?)(?:\s*(?:(?<setOp>=)\s*(?:(?<number>-?\d+(?:\.\d+)?)|"(?<string>[^"\\]*)")|(?<incDecOp>[+-]=)\s*(?<amount>-?\d+(?:\.\d+)?)))?$/;
+
   /**
    * Creates a new iterator for the given dialogue.
    *
@@ -55,7 +69,7 @@ export default class DialogueIterator {
     }
 
     return this.activeNode.responses
-      .filter((response) => !response.cond || !!this.conditionParser.evaluate(response.cond));
+      .filter((response) => !response.cond || !!this.evaluateCond(response.cond));
   }
 
   /**
@@ -199,14 +213,29 @@ export default class DialogueIterator {
    */
   getEnabledItems(items) {
     if (!items) return [];
-    return items.filter((item) => {
-      try {
-        return (item.cond === undefined || item.cond === null || item.cond.trim() === ''
-          || this.conditionParser.evaluate(item.cond));
-      } catch (e) {
-        throw new Error(`Error parsing condition: ${item.cond} (${this.activeNode.id}:${this.dialogue.root.id}): ${e.message}`);
-      }
-    });
+    return items.filter((item) => (
+      item.cond === undefined || item.cond === null || item.cond.trim() === ''
+        || this.evaluateCond(item.cond)
+    ));
+  }
+
+  /**
+   * Evaluates a condition, tagging any failure with the node and dialogue ids.
+   *
+   * Only throws when the context is strict: in lenient mode the parser logs
+   * the problem itself and returns 0, so the node or response is skipped
+   * rather than taking the story down.
+   *
+   * @private
+   * @param {string} cond
+   * @returns {number}
+   */
+  evaluateCond(cond) {
+    try {
+      return this.conditionParser.evaluate(cond);
+    } catch (e) {
+      throw new Error(`Error parsing condition: ${cond} (${this.activeNode.id}:${this.dialogue.root.id}): ${e.message}`);
+    }
   }
 
   /**
@@ -223,36 +252,59 @@ export default class DialogueIterator {
   }
 
   /**
-   * Parses and executes a single flag assignment expression.
-   *
-   * Supported forms: `flag` (touch), `flag = N`, `flag += N`, `flag -= N`.
+   * Executes a single flag assignment under the context's strictness policy:
+   * a bad assignment throws in strict mode, and is logged and skipped
+   * otherwise so that a content mistake can't end the story.
    *
    * @private
    * @param {string} assignment
    */
   processAssignment(assignment) {
-    // Non-greedy (thanks to the final '?') so that e.g. "my-flag-=1" parses as
-    // flag "my-flag" with operator "-=", rather than flag "my-flag-" with operator "=".
-    const flagId = '([a-zA-Z_][.a-zA-Z0-9_-]*?)';
-    const op = '([+-]?=)';
-    const decimal = '(-?\\d+(\\.\\d+)?)';
-    const re = new RegExp(`^${flagId}(\\s*${op}\\s*${decimal})?$`);
-    const match = assignment.match(re);
+    try {
+      this.applyAssignment(assignment);
+    } catch (e) {
+      if (this.conditionParser.strict) {
+        throw e;
+      }
+      logger.error(
+        'DialogueIterator: skipping assignment "%s" (%s:%s): %s',
+        assignment,
+        this.activeNode.id,
+        this.dialogue.root.id,
+        e.message
+      );
+    }
+  }
+
+  /**
+   * Parses and applies a single flag assignment expression.
+   *
+   * Supported forms: `flag` (touch), `flag = N`, `flag = "text"`, `flag += N`,
+   * `flag -= N`. String literals are only valid after `=`.
+   *
+   * @private
+   * @param {string} assignment
+   * @throws {Error} if the assignment is malformed.
+   * @throws {TypeError} if `+=`/`-=` is applied to a flag holding a string.
+   */
+  applyAssignment(assignment) {
+    const match = assignment.match(DialogueIterator.ASSIGNMENT_RE);
     if (!match) {
       throw new Error(`Invalid assignment: ${assignment} (${this.activeNode.id}:${this.dialogue.root.id})`);
     }
-    const [, flag, , operator, literal] = match;
-    if (operator === undefined) {
+    const {
+      flag, setOp, number, string, incDecOp, amount,
+    } = match.groups;
+    if (setOp === undefined && incDecOp === undefined) {
       this.context.flags.touch(flag);
-    }
-    if (operator === '=') {
-      this.context.flags.set(flag, Number(literal));
-    }
-    if (operator === '+=') {
-      this.context.flags.inc(flag, Number(literal));
-    }
-    if (operator === '-=') {
-      this.context.flags.dec(flag, Number(literal));
+    } else if (setOp !== undefined) {
+      // Tested against undefined rather than for truthiness: `flag = ""` must
+      // assign the empty string, not fall through to Number(undefined).
+      this.context.flags.set(flag, string !== undefined ? string : Number(number));
+    } else if (incDecOp === '+=') {
+      this.context.flags.inc(flag, Number(amount));
+    } else {
+      this.context.flags.dec(flag, Number(amount));
     }
   }
 

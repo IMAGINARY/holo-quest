@@ -36,7 +36,9 @@ export default class GameController {
     );
     this.dialogueSequencer.events.on('end', this.handleGameEnded.bind(this));
     this.dialogueSequencer.events.on('terminate', this.captureFlags.bind(this));
-    this.dialogueIteratorContext = new DialogueIteratorContext(this.flags);
+    this.dialogueIteratorContext = new DialogueIteratorContext(this.flags, {
+      strict: config.game?.strictExpressions,
+    });
 
     // noinspection JSUnusedGlobalSymbols
     this.commands = {

@@ -9,6 +9,7 @@ Tree-structured dialogue engine: parses JSON dialogue definitions, validates the
 - **`dialogue-iterator-context.js`** — `DialogueIteratorContext`; runtime state wrapping an external `FlagStore` + cycle position tracking
 - **`dialogue-sequencer.js`** — `DialogueSequencer`; playback controller that drives the iterator, manages UI states and effects, emits `'end'`/`'terminate'` events
 - **`condition-parser.js`** — `ConditionParser`; expression evaluator using `expressionparser` lib
+- **`condition-type-error.js`** — `ConditionTypeError`; raised for ill-typed operands, so lenient mode can tell a content mistake from a syntax error
 - **`dialogue-safe-builder.js`** — `safeBuildDialogue`; error-tolerant builder (takes the whole definition, so root-level properties like `capture` are kept) that returns a placeholder dialogue on failure
 - **`flag-capture.js`** — `selectCapturedFlags`; matches flag names against the patterns in a dialogue's `capture.flags` (also exports `flagPatternToRegExp`)
 
@@ -55,18 +56,23 @@ All states implement the `onBegin`/`onEnd` lifecycle from the base class.
 
 ## Flag Assignments (`set` property)
 
-- `"flag"` — touch (set to 1 if unset)
-- `"flag = 3"` — assign value
+- `"flag"` — touch (set to 1 if unset or falsy)
+- `"flag = 3"` — assign a number
+- `"flag = \"text\""` — assign a string (only after `=`; no `"` or `\` inside)
 - `"flag += 1"` — increment
 - `"flag -= 1"` — decrement
 
-Values are not clamped or otherwise constrained by `FlagStore`; they can be negative or decimal, and `responseFlag` stores a string.
+Parsed by `DialogueIterator.ASSIGNMENT_RE`, mirrored by the `flag_assignment` pattern in the schema.
+
+A flag holds a number or a string. Values are not clamped or otherwise constrained by `FlagStore`; they can be negative, decimal or empty. `+=`/`-=` throw a `TypeError` when the flag holds a string. `responseFlag` writes the selected response's `value`, which is always a string.
 
 ## Condition Language
 
 - **Operators:** `<`, `>`, `>=`, `<=`, `=`, `!=`, `&` (AND), `|` (OR), `^` (NOT)
 - **Functions:** `COUNT "prefix"`, `ABS`, `CEIL`, `FLOOR`, `ROUND`, `TRUNC`, `MANTISSA`
-- **Terms:** integer/decimal literals, flag names (resolved via `FlagStore.value`), double-quoted strings (for `COUNT`)
+- **Terms:** number literals, flag names (resolved via `FlagStore.value`), double-quoted string literals (usable anywhere, not just as the `COUNT` argument)
+- **Types:** `=`/`!=` are type-aware and never throw; ordering compares numbers numerically and strings lexicographically and rejects mixed operands; a non-empty string is truthy; math functions require numbers
+- **Strictness:** `context.strict` (from `game.strictExpressions`, or `?strict=`) decides whether a failed expression throws or is logged and treated as false; defaults to `import.meta.env.DEV`. Ill-typed operands raise `ConditionTypeError`, which lenient mode logs at `warn` rather than `error`.
 
 ## External Dependencies
 

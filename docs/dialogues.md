@@ -87,7 +87,7 @@ Statement nodes have these properties:
 - `sound` (string | object, optional): A sound to play while the statement is active. Either a string (path to a sound file) or an object with `path` (string, required) and `loop` (boolean, optional, default `false`). The sound starts when the bubble appears and stops when the player advances past the statement (continue input or response selection). The `thenText` shown after a response is *not* covered by the statement's sound. For sound that should keep playing independently across multiple nodes, use the `sound` effect instead (see [Effect nodes](#effect-nodes)).
 - `class` (string | array, optional): One or more classes that are set when the text is displayed.
 - `responses` (array, optional): An array of response objects.
-- `responseFlag` (string, optional): The id of a flag that will be set to the `value` of the selected response. Requires every response in the node to have a `value` (validation will fail otherwise). Pairs naturally with conditions like `responseFlag = "yes"`.
+- `responseFlag` (string, optional): The id of a flag that will be set to the `value` of the selected response. Requires every response in the node to have a `value` (validation will fail otherwise). With `"responseFlag": "answer"`, later nodes branch on `answer = "yes"`. Response values are always strings, so compare them against quoted literals — `answer = 3` is never true, even when the value is `"3"`.
 - `then` (string, optional): The ID of the next node to transition to.
 
 If the statement node has `responses`, they player will have to pick one of them to continue.
@@ -108,7 +108,7 @@ A response object has these properties:
 - `text` (string | object, required): The text to display.
 - `class` (string | array, optional): One or more classes that are set when the response is displayed.
 - `set` (string | array, optional): One or more flags that are set when the response is selected.
-- `value` (string, optional): A stable identifier for this response. If any response in a set has a `value`, all responses in that set must have one, and all values within the set must be unique.
+- `value` (string, optional): A stable identifier for this response, written to the node's `responseFlag` when the response is selected. If any response in a set has a `value`, all responses in that set must have one, and all values within the set must be unique. It is narrative data only, and does not affect where the response sits on the spinner.
 - `thenText` (string | object, optional): A text that will be displayed after the response is selected.
 - `thenClass` (string | array, optional): One or more classes that are set when the `thenText` is displayed.
 - `then` (string, optional): The ID of the next node to transition to.
@@ -238,6 +238,31 @@ The following functions are supported:
 
 Parentheses can be used to group expressions.
 
+### Types in expressions
+
+Terms are numbers, strings, or flags (which hold either). An unset flag reads as `0`.
+
+- `=` and `!=` are type-aware: values of different types are never equal, and comparing them is
+    never an error. `ending = "good"` is simply false while `ending` is unset.
+- `<`, `>`, `<=` and `>=` compare numbers numerically and strings lexicographically. Comparing a
+    string with a number is an error. Since an unset flag reads as `0`, an ordering comparison only
+    works once the flag has been assigned — guard it, e.g. `ending != "" & ending < "m"`.
+- `&`, `|` and `^` treat a non-empty string as true, and `""` (like `0`) as false.
+- `COUNT("prefix")` counts flags holding a positive number or a non-empty string.
+- The math functions require numbers and reject strings.
+
+Beware that `^` binds tighter than `=`, so `^ending = "good"` means `(^ending) = "good"`, which is
+always false. Write `^(ending = "good")` instead.
+
+### Strictness
+
+When an expression can't be evaluated — a math function applied to a string, a string compared with
+a number, or a syntax error — the engine either throws or logs the problem and treats the condition
+as false. This is controlled by `game.strictExpressions` (see `config/game.yml`), which defaults to
+throwing during development and failing softly in a production build, so that a content mistake
+can't take the kiosk down mid-story. Pass `?strict=1` to turn strict checking on for a single
+session on the kiosk itself.
+
 Example:
 
 ```
@@ -254,15 +279,41 @@ counter1 >= 3 | counter2 >= 2
 
 Flags are used to keep track of the player's progress. They can be used in `cond` and `set` properties.
 
+A flag holds either a number or a string.
+
 In `cond` properties, flags can only be read. In `set` properties, flags's values can be changed 
 in different ways:
 
-- `flag`: If the flag is not set, it's set to 1. Otherwise, its value is not changed.
+- `flag`: If the flag is unset or holds a falsy value (`0` or `""`), it's set to 1. Otherwise, its
+    value is not changed.
 - `flag = 3`: Sets the flag to 3.
+- `flag = "evacuated"`: Sets the flag to a string.
 - `flag += n`: Adds n to the flag's value (where n is a number literal).
 - `flag -= n`: Subtracts n from the flag's value (where n is a number literal).
 
 Flags accept decimal numbers, including negative values.
+
+### String values
+
+String literals are written in double quotes and are only accepted after `=`. `+=` and `-=` are
+numeric-only: writing one with a string literal is rejected when the story is loaded, and applying
+one to a flag that currently holds a string is an error at runtime.
+
+```yaml
+set:
+  - 'ending = "evacuated"'
+  - 'note = "has space"'
+  - 'cleared = ""'
+```
+
+Note the surrounding single quotes: in YAML they keep the inner double quotes intact.
+
+A string literal cannot contain a double quote or a backslash — the backslash is reserved for a
+possible future escape syntax. Setting a flag to `""` makes it falsy, which is the idiomatic way
+to clear it.
+
+**Numbers and strings are never equal.** `answer = 3` is false when `answer` holds the string `"3"`
+— write `answer = "3"` instead. This matters most with `responseFlag`, which always writes strings.
 
 ## Capture
 

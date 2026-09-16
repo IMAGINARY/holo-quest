@@ -3,3 +3,11 @@ game:
     - de
     - en
   defaultLanguage: de
+  # Expression strictness. When true, a condition or flag assignment that can't
+  # be evaluated — FLOOR("green"), or 'score += 1' on a flag holding a string —
+  # throws. When false, the error is logged and the condition is treated as
+  # false (the assignment is skipped), so a content mistake can't take the
+  # exhibit down mid-story.
+  # Omit to follow the build: strict in `npm run dev` and tests, lenient in a
+  # production build. Override per session with ?strict=1 or ?strict=0.
+#  strictExpressions: true

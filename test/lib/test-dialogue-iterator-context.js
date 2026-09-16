@@ -2,13 +2,13 @@ import DialogueIteratorContext from '../../src/lib/model/dialogues/dialogue-iter
 import FlagStore from '../../src/lib/model/flag-store';
 
 export default class TestDialogueIteratorContext extends DialogueIteratorContext {
-  constructor() {
-    super(new FlagStore(), {
-      'test-action': (options = {}) => {
-        this.actionHandlerCalls.push(options);
-      },
-    });
-    this.actionHandlerCalls = [];
+  /**
+   * @param {Object} [options] - Passed through to DialogueIteratorContext.
+   *   Strictness is pinned to true by default so tests surface expression
+   *   errors instead of depending on the build's DEV flag.
+   */
+  constructor(options = {}) {
+    super(new FlagStore(), { strict: true, ...options });
     this.randomValues = [];
   }
 

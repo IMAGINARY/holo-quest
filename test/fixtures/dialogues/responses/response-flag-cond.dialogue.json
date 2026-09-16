@@ -1,0 +1,24 @@
+{
+  "id": "response-flag-cond",
+  "items": [
+    {
+      "id": "pick",
+      "text": "Pick a colour",
+      "responseFlag": "colour",
+      "then": "outcome",
+      "responses": [
+        { "text": "Red", "value": "red" },
+        { "text": "Green", "value": "green" }
+      ]
+    },
+    {
+      "id": "outcome",
+      "type": "first",
+      "items": [
+        { "text": "You chose red", "cond": "colour = \"red\"" },
+        { "text": "You chose green", "cond": "colour = \"green\"" },
+        { "text": "You chose nothing" }
+      ]
+    }
+  ]
+}

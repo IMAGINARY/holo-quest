@@ -30,25 +30,21 @@ export default class GameUiController {
 
   showInput(responses) {
     const options = {};
-    this.responsesByValue = {};
+    this.responsesByPosition = {};
 
-    // Upstream validation guarantees that either every response has a `value`
-    // or none do, and that any present `value`s are unique.
-    const hasValues = responses.length > 0 && responses[0].value !== undefined;
-
-    if (hasValues) {
-      responses.forEach((response) => {
-        options[response.value] = response.text;
-        this.responsesByValue[response.value] = response;
-      });
-    } else {
-      const negCount = Math.floor(responses.length / 2);
-      responses.forEach((response, i) => {
-        const value = i < negCount ? i - negCount : i - negCount + 1;
-        options[value] = response.text;
-        this.responsesByValue[value] = response;
-      });
-    }
+    // Option keys are spinner POSITIONS, never narrative data. `OptionRail`
+    // and `GameView` both read them back through `Number()` to lay out a
+    // number line, and `handleInput()` receives the settled position.
+    // A response's `value` is narrative data destined for the node's
+    // `responseFlag` and is routinely non-numeric ("red", "yes"), so using it
+    // here produces NaN positions and trips `assertInputControl`.
+    // Position 0 is skipped: it is the neutral resting position.
+    const negCount = Math.floor(responses.length / 2);
+    responses.forEach((response, i) => {
+      const position = i < negCount ? i - negCount : i - negCount + 1;
+      options[position] = response.text;
+      this.responsesByPosition[position] = response;
+    });
 
     useGameState.getState().setInput({
       type: 'default',
@@ -93,8 +89,8 @@ export default class GameUiController {
     this.events.emit('textShown');
   }
 
-  handleInput(value) {
-    const responseId = this.responsesByValue?.[value]?.id;
+  handleInput(position) {
+    const responseId = this.responsesByPosition?.[position]?.id;
     this.events.emit('input', responseId);
   }
 }

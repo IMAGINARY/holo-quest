@@ -1,4 +1,7 @@
-import { describe, it, expect } from 'vitest';
+import {
+  describe, it, expect, vi,
+} from 'vitest';
+import logger from 'loglevel';
 import Dialogue from '../src/lib/model/dialogues/dialogue';
 import DialogueIterator from '../src/lib/model/dialogues/dialogue-iterator';
 import TestDialogueIteratorContext from './lib/test-dialogue-iterator-context';
@@ -26,6 +29,10 @@ import setFlagsIntDialogue from './fixtures/dialogues/conditions/set-flags-int.d
 import setFlagsTouchDialogue from './fixtures/dialogues/conditions/set-flags-touch.dialogue.json';
 import setFlagsIncDecDialogue
   from './fixtures/dialogues/conditions/set-flags-inc-dec.dialogue.json';
+import setFlagsStringDialogue
+  from './fixtures/dialogues/conditions/set-flags-string.dialogue.json';
+import lenientAssignmentDialogue
+  from './fixtures/dialogues/conditions/lenient-assignment.dialogue.json';
 import logicDialogue from './fixtures/dialogues/conditions/logic.dialogue.json';
 import comparisonDialogue from './fixtures/dialogues/conditions/comparison.dialogue.json';
 import countDialogue from './fixtures/dialogues/conditions/count.dialogue.json';
@@ -39,6 +46,8 @@ import responseSetsFlagsDialogue
   from './fixtures/dialogues/responses/response-sets-flags.dialogue.json';
 import responseFlagDialogue
   from './fixtures/dialogues/responses/response-flag.dialogue.json';
+import responseFlagCondDialogue
+  from './fixtures/dialogues/responses/response-flag-cond.dialogue.json';
 import responseJumpsDialogue from './fixtures/dialogues/responses/response-jumps.dialogue.json';
 import thentextResponseDialogue
   from './fixtures/dialogues/responses/thentext-response.dialogue.json';
@@ -54,6 +63,8 @@ import invalidCapturePatternDialogue
   from './fixtures/dialogues/invalid/invalid-capture-pattern.dialogue.json';
 import invalidCaptureUnknownPropertyDialogue
   from './fixtures/dialogues/invalid/invalid-capture-unknown-property.dialogue.json';
+import invalidAssignmentStringIncDialogue
+  from './fixtures/dialogues/invalid/invalid-assignment-string-inc.dialogue.json';
 
 describe('DialogueIterator', () => {
   describe('core functionality', () => {
@@ -243,6 +254,62 @@ describe('DialogueIterator', () => {
       expect(getDialogueTrace(iterator)).to.deep.equal(['A', 'B']);
       expect(context.flags.value('aFlag')).to.equal(1);
       expect(context.flags.value('bFlag')).to.equal(2);
+    });
+
+    it('should allow a dialogue to set flags to string literals', () => {
+      const dialogue = Dialogue.fromJson(setFlagsStringDialogue);
+      const context = new TestDialogueIteratorContext();
+      const iterator = new DialogueIterator(dialogue, context);
+      expect(getDialogueTrace(iterator)).to.deep.equal(['A', 'B', 'C']);
+      expect(context.flags.value('ending')).to.equal('evacuated');
+      expect(context.flags.value('note')).to.equal('has space');
+    });
+
+    it('should assign an empty string rather than falling back to a number', () => {
+      const dialogue = Dialogue.fromJson(setFlagsStringDialogue);
+      const context = new TestDialogueIteratorContext();
+      const iterator = new DialogueIterator(dialogue, context);
+      getDialogueTrace(iterator);
+      expect(context.flags.has('cleared')).to.be.true;
+      expect(context.flags.value('cleared')).to.equal('');
+      expect(context.flags.exists('cleared')).to.be.false;
+    });
+
+    it('should let a later node branch on a responseFlag value', () => {
+      const dialogue = Dialogue.fromJson(responseFlagCondDialogue);
+      const context = new TestDialogueIteratorContext();
+      const iterator = new DialogueIterator(dialogue, context);
+      expect(getDialogueTrace(iterator, [1])).to.deep.equal(
+        ['Pick a colour', '>> Green', 'You chose green']
+      );
+      expect(context.flags.value('colour')).to.equal('green');
+    });
+
+    it('should branch the other way when a different response is selected', () => {
+      const dialogue = Dialogue.fromJson(responseFlagCondDialogue);
+      const context = new TestDialogueIteratorContext();
+      const iterator = new DialogueIterator(dialogue, context);
+      expect(getDialogueTrace(iterator, [0])).to.deep.equal(
+        ['Pick a colour', '>> Red', 'You chose red']
+      );
+    });
+
+    it('should throw on an impossible assignment when strict', () => {
+      const dialogue = Dialogue.fromJson(lenientAssignmentDialogue);
+      const context = new TestDialogueIteratorContext({ strict: true });
+      const iterator = new DialogueIterator(dialogue, context);
+      expect(() => getDialogueTrace(iterator)).to.throw(TypeError);
+    });
+
+    it('should log and skip an impossible assignment when lenient', () => {
+      vi.spyOn(logger, 'error').mockImplementation(() => {});
+      const dialogue = Dialogue.fromJson(lenientAssignmentDialogue);
+      const context = new TestDialogueIteratorContext({ strict: false });
+      const iterator = new DialogueIterator(dialogue, context);
+      expect(getDialogueTrace(iterator)).to.deep.equal(['A', 'B', 'C']);
+      expect(context.flags.value('ending')).to.equal('evacuated');
+      expect(logger.error).toHaveBeenCalled();
+      vi.restoreAllMocks();
     });
 
     it('should support conditions with logic expressions', () => {
@@ -445,6 +512,11 @@ describe('DialogueIterator', () => {
 
     it('should throw an exception if a capture has an unknown property', () => {
       expect(() => Dialogue.fromJson(invalidCaptureUnknownPropertyDialogue))
+        .to.throw('validation failed');
+    });
+
+    it('should throw an exception if an assignment uses += with a string literal', () => {
+      expect(() => Dialogue.fromJson(invalidAssignmentStringIncDialogue))
         .to.throw('validation failed');
     });
 

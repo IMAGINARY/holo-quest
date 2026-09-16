@@ -68,6 +68,12 @@ export default function getQsConfigOverrides(qs) {
       logger.error('story: must contain only alphanumeric characters, _ or -');
     }
   }
+  const strict = qs.get('strict');
+  if (strict !== null) {
+    overrides['strict query string'] = {
+      game: { strictExpressions: strict !== '0' },
+    };
+  }
   const lang = qs.get('lang');
   if (lang) {
     if (lang.match(/^[a-zA-Z0-9_-]+$/)) {

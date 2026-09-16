@@ -17,7 +17,12 @@ import helloWorldDialogue from './fixtures/dialogues/core/hello-world.dialogue.j
 function makeController(definition = captureDialogue) {
   const controller = Object.create(GameController.prototype);
   controller.flags = new FlagStore();
-  controller.dialogueIteratorContext = new DialogueIteratorContext(controller.flags);
+  // Strictness pinned rather than inherited from the build, so these
+  // expectations don't depend on import.meta.env.DEV.
+  controller.dialogueIteratorContext = new DialogueIteratorContext(
+    controller.flags,
+    { strict: true }
+  );
   controller.story = definition === null ? undefined : safeBuildDialogue(definition);
   controller.submitted = [];
   controller.submitCapturedFlags = (flags) => { controller.submitted.push(flags); };

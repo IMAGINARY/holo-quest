@@ -1,0 +1,26 @@
+{
+  "id": "set-flags-string",
+  "items": [
+    {
+      "type": "sequence",
+      "items": [
+        {
+          "text": "A",
+          "set": ["ending = \"evacuated\"", "note = \"has space\"", "cleared = \"\""]
+        },
+        {
+          "text": "B",
+          "cond": "ending = \"evacuated\""
+        },
+        {
+          "text": "Skip",
+          "cond": "ending = \"stayed\""
+        },
+        {
+          "text": "C",
+          "cond": "^cleared & note != \"\""
+        }
+      ]
+    }
+  ]
+}

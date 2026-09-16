@@ -105,7 +105,9 @@ function checkCapture(dialogue) {
   if (!capture?.cond?.trim()) return;
 
   try {
-    new ConditionParser({ flags: new FlagStore() }).evaluate(capture.cond);
+    // Always strict: this is a load-time syntax check, so it must report a bad
+    // condition rather than quietly evaluating it as false.
+    new ConditionParser({ flags: new FlagStore() }, { strict: true }).evaluate(capture.cond);
   } catch (e) {
     throw new Error(`Dialogue has an invalid capture condition: ${capture.cond} in ${dialogue.root.id}: ${e.message}`);
   }
