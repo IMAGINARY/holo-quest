@@ -278,10 +278,7 @@
           "$ref": "#/definitions/flag_assignments"
         },
         "responses": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/response"
-          }
+          "$ref": "#/definitions/responses"
         },
         "responseFlag": {
           "$ref": "#/definitions/flag_id"
@@ -292,6 +289,46 @@
       },
       "required": [
         "text"
+      ]
+    },
+    "responses": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "allOf": [
+              {
+                "$ref": "#/definitions/response"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "value": {
+                    "type": "string"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "array",
+          "items": {
+            "allOf": [
+              {
+                "$ref": "#/definitions/response"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "value": {
+                    "type": "number"
+                  }
+                }
+              }
+            ]
+          }
+        }
       ]
     },
     "response": {
@@ -319,9 +356,16 @@
           "$ref": "#/definitions/classes"
         },
         "value": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 100
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            },
+            {
+              "type": "number"
+            }
+          ]
         }
       },
       "required": [

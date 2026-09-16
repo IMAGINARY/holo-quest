@@ -1,0 +1,24 @@
+{
+  "id": "response-flag-number",
+  "items": [
+    {
+      "id": "rate",
+      "text": "How happy are you?",
+      "responseFlag": "happiness",
+      "then": "outcome",
+      "responses": [
+        { "text": "Miserable", "value": 1 },
+        { "text": "Fine",      "value": 3 },
+        { "text": "Delighted", "value": 5 }
+      ]
+    },
+    {
+      "id": "outcome",
+      "type": "first",
+      "items": [
+        { "text": "Glad to hear it", "cond": "happiness > 3" },
+        { "text": "Sorry to hear it" }
+      ]
+    }
+  ]
+}

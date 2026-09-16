@@ -22,6 +22,12 @@ import invalidResponseFlagNoResponsesDialogue
   from './fixtures/dialogues/invalid/invalid-response-flag-no-responses.dialogue.json';
 import invalidResponseFlagIdDialogue
   from './fixtures/dialogues/invalid/invalid-response-flag-id.dialogue.json';
+import invalidResponseValueMixedTypesDialogue
+  from './fixtures/dialogues/invalid/invalid-response-value-mixed-types.dialogue.json';
+import invalidResponseFlagTypeConflictDialogue
+  from './fixtures/dialogues/invalid/invalid-response-flag-type-conflict.dialogue.json';
+import responseFlagNumberDialogue
+  from './fixtures/dialogues/responses/response-flag-number.dialogue.json';
 import responseWithValuesDialogue
   from './fixtures/dialogues/responses/response-with-values.dialogue.json';
 import responseFlagDialogue
@@ -86,6 +92,11 @@ describe('Dialogue validation', () => {
       expect(() => validateDialogue(dialogue)).to.throw("duplicate response value 'same'");
     });
 
+    it('should reject a response set that mixes value types', () => {
+      expect(() => Dialogue.fromJson(invalidResponseValueMixedTypesDialogue))
+        .to.throw('validation failed');
+    });
+
     it('should accept responses where all have unique values', () => {
       const dialogue = Dialogue.fromJson(responseWithValuesDialogue);
       expect(() => validateDialogue(dialogue)).to.not.throw();
@@ -107,8 +118,20 @@ describe('Dialogue validation', () => {
       expect(() => validateDialogue(dialogue)).to.throw('no responses');
     });
 
+    it('should detect two nodes writing different value types to the same responseFlag', () => {
+      const dialogue = Dialogue.fromJson(invalidResponseFlagTypeConflictDialogue);
+      // Asserted without naming a node: `dialogue.nodes` is not in document order,
+      // so either node may be the one reported as conflicting.
+      expect(() => validateDialogue(dialogue)).to.throw("responseFlag 'mood'");
+    });
+
     it('should accept a responseFlag when all responses have unique values', () => {
       const dialogue = Dialogue.fromJson(responseFlagDialogue);
+      expect(() => validateDialogue(dialogue)).to.not.throw();
+    });
+
+    it('should accept a responseFlag whose responses all have numeric values', () => {
+      const dialogue = Dialogue.fromJson(responseFlagNumberDialogue);
       expect(() => validateDialogue(dialogue)).to.not.throw();
     });
   });

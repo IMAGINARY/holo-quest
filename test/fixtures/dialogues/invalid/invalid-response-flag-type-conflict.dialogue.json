@@ -1,0 +1,24 @@
+{
+  "id": "invalid-response-flag-type-conflict",
+  "items": [
+    {
+      "id": "first-question",
+      "text": "How happy are you?",
+      "responseFlag": "mood",
+      "then": "second-question",
+      "responses": [
+        { "text": "Sad",   "value": 1 },
+        { "text": "Happy", "value": 5 }
+      ]
+    },
+    {
+      "id": "second-question",
+      "text": "And now?",
+      "responseFlag": "mood",
+      "responses": [
+        { "text": "Better", "value": "better" },
+        { "text": "Worse",  "value": "worse" }
+      ]
+    }
+  ]
+}

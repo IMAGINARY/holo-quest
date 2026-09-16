@@ -1,0 +1,12 @@
+{
+  "id": "invalid-response-value-mixed-types",
+  "items": [
+    {
+      "text": "Pick one",
+      "responses": [
+        { "text": "Yes", "value": 1 },
+        { "text": "No",  "value": "no" }
+      ]
+    }
+  ]
+}

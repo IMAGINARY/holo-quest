@@ -71,12 +71,19 @@ function checkResponseValues(dialogue) {
 
 /**
  * Throws if any node has a `responseFlag` without a corresponding set of
- * responses where every response carries a `value`.
+ * responses where every response carries a `value`, if a node's response values
+ * are not all of the same type, or if two nodes write different types to the
+ * same `responseFlag`.
+ *
+ * Conditions compare the flag, not the response set, so per-node consistency is
+ * not enough: two statements sharing a `responseFlag` must agree on the type
+ * they write, or `=` silently never matches and ordering throws.
  *
  * @param {Dialogue} dialogue
  * @throws {Error}
  */
 function checkResponseFlag(dialogue) {
+  const flagTypes = new Map();
   dialogue.nodes.forEach((node) => {
     if (node.responseFlag === undefined) return;
 
@@ -87,6 +94,20 @@ function checkResponseFlag(dialogue) {
     const missing = node.responses.some((r) => r.value === undefined);
     if (missing) {
       throw new Error(`Dialogue node ${node.id} has responseFlag but responses are missing values in ${dialogue.root.id}`);
+    }
+
+    const types = new Set(node.responses.map((r) => typeof r.value));
+    if (types.size > 1) {
+      throw new Error(`Dialogue node ${node.id} mixes ${[...types].sort().join(' and ')} response values in ${dialogue.root.id}`);
+    }
+
+    const [type] = types;
+    const seen = flagTypes.get(node.responseFlag);
+    if (seen && seen.type !== type) {
+      throw new Error(`Dialogue node ${node.id} writes a ${type} to responseFlag '${node.responseFlag}', but node ${seen.nodeId} writes a ${seen.type} in ${dialogue.root.id}`);
+    }
+    if (!seen) {
+      flagTypes.set(node.responseFlag, { type, nodeId: node.id });
     }
   });
 }

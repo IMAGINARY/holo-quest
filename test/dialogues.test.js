@@ -48,6 +48,8 @@ import responseFlagDialogue
   from './fixtures/dialogues/responses/response-flag.dialogue.json';
 import responseFlagCondDialogue
   from './fixtures/dialogues/responses/response-flag-cond.dialogue.json';
+import responseFlagNumberDialogue
+  from './fixtures/dialogues/responses/response-flag-number.dialogue.json';
 import responseJumpsDialogue from './fixtures/dialogues/responses/response-jumps.dialogue.json';
 import thentextResponseDialogue
   from './fixtures/dialogues/responses/thentext-response.dialogue.json';
@@ -422,6 +424,29 @@ describe('DialogueIterator', () => {
         ['Pick a color', '>> Blue']
       );
       expect(context.flags.value('color')).to.equal('blue');
+    });
+
+    // Strict equality below is the point: a regression to string values would make
+    // this read '5', and the 'happiness > 3' branch would throw a ConditionTypeError
+    // rather than silently comparing.
+    it('should write a numeric response value as a number, not a string', () => {
+      const dialogue = Dialogue.fromJson(responseFlagNumberDialogue);
+      const context = new TestDialogueIteratorContext();
+      const iterator = new DialogueIterator(dialogue, context);
+      expect(getDialogueTrace(iterator, [2])).to.deep.equal(
+        ['How happy are you?', '>> Delighted', 'Glad to hear it']
+      );
+      expect(context.flags.value('happiness')).to.equal(5);
+    });
+
+    it('should let a later node compare a numeric responseFlag with an ordering operator', () => {
+      const dialogue = Dialogue.fromJson(responseFlagNumberDialogue);
+      const context = new TestDialogueIteratorContext();
+      const iterator = new DialogueIterator(dialogue, context);
+      expect(getDialogueTrace(iterator, [0])).to.deep.equal(
+        ['How happy are you?', '>> Miserable', 'Sorry to hear it']
+      );
+      expect(context.flags.value('happiness')).to.equal(1);
     });
 
     it('should support responses that jump to other nodes', () => {
