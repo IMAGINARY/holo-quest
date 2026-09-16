@@ -16,7 +16,7 @@ Tree-structured dialogue engine: parses JSON dialogue definitions, validates the
 ### Validation (three layers, run in order)
 
 - **`dialogue-schema-validation.js`** — JSON Schema validation via AJV (lazily compiled)
-- **`dialogue-validation.js`** — Structural checks: duplicate IDs, invalid `then` references, `capture.cond` syntax, cycles
+- **`dialogue-validation.js`** — Structural checks: duplicate IDs, invalid `then` references, response values (all-or-none, unique, one type per `responseFlag` across the dialogue), `capture.cond` syntax, cycles. **Not currently called from `src/`** — these run in tests only; the schema layer is the one that runs in production
 - **`dialogue-validation-cycles.js`** — Directed graph cycle detection via `find-cycle/directed`
 
 ### Sequencer UI States (`dialogue-sequencer-states/`)
@@ -47,7 +47,7 @@ All states implement the `onBegin`/`onEnd` lifecycle from the base class.
 ## Execution Flow
 
 1. `Dialogue.fromJson(json)` — schema-validates, deep-copies, links parents, normalizes types/ids
-2. `validateDialogue(dialogue)` — checks duplicate IDs, invalid references, cycles
+2. `validateDialogue(dialogue)` — checks duplicate IDs, invalid references, response values, cycles. Note: **not wired into this flow today** — nothing in `src/` calls it, so only step 1's schema validation runs in the shipped app
 3. `DialogueSequencer.play(dialogue, context, options)` — creates iterator, calls `runUntilInteractivity`
 4. Iterator skips non-interactive nodes (sequence/random/cycle/first) via `next()`
 5. On `statement` → TextState → speech bubble → (optional) ResponseState → (optional) ThenState
@@ -64,7 +64,7 @@ All states implement the `onBegin`/`onEnd` lifecycle from the base class.
 
 Parsed by `DialogueIterator.ASSIGNMENT_RE`, mirrored by the `flag_assignment` pattern in the schema.
 
-A flag holds a number or a string. Values are not clamped or otherwise constrained by `FlagStore`; they can be negative, decimal or empty. `+=`/`-=` throw a `TypeError` when the flag holds a string. `responseFlag` writes the selected response's `value`, which is always a string.
+A flag holds a number or a string. Values are not clamped or otherwise constrained by `FlagStore`; they can be negative, decimal or empty. `+=`/`-=` throw a `TypeError` when the flag holds a string. `responseFlag` writes the selected response's `value`, which is a number or a string depending on how it was written; all responses in a node, and all nodes sharing a `responseFlag`, must agree on the type.
 
 ## Condition Language
 

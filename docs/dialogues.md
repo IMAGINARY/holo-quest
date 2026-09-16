@@ -87,7 +87,7 @@ Statement nodes have these properties:
 - `sound` (string | object, optional): A sound to play while the statement is active. Either a string (path to a sound file) or an object with `path` (string, required) and `loop` (boolean, optional, default `false`). The sound starts when the bubble appears and stops when the player advances past the statement (continue input or response selection). The `thenText` shown after a response is *not* covered by the statement's sound. For sound that should keep playing independently across multiple nodes, use the `sound` effect instead (see [Effect nodes](#effect-nodes)).
 - `class` (string | array, optional): One or more classes that are set when the text is displayed.
 - `responses` (array, optional): An array of response objects.
-- `responseFlag` (string, optional): The id of a flag that will be set to the `value` of the selected response. Requires every response in the node to have a `value` (validation will fail otherwise). With `"responseFlag": "answer"`, later nodes branch on `answer = "yes"`. Response values are always strings, so compare them against quoted literals — `answer = 3` is never true, even when the value is `"3"`.
+- `responseFlag` (string, optional): The id of a flag that will be set to the `value` of the selected response. Requires every response in the node to have a `value` (validation will fail otherwise). The flag holds whatever type the `value` has: with `"value": "yes"` a later node branches on `answer = "yes"`, and with `"value": 4` on `answer > 3`. All responses in the node must use the same type, and two nodes writing to the same `responseFlag` must agree on it.
 - `then` (string, optional): The ID of the next node to transition to.
 
 If the statement node has `responses`, they player will have to pick one of them to continue.
@@ -108,7 +108,7 @@ A response object has these properties:
 - `text` (string | object, required): The text to display.
 - `class` (string | array, optional): One or more classes that are set when the response is displayed.
 - `set` (string | array, optional): One or more flags that are set when the response is selected.
-- `value` (string, optional): A stable identifier for this response, written to the node's `responseFlag` when the response is selected. If any response in a set has a `value`, all responses in that set must have one, and all values within the set must be unique. It is narrative data only, and does not affect where the response sits on the spinner.
+- `value` (string | number, optional): A stable identifier for this response, written to the node's `responseFlag` when the response is selected. If any response in a set has a `value`, all responses in that set must have one, they must all be of the same type, and all values within the set must be unique. It is narrative data only, and does not affect where the response sits on the spinner.
 - `thenText` (string | object, optional): A text that will be displayed after the response is selected.
 - `thenClass` (string | array, optional): One or more classes that are set when the `thenText` is displayed.
 - `then` (string, optional): The ID of the next node to transition to.
@@ -119,6 +119,28 @@ The player can select only one response, which will set all of its `set` flags.
 
 If the response has a `then` property, the dialogue will transition to the node specified in it, or
 display the text as if it were a statement node with no properties other than `text`.
+
+##### Response value types
+
+A `value` is a number if it is written as one, and a string otherwise, following ordinary YAML
+rules. Quote anything that is meant to be a string:
+
+| YAML | Stored as |
+| --- | --- |
+| `value: 4` | number `4` |
+| `value: "4"` | string `"4"` |
+| `value: 007` | number `7` |
+| `value: 0x1F` | number `31` |
+| `value: yes` | string `"yes"` |
+| `value: true` | boolean — rejected |
+| `value: 2025-01-01` | date — rejected |
+
+Numeric values are what make a rating scale work: with values `1`–`5`, a later node can test
+`happiness > 3`. Note that `0` is legal but falsy, so it is skipped by `COUNT()` and reads as false
+in `&`, `|` and `^`, exactly like `""` — prefer starting a scale at 1.
+
+One known inconsistency: `value: 1e3` is accepted as `1000`, while the same number in a `set`
+assignment, `'flag = 1e3'`, is rejected. Write it as `1000`.
 
 ### Effect nodes
 
@@ -251,6 +273,11 @@ Terms are numbers, strings, or flags (which hold either). An unset flag reads as
 - `COUNT("prefix")` counts flags holding a positive number or a non-empty string.
 - The math functions require numbers and reject strings.
 
+Because an unset flag reads as `0`, an ordering test against a numeric `responseFlag` is simply
+false before the question has been answered: `happiness > 3` evaluates `0 > 3`. That is usually
+what you want, but it fails quietly rather than announcing that the flag was never written. Gate on
+a separate flag if you need to tell "not asked yet" apart from "answered low".
+
 Beware that `^` binds tighter than `=`, so `^ending = "good"` means `(^ending) = "good"`, which is
 always false. Write `^(ending = "good")` instead.
 
@@ -313,7 +340,8 @@ possible future escape syntax. Setting a flag to `""` makes it falsy, which is t
 to clear it.
 
 **Numbers and strings are never equal.** `answer = 3` is false when `answer` holds the string `"3"`
-— write `answer = "3"` instead. This matters most with `responseFlag`, which always writes strings.
+— write `answer = "3"` instead. With `responseFlag` the flag holds whatever type the selected
+response's `value` had, so `value: 3` is matched by `answer = 3` and `value: "3"` by `answer = "3"`.
 
 ## Capture
 
