@@ -108,14 +108,16 @@ describe('Dialogue validation', () => {
       expect(() => Dialogue.fromJson(invalidResponseFlagIdDialogue)).to.throw('validation failed');
     });
 
+    // The schema now rejects these before the structural pass can run, which matters
+    // because the schema is the only validation layer on the production load path.
     it('should detect a responseFlag on a node where some responses are missing values', () => {
-      const dialogue = Dialogue.fromJson(invalidResponseFlagWithoutValuesDialogue);
-      expect(() => validateDialogue(dialogue)).to.throw('responses are missing values');
+      expect(() => Dialogue.fromJson(invalidResponseFlagWithoutValuesDialogue))
+        .to.throw('validation failed');
     });
 
     it('should detect a responseFlag on a node with no responses', () => {
-      const dialogue = Dialogue.fromJson(invalidResponseFlagNoResponsesDialogue);
-      expect(() => validateDialogue(dialogue)).to.throw('no responses');
+      expect(() => Dialogue.fromJson(invalidResponseFlagNoResponsesDialogue))
+        .to.throw('validation failed');
     });
 
     it('should detect two nodes writing different value types to the same responseFlag', () => {
