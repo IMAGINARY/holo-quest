@@ -289,71 +289,13 @@
       },
       "required": [
         "text"
-      ],
-      "if": {
-        "type": "object",
-        "required": [
-          "responseFlag"
-        ]
-      },
-      "then": {
-        "type": "object",
-        "required": [
-          "responses"
-        ],
-        "properties": {
-          "responses": {
-            "type": "array",
-            "minItems": 1,
-            "items": {
-              "type": "object",
-              "required": [
-                "value"
-              ]
-            }
-          }
-        }
-      }
+      ]
     },
     "responses": {
-      "anyOf": [
-        {
-          "type": "array",
-          "items": {
-            "allOf": [
-              {
-                "$ref": "#/definitions/response"
-              },
-              {
-                "type": "object",
-                "properties": {
-                  "value": {
-                    "type": "string"
-                  }
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "array",
-          "items": {
-            "allOf": [
-              {
-                "$ref": "#/definitions/response"
-              },
-              {
-                "type": "object",
-                "properties": {
-                  "value": {
-                    "type": "number"
-                  }
-                }
-              }
-            ]
-          }
-        }
-      ]
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/response"
+      }
     },
     "response": {
       "type": "object",
@@ -390,6 +332,9 @@
               "type": "number"
             }
           ]
+        },
+        "position": {
+          "type": "integer"
         }
       },
       "required": [

@@ -1,0 +1,13 @@
+{
+  "id": "invalid-response-position-zero",
+  "items": [
+    {
+      "text": "Pick one",
+      "responses": [
+        { "text": "Left",    "position": -1 },
+        { "text": "Neutral", "position": 0 },
+        { "text": "Right",   "position": 1 }
+      ]
+    }
+  ]
+}

@@ -108,7 +108,8 @@ A response object has these properties:
 - `text` (string | object, required): The text to display.
 - `class` (string | array, optional): One or more classes that are set when the response is displayed.
 - `set` (string | array, optional): One or more flags that are set when the response is selected.
-- `value` (string | number, optional): A stable identifier for this response, written to the node's `responseFlag` when the response is selected. If any response in a set has a `value`, all responses in that set must have one, they must all be of the same type, and all values within the set must be unique. It is narrative data only, and does not affect where the response sits on the spinner.
+- `value` (string | number, optional): A stable identifier for this response, written to the node's `responseFlag` when the response is selected. If any response in a set has a `value`, all responses in that set must have one, they must all be of the same type, and all values within the set must be unique. It is narrative data only; use `position` to say where the response sits on the spinner.
+- `position` (integer, optional): Where this response sits on the input track. If any response in a set has a `position`, all must have one. See [Response placement](#response-placement).
 - `thenText` (string | object, optional): A text that will be displayed after the response is selected.
 - `thenClass` (string | array, optional): One or more classes that are set when the `thenText` is displayed.
 - `then` (string, optional): The ID of the next node to transition to.
@@ -141,6 +142,41 @@ in `&`, `|` and `^`, exactly like `""` — prefer starting a scale at 1.
 
 One known inconsistency: `value: 1e3` is accepted as `1000`, while the same number in a `set`
 assignment, `'flag = 1e3'`, is rejected. Write it as `1000`.
+
+##### Response placement
+
+By default the engine lays a response set out symmetrically around the neutral centre of the
+spinner track, skipping position 0. Give every response a `position` to place them yourself:
+
+```yaml
+responses:
+  - text: Strongly against
+    position: -2
+  - text: Against
+    position: -1
+  - text: For
+    position: 1
+  - text: Strongly for
+    position: 2
+```
+
+Negative positions sit left of the neutral centre, positive ones right of it. The rules, all
+checked when the story loads:
+
+- **All or none.** Either every response in the set has a `position` or none do.
+- **Integers, and unique** within the set.
+- **Never 0.** 0 is the neutral resting position where the spinner starts, and it never confirms a
+    selection, so an option placed there could never be picked.
+- **Contiguous**, apart from the skipped 0. `-2, -1, 1, 2` is fine; `-3, 3` is not, because the
+    spinner would still stop at -2, -1, 1 and 2 with nothing there to select.
+
+`position` is only about placement and `value` is only about narrative data, so a response can carry
+either, both or neither.
+
+One caveat when combining `position` with `cond`: a positioned set is placed exactly as written, so
+if a condition hides a response in the middle of the run, the gap it leaves stays empty — the spinner
+will stop there and nothing will happen. Either keep conditional responses at the ends of the track,
+or leave the set unpositioned so the engine lays out whichever responses survive.
 
 ### Effect nodes
 
@@ -407,3 +443,10 @@ Node IDs, and the ID of the dialogue itself, must be unique within a dialogue.
 A dialogue can't have cycles. That is, there cannot be a path from a node to itself through 
 `then` properties. Even though cycles could be designed in a way that avoids infinite loops,
 they are not allowed because the risk of having one by mistake is too high.
+
+### Response sets must be consistent
+
+Within one response set, either every response has a `value` or none do, all values are of the same
+type, and all are unique. Two nodes writing to the same `responseFlag` must agree on the type they
+write. The same all-or-none rule applies to `position`, which must additionally be a non-zero
+integer, unique within the set, and contiguous apart from the skipped 0.

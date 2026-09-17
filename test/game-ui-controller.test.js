@@ -51,6 +51,29 @@ describe('GameUiController', () => {
       controller.showInput(valuedResponses.slice(0, 2));
       expect(positionsOf(useGameState.getState().input.options)).to.deep.equal([-1, 1]);
     });
+
+    it('should key options by an authored position when responses carry one', () => {
+      controller.showInput([
+        { id: 'a', text: 'Left', position: -2 },
+        { id: 'b', text: 'Middle', position: -1 },
+        { id: 'c', text: 'Right', position: 1 },
+      ]);
+      const { options } = useGameState.getState().input;
+      expect(positionsOf(options)).to.deep.equal([-2, -1, 1]);
+      expect(options['-2']).to.equal('Left');
+      expect(options['1']).to.equal('Right');
+    });
+
+    // Authored placement is asymmetric on purpose; auto-layout would have
+    // spread these three over [-1, 1, 2].
+    it('should not re-centre an authored set', () => {
+      controller.showInput([
+        { id: 'a', text: 'One', position: 1 },
+        { id: 'b', text: 'Two', position: 2 },
+        { id: 'c', text: 'Three', position: 3 },
+      ]);
+      expect(positionsOf(useGameState.getState().input.options)).to.deep.equal([1, 2, 3]);
+    });
   });
 
   describe('handleInput', () => {
@@ -70,14 +93,16 @@ describe('GameUiController', () => {
       expect(emitted).to.deep.equal(['pick-red', 'pick-blue']);
     });
 
-    it('should emit undefined for a position with no response', () => {
+    // Emitting for an empty position would reach `nextWithResponse` as
+    // `undefined` and throw, ending the story mid-run.
+    it('should emit nothing for a position with no response', () => {
       controller.showInput([{ id: 'only', text: 'Only' }]);
 
       let emitted = 'unset';
       controller.events.on('input', (id) => { emitted = id; });
       controller.handleInput(99);
 
-      expect(emitted).to.be.undefined;
+      expect(emitted).to.equal('unset');
     });
   });
 });

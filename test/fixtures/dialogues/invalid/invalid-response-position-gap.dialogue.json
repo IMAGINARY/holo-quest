@@ -1,0 +1,12 @@
+{
+  "id": "invalid-response-position-gap",
+  "items": [
+    {
+      "text": "Pick one",
+      "responses": [
+        { "text": "Far left",  "position": -3 },
+        { "text": "Far right", "position": 3 }
+      ]
+    }
+  ]
+}

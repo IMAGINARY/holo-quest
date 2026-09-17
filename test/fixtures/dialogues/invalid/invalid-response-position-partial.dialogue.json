@@ -1,0 +1,12 @@
+{
+  "id": "invalid-response-position-partial",
+  "items": [
+    {
+      "text": "Pick one",
+      "responses": [
+        { "text": "Left",  "position": -1 },
+        { "text": "Right" }
+      ]
+    }
+  ]
+}

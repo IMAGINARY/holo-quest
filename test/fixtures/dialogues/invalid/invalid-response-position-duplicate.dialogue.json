@@ -1,0 +1,12 @@
+{
+  "id": "invalid-response-position-duplicate",
+  "items": [
+    {
+      "text": "Pick one",
+      "responses": [
+        { "text": "Left",  "position": 1 },
+        { "text": "Right", "position": 1 }
+      ]
+    }
+  ]
+}

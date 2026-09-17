@@ -43,7 +43,11 @@ function checkInvalidReferences(dialogue) {
 /**
  * Throws if any statement's responses violate value constraints:
  *  - if any response in a set has a `value`, all must have one
+ *  - all values in a single response set must be of the same type
  *  - all values within a single response set must be unique
+ *
+ * The type rule lives here rather than in the schema: expressing it there needs
+ * one `anyOf` branch per type, which multiplies with every other set-level rule.
  *
  * @param {Dialogue} dialogue
  * @throws {Error}
@@ -59,6 +63,11 @@ function checkResponseValues(dialogue) {
       throw new Error(`Dialogue has responses with inconsistent values (some set, some not) in node ${node.id}:${dialogue.root.id}`);
     }
 
+    const types = new Set(withValue.map((r) => typeof r.value));
+    if (types.size > 1) {
+      throw new Error(`Dialogue has responses that mix ${[...types].sort().join(' and ')} values in node ${node.id}:${dialogue.root.id}`);
+    }
+
     const seen = new Set();
     withValue.forEach((r) => {
       if (seen.has(r.value)) {
@@ -66,6 +75,61 @@ function checkResponseValues(dialogue) {
       }
       seen.add(r.value);
     });
+  });
+}
+
+/**
+ * Throws if any statement's responses violate placement constraints:
+ *  - if any response in a set has a `position`, all must have one
+ *  - all positions within a single response set must be unique
+ *  - no response may sit at position 0
+ *  - positions must be contiguous, apart from the skipped 0
+ *
+ * `position` places a response on the spinner track; `value` is narrative data
+ * and never affects placement.
+ *
+ * Position 0 is the neutral resting position: `useSpinnerController` refuses to
+ * confirm there, so an option placed at 0 could never be selected.
+ *
+ * Contiguity matters because `GameView` drives the spinner with `step: 1` over
+ * the span of the option keys, making every integer in that span a settle point.
+ * A gap would therefore be a settleable slot with no response behind it.
+ *
+ * @param {Dialogue} dialogue
+ * @throws {Error}
+ */
+function checkResponsePositions(dialogue) {
+  dialogue.nodes.forEach((node) => {
+    if (!node.responses || node.responses.length === 0) return;
+
+    const withPosition = node.responses.filter((r) => r.position !== undefined);
+    if (withPosition.length === 0) return;
+
+    if (withPosition.length !== node.responses.length) {
+      throw new Error(`Dialogue has responses with inconsistent positions (some set, some not) in node ${node.id}:${dialogue.root.id}`);
+    }
+
+    const seen = new Set();
+    withPosition.forEach((r) => {
+      if (r.position === 0) {
+        throw new Error(`Dialogue has a response at position 0, which is the neutral resting position and can never be selected, in node ${node.id}:${dialogue.root.id}`);
+      }
+      if (seen.has(r.position)) {
+        throw new Error(`Dialogue has duplicate response position ${r.position} in node ${node.id}:${dialogue.root.id}`);
+      }
+      seen.add(r.position);
+    });
+
+    const sorted = [...seen].sort((a, b) => a - b);
+    for (let i = 1; i < sorted.length; i += 1) {
+      const prev = sorted[i - 1];
+      const curr = sorted[i];
+      // A step of 2 is allowed only across the skipped neutral position.
+      const straddlesNeutral = prev === -1 && curr === 1;
+      if (curr - prev !== 1 && !straddlesNeutral) {
+        throw new Error(`Dialogue has non-contiguous response positions (${sorted.join(', ')}) in node ${node.id}:${dialogue.root.id}`);
+      }
+    }
   });
 }
 
@@ -136,7 +200,8 @@ function checkCapture(dialogue) {
 
 /**
  * Runs all structural validations on a parsed dialogue: duplicate ids,
- * invalid references, response values, response flags, capture condition, and cycles.
+ * invalid references, response values, response positions, response flags,
+ * capture condition, and cycles.
  *
  * @param {Dialogue} dialogue
  * @throws {Error}
@@ -145,6 +210,7 @@ export default function validateDialogue(dialogue) {
   checkDuplicateIds(dialogue);
   checkInvalidReferences(dialogue);
   checkResponseValues(dialogue);
+  checkResponsePositions(dialogue);
   checkResponseFlag(dialogue);
   checkCapture(dialogue);
   checkCyclesInDialogue(dialogue);

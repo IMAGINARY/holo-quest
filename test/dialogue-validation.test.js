@@ -31,6 +31,16 @@ import responseWithValuesDialogue
   from './fixtures/dialogues/responses/response-with-values.dialogue.json';
 import responseFlagDialogue
   from './fixtures/dialogues/responses/response-flag.dialogue.json';
+import invalidResponsePositionPartialDialogue
+  from './fixtures/dialogues/invalid/invalid-response-position-partial.dialogue.json';
+import invalidResponsePositionDuplicateDialogue
+  from './fixtures/dialogues/invalid/invalid-response-position-duplicate.dialogue.json';
+import invalidResponsePositionZeroDialogue
+  from './fixtures/dialogues/invalid/invalid-response-position-zero.dialogue.json';
+import invalidResponsePositionGapDialogue
+  from './fixtures/dialogues/invalid/invalid-response-position-gap.dialogue.json';
+import responsePositionsDialogue
+  from './fixtures/dialogues/responses/response-positions.dialogue.json';
 import invalidCaptureCondDialogue
   from './fixtures/dialogues/invalid/invalid-capture-cond.dialogue.json';
 import captureDialogue from './fixtures/dialogues/core/capture.dialogue.json';
@@ -88,13 +98,44 @@ describe('Dialogue validation', () => {
         .to.throw("duplicate response value 'same'");
     });
 
+    // Was a schema failure until the value `anyOf` collapsed; `checkResponseValues`
+    // now reports it, naming the node.
     it('should reject a response set that mixes value types', () => {
       expect(() => Dialogue.fromJson(invalidResponseValueMixedTypesDialogue))
-        .to.throw('validation failed');
+        .to.throw('mix number and string values');
     });
 
     it('should accept responses where all have unique values', () => {
       expect(() => Dialogue.fromJson(responseWithValuesDialogue)).to.not.throw();
+    });
+  });
+
+  describe('response positions', () => {
+    it('should detect responses where some have positions and others do not', () => {
+      expect(() => Dialogue.fromJson(invalidResponsePositionPartialDialogue))
+        .to.throw('inconsistent positions');
+    });
+
+    it('should detect duplicate response positions within a set', () => {
+      expect(() => Dialogue.fromJson(invalidResponsePositionDuplicateDialogue))
+        .to.throw('duplicate response position 1');
+    });
+
+    // 0 is where the spinner rests and it never confirms there, so an option
+    // placed at 0 could never be selected.
+    it('should reject a response placed at position 0', () => {
+      expect(() => Dialogue.fromJson(invalidResponsePositionZeroDialogue))
+        .to.throw('position 0');
+    });
+
+    // A gap is a settleable slot with no response behind it.
+    it('should reject non-contiguous response positions', () => {
+      expect(() => Dialogue.fromJson(invalidResponsePositionGapDialogue))
+        .to.throw('non-contiguous response positions');
+    });
+
+    it('should accept a contiguous set that skips the neutral position', () => {
+      expect(() => Dialogue.fromJson(responsePositionsDialogue)).to.not.throw();
     });
   });
 
@@ -103,16 +144,16 @@ describe('Dialogue validation', () => {
       expect(() => Dialogue.fromJson(invalidResponseFlagIdDialogue)).to.throw('validation failed');
     });
 
-    // The schema rejects these before the structural pass can run. Both layers now run on
-    // the production load path, so which one reports it matters less than that one does.
+    // These were schema failures until the `responseFlag` if/then block moved out of
+    // specs/dialogue.schema.json; `checkResponseFlag` now reports them, naming the node.
     it('should detect a responseFlag on a node where some responses are missing values', () => {
       expect(() => Dialogue.fromJson(invalidResponseFlagWithoutValuesDialogue))
-        .to.throw('validation failed');
+        .to.throw('responses are missing values');
     });
 
     it('should detect a responseFlag on a node with no responses', () => {
       expect(() => Dialogue.fromJson(invalidResponseFlagNoResponsesDialogue))
-        .to.throw('validation failed');
+        .to.throw('has responseFlag but no responses');
     });
 
     it('should detect two nodes writing different value types to the same responseFlag', () => {

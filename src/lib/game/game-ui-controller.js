@@ -35,13 +35,26 @@ export default class GameUiController {
     // Option keys are spinner POSITIONS, never narrative data. `OptionRail`
     // and `GameView` both read them back through `Number()` to lay out a
     // number line, and `handleInput()` receives the settled position.
+    //
     // A response's `value` is narrative data destined for the node's
     // `responseFlag` and is routinely non-numeric ("red", "yes"), so using it
     // here produces NaN positions and trips `assertInputControl`.
-    // Position 0 is skipped: it is the neutral resting position.
+    //
+    // Placement comes from one of two sources. When responses carry an
+    // authored `position`, it is used as the key directly; validation
+    // guarantees the set is all-or-none, unique, non-zero and contiguous.
+    // Otherwise the set is laid out symmetrically around the centre.
+    // Position 0 is skipped either way: it is the neutral resting position,
+    // and `useSpinnerController` never confirms there.
+    const authored = responses.length > 0 && responses[0].position !== undefined;
     const negCount = Math.floor(responses.length / 2);
+    const positionAt = (response, i) => {
+      if (authored) return response.position;
+      return i < negCount ? i - negCount : i - negCount + 1;
+    };
+
     responses.forEach((response, i) => {
-      const position = i < negCount ? i - negCount : i - negCount + 1;
+      const position = positionAt(response, i);
       options[position] = response.text;
       this.responsesByPosition[position] = response;
     });
@@ -90,7 +103,12 @@ export default class GameUiController {
   }
 
   handleInput(position) {
-    const responseId = this.responsesByPosition?.[position]?.id;
-    this.events.emit('input', responseId);
+    const response = this.responsesByPosition?.[position];
+    // A settled position with no response behind it is ignored rather than
+    // emitted: `DialogueIterator.nextWithResponse` throws on an unknown id,
+    // which would end the story mid-run. Authored positions stay contiguous
+    // by validation, but a set thinned by `cond` can still leave a gap.
+    if (!response) return;
+    this.events.emit('input', response.id);
   }
 }

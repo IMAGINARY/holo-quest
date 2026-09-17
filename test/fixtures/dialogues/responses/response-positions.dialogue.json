@@ -1,0 +1,14 @@
+{
+  "id": "response-positions",
+  "items": [
+    {
+      "text": "Where do you stand?",
+      "responses": [
+        { "text": "Strongly against", "position": -2 },
+        { "text": "Against",          "position": -1 },
+        { "text": "For",              "position": 1 },
+        { "text": "Strongly for",     "position": 2 }
+      ]
+    }
+  ]
+}

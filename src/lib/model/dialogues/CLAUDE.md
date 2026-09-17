@@ -15,7 +15,7 @@ Tree-structured dialogue engine: parses JSON dialogue definitions, validates the
 ### Validation (three layers, run in order)
 
 - **`dialogue-schema-validation.js`** — JSON Schema validation via AJV (lazily compiled)
-- **`dialogue-validation.js`** — Structural checks: duplicate IDs, invalid `then` references, response values (all-or-none, unique, one type per `responseFlag` across the dialogue), `capture.cond` syntax, cycles. Runs at the end of `Dialogue.fromJson`, after the schema layer, so both layers run on the production load path
+- **`dialogue-validation.js`** — Structural checks: duplicate IDs, invalid `then` references, response values (all-or-none, unique, one type per set and per `responseFlag` across the dialogue), response positions (all-or-none, unique, non-zero, contiguous), `capture.cond` syntax, cycles. Runs at the end of `Dialogue.fromJson`, after the schema layer, so both layers run on the production load path. Set-level response rules live here rather than in the schema: expressing "all or none" there costs one `anyOf` branch per combination, so the branches multiply with every new property
 - **`dialogue-validation-cycles.js`** — Directed graph cycle detection via `find-cycle/directed`
 
 ### Sequencer UI States (`dialogue-sequencer-states/`)
@@ -63,6 +63,8 @@ All states implement the `onBegin`/`onEnd` lifecycle from the base class.
 Parsed by `DialogueIterator.ASSIGNMENT_RE`, mirrored by the `flag_assignment` pattern in the schema.
 
 A flag holds a number or a string. Values are not clamped or otherwise constrained by `FlagStore`; they can be negative, decimal or empty. `+=`/`-=` throw a `TypeError` when the flag holds a string. `responseFlag` writes the selected response's `value`, which is a number or a string depending on how it was written; all responses in a node, and all nodes sharing a `responseFlag`, must agree on the type.
+
+A response's `value` is narrative data only. Placement on the input track is a separate optional property, `position`, consumed by `GameUiController.showInput` as the spinner option key; without it the controller lays the set out symmetrically around the neutral centre.
 
 ## Condition Language
 
