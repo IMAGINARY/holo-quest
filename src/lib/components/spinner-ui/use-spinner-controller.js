@@ -15,6 +15,12 @@ export function useSpinnerController({
   settleThreshold = 0.05,
   stickyForce = 15,
   confirmationDelay = 2,
+  // Steps travelled per unit of the base calibration. The physics values
+  // above are tuned for gearRatio 1 (OptionRail); a control with denser
+  // steps raises it to move faster while keeping the same feel: the same
+  // twist breaks stickiness, and wells capture and settle the same way.
+  // Keep settleThreshold * gearRatio well under step / 2.
+  gearRatio = 1,
   onConfirm,
 } = {}) {
   const discrete = step > 0;
@@ -25,14 +31,17 @@ export function useSpinnerController({
     min,
     max,
     step,
-    sensitivity,
-    maxVelocity,
+    // Thresholds expressed in position units scale with the gear ratio;
+    // friction, well damping and the capture spring are scale-invariant.
+    sensitivity: sensitivity * gearRatio,
+    maxVelocity: maxVelocity * gearRatio,
     friction,
     wellStrength,
     pullStrength,
-    captureSpeed,
-    settleThreshold,
-    stickyForce,
+    captureSpeed: captureSpeed * gearRatio,
+    settleThreshold: settleThreshold * gearRatio,
+    stickyForce: stickyForce * gearRatio,
+    gearRatio,
     confirmationDelay,
     onConfirm,
     discrete,
@@ -93,7 +102,7 @@ export function useSpinnerController({
         p.lastTimestamp = timestamp;
         setState({
           position: p.position,
-          velocity: p.velocity,
+          velocity: p.velocity / c.gearRatio,
           isSettled: p.isSettled,
           confirmationProgress: 0,
         });
@@ -187,9 +196,11 @@ export function useSpinnerController({
       }
 
       // 12. Push state to React
+      // Velocity is reported in base (gearRatio 1) units so views can
+      // style by it the same way regardless of gearing.
       setState({
         position: p.position,
-        velocity: p.velocity,
+        velocity: p.velocity / c.gearRatio,
         isSettled: p.isSettled,
         confirmationProgress: (() => {
           if (c.discrete && p.isSettled && !p.isConfirmed) {

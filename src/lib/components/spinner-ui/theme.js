@@ -72,4 +72,36 @@ export default {
     railPaddingX: 40,
     height: 60,
   },
+  drum: {
+    width: 800,
+    // Suggested useSpinnerController gearRatio: rows are much denser than
+    // rail steps (~54px vs 260px), so the drum needs to travel more steps
+    // for the same spin.
+    gearRatio: 4,
+    // Options shown above and below the centered one.
+    visibleAround: 3,
+    label: {
+      fontSize: 36,
+      lineHeight: 1.5,
+      colorEdge: neutral[600],
+      colorNearMoving: neutral[150],
+      colorNearResting: '#ffffff',
+      proximityRange: 0.5,
+    },
+    frame: {
+      color: '#ffffff',
+      height: 3,
+      // Width of the fade-out at each end, relative to the label font size.
+      fadeWidth: '6em',
+    },
+    fade: {
+      // Gradient height in px, centered on the clip edge. Null = one row.
+      height: null,
+    },
+    ring: {
+      size: 36,
+      gap: '1em',
+      color: '#ffffff',
+    },
+  },
 };
