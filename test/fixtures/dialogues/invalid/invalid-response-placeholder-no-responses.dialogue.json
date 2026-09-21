@@ -1,0 +1,9 @@
+{
+  "id": "invalid-response-placeholder-no-responses",
+  "items": [
+    {
+      "text": "Nothing to pick here",
+      "responsePlaceholder": "Select an activity"
+    }
+  ]
+}

@@ -1,9 +1,9 @@
 import ScaleToFit from '../src/lib/components/scale-to-fit';
 import {
-  OptionDrum, useSpinnerController, usePointerLock, theme,
+  OptionDrum, useSpinnerController, usePointerLock,
 } from '../src/lib/components/spinner-ui';
 
-const sampleOptions = [
+const sampleLabels = [
   'gaming',
   'reading',
   'going out',
@@ -17,6 +17,9 @@ const sampleOptions = [
   'holiday planning',
 ];
 
+// Controls take a position -> label map; the drum's positions are 1..n.
+const sampleOptions = Object.fromEntries(sampleLabels.map((label, i) => [i + 1, label]));
+
 export default function App() {
   const { isLocked, requestLock } = usePointerLock();
 
@@ -24,11 +27,11 @@ export default function App() {
     position, velocity, isSettled, confirmationProgress,
   } = useSpinnerController({
     min: 1,
-    max: sampleOptions.length,
+    max: sampleLabels.length,
     step: 1,
-    gearRatio: theme.drum.gearRatio,
+    gearRatio: OptionDrum.gearRatio,
     // eslint-disable-next-line no-console
-    onConfirm: (value) => console.log('Input:', value, sampleOptions[value - 1]),
+    onConfirm: (value) => console.log('Input:', value, sampleOptions[value]),
   });
 
   return (

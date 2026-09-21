@@ -3,7 +3,7 @@ import {
 } from 'react';
 import HoloDisplay from './holo-display';
 import SpeechText, { Speeds } from './speech-text';
-import { OptionRail, useSpinnerController, usePointerLock } from './spinner-ui';
+import { useSpinnerController, usePointerLock } from './spinner-ui';
 import RestartDialog from './restart-dialog';
 import DevStatusBar from './dev-status-bar';
 import Fade from './fade';
@@ -93,6 +93,17 @@ export default function GameView({ config, controller }) {
     [input, lang]
   );
 
+  // Same null guard as `resolvedText`. An omitted placeholder is an empty
+  // label: controls that show one still render, just with nothing in it.
+  const resolvedPlaceholder = useMemo(
+    () => (input?.placeholder == null ? '' : getText(input.placeholder, lang) ?? ''),
+    [input, lang]
+  );
+
+  // The registered control selected by the statement's `responseControl`.
+  // `GameController.validateStory` guarantees every referenced control exists.
+  const Control = input === null ? null : controller.uiControls.get(input.type);
+
   const inputKeys = input !== null ? Object.keys(input.options).map(Number) : [];
   const inputMin = inputKeys.length > 0 ? Math.min(...inputKeys) : 0;
   const inputMax = inputKeys.length > 0 ? Math.max(...inputKeys) : 0;
@@ -107,6 +118,7 @@ export default function GameView({ config, controller }) {
     min: inputMin,
     max: inputMax,
     step: 1,
+    gearRatio: Control?.gearRatio ?? 1,
     // eslint-disable-next-line no-console
     onConfirm: handleInput,
   });
@@ -140,12 +152,15 @@ export default function GameView({ config, controller }) {
                 fontSize: `${defaultInputSize}em`,
               }}
             >
-              <OptionRail
-                options={resolvedOptions}
-                position={position}
-                velocity={velocity}
-                confirmationProgress={confirmationProgress}
-              />
+              {Control && (
+                <Control
+                  options={resolvedOptions}
+                  placeholder={resolvedPlaceholder}
+                  position={position}
+                  velocity={velocity}
+                  confirmationProgress={confirmationProgress}
+                />
+              )}
             </div>
           </Fade>
           {restartDialogVisible && (

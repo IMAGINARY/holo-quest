@@ -77,6 +77,8 @@ Example:
     }
   ],
   "responseFlag": "selected_response",
+  "responseControl": "drum",
+  "responsePlaceholder": "Select an option",
   "then": "node_id"
 }
 ```
@@ -88,6 +90,8 @@ Statement nodes have these properties:
 - `class` (string | array, optional): One or more classes that are set when the text is displayed.
 - `responses` (array, optional): An array of response objects.
 - `responseFlag` (string, optional): The id of a flag that will be set to the `value` of the selected response. Requires every response in the node to have a `value` (validation will fail otherwise). The flag holds whatever type the `value` has: with `"value": "yes"` a later node branches on `answer = "yes"`, and with `"value": 4` on `answer > 3`. All responses in the node must use the same type, and two nodes writing to the same `responseFlag` must agree on it.
+- `responseControl` (string, optional): The identifier of the input control the player uses to pick a response. Defaults to `rail`. See [Response controls](#response-controls). Requires `responses`.
+- `responsePlaceholder` (string | object, optional): A label for controls that show one, such as `drum`. Translatable like any other text (see [i18n](#i18n)). Requires `responses`.
 - `then` (string, optional): The ID of the next node to transition to.
 
 If the statement node has `responses`, they player will have to pick one of them to continue.
@@ -173,10 +177,48 @@ checked when the story loads:
 `position` is only about placement and `value` is only about narrative data, so a response can carry
 either, both or neither.
 
+Placement is up to the [input control](#response-controls). `position` is honoured by controls that
+lay their options out along a track, like `rail`. `drum` numbers its options in order instead, so it
+ignores `position`.
+
 One caveat when combining `position` with `cond`: a positioned set is placed exactly as written, so
 if a condition hides a response in the middle of the run, the gap it leaves stays empty — the spinner
 will stop there and nothing will happen. Either keep conditional responses at the ends of the track,
 or leave the set unpositioned so the engine lays out whichever responses survive.
+
+##### Response controls
+
+A statement's responses are picked with an input control, chosen by `responseControl`. The value is
+an identifier, not a fixed list: it is looked up at runtime among the controls the app registers, so
+an installation can add its own. The controls that ship with the engine are:
+
+| `responseControl` | Control |
+| --- | --- |
+| `rail` (default) | A horizontal rail with the options spread along it. Honours `position`. Has no placeholder. |
+| `drum` | A vertical drum that scrolls through the options one row at a time. The placeholder is shown as the neutral row the drum rests on before a choice is made. Numbers the options in order and ignores `position`. |
+
+```yaml
+- text: What do you do on a free evening?
+  responseControl: drum
+  responsePlaceholder:
+    en: Select an activity
+    de: Wähle eine Aktivität
+  responses:
+    - text: Reading
+    - text: Sleeping
+    - text: Going out
+```
+
+`responsePlaceholder` is a text (a string, or one string per language) and is always optional. A
+control that shows a placeholder still works without one, it just renders an empty label; a control
+that has none, like `rail`, ignores it. Neither property does anything on a node without `responses`,
+so validation rejects that.
+
+The identifier must be well formed (letters, digits, `_`, `-` and `.`, not starting with a digit),
+and it must name a registered control. That second rule can't be checked from the dialogue alone, so
+it is checked when the story is loaded into the app: an unknown identifier stops the app with a fatal
+error listing the registered controls, rather than surfacing when the player reaches that node. See
+[ui-controls.md](ui-controls.md) for how controls are registered.
 
 ### Effect nodes
 
@@ -249,7 +291,7 @@ their behavior is defined by their type:
 
 ## i18n
 
-Any time a text is specified (`text` or `thenText` properties), there are two options:
+Any time a text is specified (`text`, `thenText` or `responsePlaceholder` properties), there are two options:
 
 - Using a string
 - Using multiple strings, one per language
@@ -450,3 +492,9 @@ Within one response set, either every response has a `value` or none do, all val
 type, and all are unique. Two nodes writing to the same `responseFlag` must agree on the type they
 write. The same all-or-none rule applies to `position`, which must additionally be a non-zero
 integer, unique within the set, and contiguous apart from the skipped 0.
+
+### Response controls need responses
+
+A node with `responseControl` or `responsePlaceholder` must have at least one response. The control
+identifier must also belong to a registered control; that is checked when the story is loaded into
+the app rather than when the dialogue is built (see [Response controls](#response-controls)).

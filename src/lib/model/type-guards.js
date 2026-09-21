@@ -12,14 +12,16 @@
  */
 
 /**
- * Player input control. `type` discriminates the UI variant (only `'default'`
- * exists today) and `options` maps spinner positions (numeric keys as strings)
- * to option labels as {@link LangText}.
+ * Player input control. `type` is the identifier of the registered UI control
+ * that renders it (e.g. `'rail'`, `'drum'`), `options` maps spinner positions
+ * (numeric keys as strings) to option labels as {@link LangText}, and the
+ * optional `placeholder` is the label for controls that show one.
  *
  * @typedef {Object} InputControl
- * @property {string} type - Non-empty control-variant identifier.
+ * @property {string} type - Non-empty control identifier.
  * @property {Object<string, LangText>} options - Map of spinner position to
  *   option label.
+ * @property {LangText} [placeholder] - Label for controls that show one.
  */
 
 function describeType(value) {
@@ -87,7 +89,8 @@ export function assertLangText(value, label) {
 
 /**
  * Asserts that `value` is null, or a plain object of the shape:
- *   { type: string (non-empty), options: { [numeric-key]: LangText } }
+ *   { type: string (non-empty), options: { [numeric-key]: LangText },
+ *     placeholder?: LangText }
  *
  * @param {unknown} value
  * @param {string} label - Identifier included in error messages.
@@ -117,4 +120,7 @@ export function assertInputControl(value, label) {
     }
     assertLangText(val, `${label}.options["${key}"]`);
   });
+  if (value.placeholder !== undefined) {
+    assertLangText(value.placeholder, `${label}.placeholder`);
+  }
 }

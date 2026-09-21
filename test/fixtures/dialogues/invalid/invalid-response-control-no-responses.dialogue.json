@@ -1,0 +1,9 @@
+{
+  "id": "invalid-response-control-no-responses",
+  "items": [
+    {
+      "text": "Nothing to pick here",
+      "responseControl": "drum"
+    }
+  ]
+}

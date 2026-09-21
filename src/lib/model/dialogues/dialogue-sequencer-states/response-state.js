@@ -14,7 +14,10 @@ export default class DialogueSequencerResponseState extends DialogueSequencerSta
   }
 
   onBegin() {
-    this.uiController.showInput(this.responses);
+    this.uiController.showInput(this.responses, {
+      control: this.activeNode.responseControl,
+      placeholder: this.activeNode.responsePlaceholder,
+    });
   }
 
   onInput(responseId) {

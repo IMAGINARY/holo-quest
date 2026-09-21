@@ -134,5 +134,26 @@ describe('type-guards', () => {
         'test'
       )).toThrow(/test\.options\["1"\]: expected string, plain object, or null/);
     });
+
+    it('accepts a control with a string placeholder', () => {
+      expect(() => assertInputControl(
+        { type: 'drum', options: { 1: 'a' }, placeholder: 'Pick one' },
+        'test'
+      )).not.toThrow();
+    });
+
+    it('accepts a control with a LangText placeholder', () => {
+      expect(() => assertInputControl(
+        { type: 'drum', options: { 1: 'a' }, placeholder: { en: 'Pick one', es: 'Elige uno' } },
+        'test'
+      )).not.toThrow();
+    });
+
+    it('throws when the placeholder is an invalid LangText', () => {
+      expect(() => assertInputControl(
+        { type: 'drum', options: { 1: 'a' }, placeholder: 42 },
+        'test'
+      )).toThrow(/test\.placeholder: expected string, plain object, or null/);
+    });
   });
 });

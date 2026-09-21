@@ -10,12 +10,16 @@ function clamp(value, min, max) {
 }
 
 export default function OptionDrum({
-  options, placeholder, position, velocity, confirmationProgress = 0,
+  options, placeholder = '', position, velocity, confirmationProgress = 0,
 }) {
-  // Row index = spinner position: 0 is the neutral placeholder row,
-  // options[i] sits at position i + 1.
-  const rows = [placeholder, ...options];
-  const clampedPos = clamp(position, 0, options.length);
+  // `options` maps spinner position to label, like every control. The drum
+  // is 'sequential', so its keys are 1..n. Row index = spinner position: 0 is
+  // the neutral placeholder row, and the option at position p sits on row p.
+  const labels = Object.entries(options)
+    .sort(([a], [b]) => Number(a) - Number(b))
+    .map(([, text]) => text);
+  const rows = [placeholder, ...labels];
+  const clampedPos = clamp(position, 0, labels.length);
   const absVel = Math.min(1, Math.abs(velocity));
 
   const rowHeight = label.fontSize * label.lineHeight;
@@ -113,3 +117,7 @@ export default function OptionDrum({
     </div>
   );
 }
+
+// Control contract (see src/lib/game/ui-controls.js).
+OptionDrum.placement = 'sequential';
+OptionDrum.gearRatio = theme.drum.gearRatio;

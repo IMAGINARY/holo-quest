@@ -1,10 +1,22 @@
 import EventEmitter from 'eventemitter3';
 import useGameState from '../stores/game-state';
+import { DEFAULT_UI_CONTROL } from './ui-controls';
+
+/**
+ * @import { LangText } from '../model/type-guards'
+ */
 
 export default class GameUiController {
-  constructor(config, gameController) {
+  /**
+   * @param {object} config The application configuration object.
+   * @param {GameController} gameController The owning game controller.
+   * @param {Map<string, Function>} [uiControls] The registered input controls, by identifier.
+   *  Consulted for each control's `placement`; an unregistered one is laid out as `'centered'`.
+   */
+  constructor(config, gameController, uiControls = new Map()) {
     this.config = config;
     this.gameController = gameController;
+    this.uiControls = uiControls;
     this.events = new EventEmitter();
   }
 
@@ -21,14 +33,24 @@ export default class GameUiController {
   // eslint-disable-next-line class-methods-use-this
   showContinueInput() {
     useGameState.getState().setInput({
-      type: 'default',
+      type: DEFAULT_UI_CONTROL,
       options: {
         1: this.config.strings.continue,
       },
     });
   }
 
-  showInput(responses) {
+  /**
+   * Offers the responses to the player through an input control.
+   *
+   * @param {object[]} responses The enabled responses of the active statement.
+   * @param {object} [options]
+   * @param {string} [options.control] Identifier of the registered input control to use (the
+   *  statement's `responseControl`). Defaults to {@link DEFAULT_UI_CONTROL}.
+   * @param {LangText} [options.placeholder] Label for controls that show one (the statement's
+   *  `responsePlaceholder`).
+   */
+  showInput(responses, { control = DEFAULT_UI_CONTROL, placeholder } = {}) {
     const options = {};
     this.responsesByPosition = {};
 
@@ -40,15 +62,19 @@ export default class GameUiController {
     // `responseFlag` and is routinely non-numeric ("red", "yes"), so using it
     // here produces NaN positions and trips `assertInputControl`.
     //
-    // Placement comes from one of two sources. When responses carry an
-    // authored `position`, it is used as the key directly; validation
+    // Placement is up to the control (its static `placement`). `'sequential'`
+    // controls, like the drum, number the responses 1..n in order and ignore
+    // any authored `position`. Everything else is `'centered'`: when responses
+    // carry an authored `position`, it is used as the key directly; validation
     // guarantees the set is all-or-none, unique, non-zero and contiguous.
     // Otherwise the set is laid out symmetrically around the centre.
     // Position 0 is skipped either way: it is the neutral resting position,
     // and `useSpinnerController` never confirms there.
-    const authored = responses.length > 0 && responses[0].position !== undefined;
+    const sequential = this.uiControls.get(control)?.placement === 'sequential';
+    const authored = !sequential && responses.length > 0 && responses[0].position !== undefined;
     const negCount = Math.floor(responses.length / 2);
     const positionAt = (response, i) => {
+      if (sequential) return i + 1;
       if (authored) return response.position;
       return i < negCount ? i - negCount : i - negCount + 1;
     };
@@ -60,8 +86,9 @@ export default class GameUiController {
     });
 
     useGameState.getState().setInput({
-      type: 'default',
+      type: control,
       options,
+      ...(placeholder !== undefined && { placeholder }),
     });
   }
 

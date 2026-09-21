@@ -8,6 +8,7 @@ import DialogueIteratorContext from '../model/dialogues/dialogue-iterator-contex
 import ConditionParser from '../model/dialogues/condition-parser';
 import selectCapturedFlags from '../model/dialogues/flag-capture';
 import GameUiController from './game-ui-controller';
+import { validateStoryControls } from './ui-controls';
 import SoundManager from '../sound/sound-manager';
 
 export default class GameController {
@@ -19,9 +20,13 @@ export default class GameController {
    *  (a language code from that list, used as the initial active language; falls back to the
    *  first list entry when absent or unknown), and optionally `shortcuts` (a map of command
    *  IDs to shortcut strings).
+   * @param {Map<string, Function>} uiControls The registered input controls, by the identifier a
+   *  statement's `responseControl` refers to (see `src/lib/init/register-ui-controls.js`).
+   *  `GameView` builds the controls from it by name.
    */
-  constructor(config) {
+  constructor(config, uiControls) {
     this.config = config;
+    this.uiControls = uiControls;
     this.languages = config.game.languages;
     this.initLang();
     this.gameInProgress = false;
@@ -29,7 +34,7 @@ export default class GameController {
 
     this.soundManager = new SoundManager(this.config);
     this.dialogueEffectFactory = new DialogueEffectFactory(this);
-    this.gameUiController = new GameUiController(this.config, this);
+    this.gameUiController = new GameUiController(this.config, this, this.uiControls);
     this.dialogueSequencer = new DialogueSequencer(
       this.dialogueEffectFactory,
       this.gameUiController
@@ -121,11 +126,28 @@ export default class GameController {
   }
 
   /**
-   * Stores the loaded story script on the controller for later use.
+   * Checks a parsed story against what this controller can actually run, so a mistake fails when
+   * the story loads instead of when the player reaches the offending node. Complements the
+   * structural validation in `Dialogue.fromJson`, which has no access to runtime registries.
+   *
+   * Add any further pre-game story checks here.
    *
    * @param {Dialogue} story The parsed story object.
+   * @throws {Error} If the story refers to something this controller doesn't provide.
+   */
+  validateStory(story) {
+    validateStoryControls(story, this.uiControls);
+  }
+
+  /**
+   * Validates the loaded story script (see {@link validateStory}) and stores it on the controller
+   * for later use. An invalid story is never stored.
+   *
+   * @param {Dialogue} story The parsed story object.
+   * @throws {Error} If the story fails validation.
    */
   setStory(story) {
+    this.validateStory(story);
     this.story = story;
   }
 

@@ -41,6 +41,14 @@ import invalidResponsePositionGapDialogue
   from './fixtures/dialogues/invalid/invalid-response-position-gap.dialogue.json';
 import responsePositionsDialogue
   from './fixtures/dialogues/responses/response-positions.dialogue.json';
+import invalidResponseControlNoResponsesDialogue
+  from './fixtures/dialogues/invalid/invalid-response-control-no-responses.dialogue.json';
+import invalidResponsePlaceholderNoResponsesDialogue
+  from './fixtures/dialogues/invalid/invalid-response-placeholder-no-responses.dialogue.json';
+import invalidResponseControlIdDialogue
+  from './fixtures/dialogues/invalid/invalid-response-control-id.dialogue.json';
+import responseControlDialogue
+  from './fixtures/dialogues/responses/response-control.dialogue.json';
 import invalidCaptureCondDialogue
   from './fixtures/dialogues/invalid/invalid-capture-cond.dialogue.json';
 import captureDialogue from './fixtures/dialogues/core/capture.dialogue.json';
@@ -169,6 +177,29 @@ describe('Dialogue validation', () => {
 
     it('should accept a responseFlag whose responses all have numeric values', () => {
       expect(() => Dialogue.fromJson(responseFlagNumberDialogue)).to.not.throw();
+    });
+  });
+
+  // The control id is only checked against the registered controls at runtime
+  // (see test/ui-controls.test.js); here it is just a well-formed identifier.
+  describe('response control', () => {
+    it('should reject a responseControl that is not a valid identifier', () => {
+      expect(() => Dialogue.fromJson(invalidResponseControlIdDialogue))
+        .to.throw('validation failed');
+    });
+
+    it('should detect a responseControl on a node with no responses', () => {
+      expect(() => Dialogue.fromJson(invalidResponseControlNoResponsesDialogue))
+        .to.throw('has responseControl but no responses');
+    });
+
+    it('should detect a responsePlaceholder on a node with no responses', () => {
+      expect(() => Dialogue.fromJson(invalidResponsePlaceholderNoResponsesDialogue))
+        .to.throw('has responsePlaceholder but no responses');
+    });
+
+    it('should accept a responseControl with a string or translated responsePlaceholder', () => {
+      expect(() => Dialogue.fromJson(responseControlDialogue)).to.not.throw();
     });
   });
 

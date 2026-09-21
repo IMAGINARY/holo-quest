@@ -139,3 +139,7 @@ export default function OptionRail({
     </div>
   );
 }
+
+// Control contract (see src/lib/game/ui-controls.js). The rail has no
+// placeholder row, so it simply ignores that prop.
+OptionRail.placement = 'centered';

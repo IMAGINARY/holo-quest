@@ -177,6 +177,27 @@ function checkResponseFlag(dialogue) {
 }
 
 /**
+ * Throws if a node sets `responseControl` or `responsePlaceholder` without any responses.
+ *
+ * Both only configure the input control shown for a node's responses, so on a node with none
+ * they would silently do nothing. The control id itself is not checked here: it is resolved
+ * against the registered controls at runtime (see `GameController.validateStory`).
+ *
+ * @param {Dialogue} dialogue
+ * @throws {Error}
+ */
+function checkResponseControls(dialogue) {
+  dialogue.nodes.forEach((node) => {
+    ['responseControl', 'responsePlaceholder'].forEach((property) => {
+      if (node[property] === undefined) return;
+      if (!node.responses || node.responses.length === 0) {
+        throw new Error(`Dialogue node ${node.id} has ${property} but no responses in ${dialogue.root.id}`);
+      }
+    });
+  });
+}
+
+/**
  * Throws if the dialogue's `capture.cond` is not a parseable condition expression.
  *
  * Evaluated against an empty flag store, so unknown flags resolve to 0: this catches syntax
@@ -201,7 +222,7 @@ function checkCapture(dialogue) {
 /**
  * Runs all structural validations on a parsed dialogue: duplicate ids,
  * invalid references, response values, response positions, response flags,
- * capture condition, and cycles.
+ * response controls, capture condition, and cycles.
  *
  * @param {Dialogue} dialogue
  * @throws {Error}
@@ -212,6 +233,7 @@ export default function validateDialogue(dialogue) {
   checkResponseValues(dialogue);
   checkResponsePositions(dialogue);
   checkResponseFlag(dialogue);
+  checkResponseControls(dialogue);
   checkCapture(dialogue);
   checkCyclesInDialogue(dialogue);
 }

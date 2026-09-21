@@ -1,0 +1,13 @@
+{
+  "id": "invalid-response-control-id",
+  "items": [
+    {
+      "text": "Pick one",
+      "responseControl": "9drum",
+      "responses": [
+        { "text": "Reading" },
+        { "text": "Sleeping" }
+      ]
+    }
+  ]
+}

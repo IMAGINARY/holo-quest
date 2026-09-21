@@ -40,7 +40,7 @@ Holo-Quest is a first-person interactive story engine built with React 19, Tailw
 - **`src/lib/helpers/`** — Utility modules (logger, sentry)
 - **`src/lib/helpers-web/`** — Browser-specific helpers (fatal error display)
 - **`src/lib/sound/`** — SoundManager (Howler.js)
-- **`src/lib/init/`** — App initialization and config injection
+- **`src/lib/init/`** — App initialization and config injection. `register-ui-controls.js` is the registry of input controls a story can select with `responseControl` (see `docs/ui-controls.md`); it is meant to be replaceable to add or swap controls
 - **`src/lib/loaders/`** — YAML config loading
 - **`config/`** — YAML configuration files
 - **`src/styles/`** — CSS stylesheets (Tailwind CSS v4 with DaisyUI plugin via `@plugin "daisyui"`)

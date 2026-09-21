@@ -76,6 +76,96 @@ describe('GameUiController', () => {
     });
   });
 
+  describe('showInput with a selected control', () => {
+    const three = [
+      { id: 'a', text: 'Reading' },
+      { id: 'b', text: 'Sleeping' },
+      { id: 'c', text: 'Going out' },
+    ];
+    // Controls declare how they want their responses placed.
+    const uiControls = new Map([
+      ['rail', { placement: 'centered' }],
+      ['drum', { placement: 'sequential' }],
+    ]);
+
+    beforeEach(() => {
+      controller = new GameUiController({}, null, uiControls);
+    });
+
+    it('should use the default control, without a placeholder, when none is given', () => {
+      controller.showInput(three);
+      const input = useGameState.getState().input;
+      expect(input.type).to.equal('rail');
+      expect(input).to.not.have.property('placeholder');
+      expect(positionsOf(input.options)).to.deep.equal([-1, 1, 2]);
+    });
+
+    it('should record the selected control as the input type', () => {
+      controller.showInput(three, { control: 'drum' });
+      expect(useGameState.getState().input.type).to.equal('drum');
+    });
+
+    it('should number responses 1..n in order for a sequential control', () => {
+      controller.showInput(three, { control: 'drum' });
+      const { options } = useGameState.getState().input;
+      expect(positionsOf(options)).to.deep.equal([1, 2, 3]);
+      expect(options[1]).to.equal('Reading');
+      expect(options[3]).to.equal('Going out');
+    });
+
+    // The drum's track has no negative side, so authored placement can't apply.
+    it('should ignore authored positions for a sequential control', () => {
+      controller.showInput([
+        { id: 'a', text: 'Left', position: -1 },
+        { id: 'b', text: 'Right', position: 1 },
+      ], { control: 'drum' });
+      expect(positionsOf(useGameState.getState().input.options)).to.deep.equal([1, 2]);
+    });
+
+    it('should still honour authored positions for a centered control', () => {
+      controller.showInput([
+        { id: 'a', text: 'Left', position: -1 },
+        { id: 'b', text: 'Right', position: 1 },
+      ], { control: 'rail' });
+      expect(positionsOf(useGameState.getState().input.options)).to.deep.equal([-1, 1]);
+    });
+
+    it('should resolve a sequential position back to its response', () => {
+      controller.showInput(three, { control: 'drum' });
+      const emitted = [];
+      controller.events.on('input', (id) => emitted.push(id));
+      controller.handleInput(1);
+      controller.handleInput(3);
+      expect(emitted).to.deep.equal(['a', 'c']);
+    });
+
+    it('should pass a placeholder through to the input', () => {
+      controller.showInput(three, { control: 'drum', placeholder: 'Select an activity' });
+      expect(useGameState.getState().input.placeholder).to.equal('Select an activity');
+    });
+
+    it('should pass a translated placeholder through unchanged', () => {
+      const placeholder = { en: 'Select an activity', de: 'Wähle eine Aktivität' };
+      controller.showInput(three, { control: 'drum', placeholder });
+      expect(useGameState.getState().input.placeholder).to.deep.equal(placeholder);
+    });
+
+    it('should lay out an unregistered control as centered rather than fail', () => {
+      controller.showInput(three, { control: 'wheel' });
+      expect(positionsOf(useGameState.getState().input.options)).to.deep.equal([-1, 1, 2]);
+    });
+  });
+
+  describe('showContinueInput', () => {
+    it('should use the default control', () => {
+      controller = new GameUiController({ strings: { continue: 'Continue' } }, null);
+      controller.showContinueInput();
+      const { input } = useGameState.getState();
+      expect(input.type).to.equal('rail');
+      expect(input.options).to.deep.equal({ 1: 'Continue' });
+    });
+  });
+
   describe('handleInput', () => {
     it('should resolve a spinner position to the response id', () => {
       controller.showInput([

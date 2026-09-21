@@ -1,0 +1,32 @@
+{
+  "id": "response-control",
+  "items": [
+    {
+      "text": "What do you do on a free evening?",
+      "responseControl": "drum",
+      "responsePlaceholder": "Select an activity",
+      "responses": [
+        { "text": "Reading" },
+        { "text": "Sleeping" },
+        { "text": "Going out" }
+      ]
+    },
+    {
+      "text": "And on the weekend?",
+      "responseControl": "drum",
+      "responsePlaceholder": { "en": "Select an activity", "de": "Wähle eine Aktivität" },
+      "responses": [
+        { "text": "Hiking" },
+        { "text": "Cooking" }
+      ]
+    },
+    {
+      "text": "Which do you prefer?",
+      "responseControl": "rail",
+      "responses": [
+        { "text": "Cats" },
+        { "text": "Dogs" }
+      ]
+    }
+  ]
+}

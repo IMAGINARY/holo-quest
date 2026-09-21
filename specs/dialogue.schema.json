@@ -113,6 +113,12 @@
       "maxLength": 100,
       "pattern": "^[a-zA-Z_][.a-zA-Z0-9_-]*$"
     },
+    "control_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100,
+      "pattern": "^[a-zA-Z_][.a-zA-Z0-9_-]*$"
+    },
     "flags": {
       "type": "array",
       "items": {
@@ -282,6 +288,12 @@
         },
         "responseFlag": {
           "$ref": "#/definitions/flag_id"
+        },
+        "responseControl": {
+          "$ref": "#/definitions/control_id"
+        },
+        "responsePlaceholder": {
+          "$ref": "#/definitions/text"
         },
         "then": {
           "$ref": "#/definitions/node_id"
