@@ -1,3 +1,9 @@
 app:
   storyPath: stories
   story: evacuate
+  # Node id to start the story from, instead of its root node. Useful to jump
+  # straight into a scene during development, or for a kiosk demo that skips
+  # the intro, without touching the story file.
+  # Leave unset (or blank) to start at the root node, as before this option
+  # existed. Override per session with ?startNode=<id>.
+#  startNode: ready

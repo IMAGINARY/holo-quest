@@ -68,6 +68,16 @@ export default function getQsConfigOverrides(qs) {
       logger.error('story: must contain only alphanumeric characters, _ or -');
     }
   }
+  const startNode = qs.get('startNode');
+  if (startNode) {
+    if (startNode.match(/^[a-zA-Z0-9_-]+$/)) {
+      overrides['startNode query string'] = {
+        app: { startNode },
+      };
+    } else {
+      logger.error('startNode: must contain only alphanumeric characters, _ or -');
+    }
+  }
   const strict = qs.get('strict');
   if (strict !== null) {
     overrides['strict query string'] = {

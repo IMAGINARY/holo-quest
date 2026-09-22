@@ -67,10 +67,15 @@ export default class DialogueSequencer {
    *
    * @param {Dialogue} dialogue
    * @param {DialogueIteratorContext} context
+   * @param {Object} [options]
+   * @param {string} [options.startNode] Id of the node to start playback from.
+   *  Must be a valid id in `dialogue`, or omitted/blank to start at the root
+   *  node. Not validated here — the caller (`GameController.resolveStartNode`)
+   *  is responsible for checking a configured id before it reaches this call.
    */
-  play(dialogue, context) {
+  play(dialogue, context, options = {}) {
     this.dialogue = dialogue;
-    this.dialogueIterator = new DialogueIterator(dialogue, context);
+    this.dialogueIterator = new DialogueIterator(dialogue, context, options.startNode);
     this.runUntilInteractivity();
   }
 

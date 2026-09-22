@@ -140,8 +140,9 @@ export default class GameController {
   }
 
   /**
-   * Validates the loaded story script (see {@link validateStory}) and stores it on the controller
-   * for later use. An invalid story is never stored.
+   * Validates the loaded story script (see {@link validateStory}) and stores it on the
+   * controller for later use, together with the start node resolved from `config.app.startNode`
+   * (see {@link resolveStartNode}). An invalid story is never stored.
    *
    * @param {Dialogue} story The parsed story object.
    * @throws {Error} If the story fails validation.
@@ -149,6 +150,34 @@ export default class GameController {
   setStory(story) {
     this.validateStory(story);
     this.story = story;
+    this.startNode = this.resolveStartNode(story);
+  }
+
+  /**
+   * Resolves `config.app.startNode` against the given story.
+   *
+   * An unset or blank value resolves to `undefined`, meaning "start at the story's root node" —
+   * the same behavior as before this option existed. A value that names no node in the story
+   * also falls back to `undefined`, with a warning logged, so a stale or mistyped id can't take
+   * the kiosk down.
+   *
+   * @param {Dialogue} story The parsed story object.
+   * @returns {string|undefined} A valid node id in `story`, or `undefined` for the root node.
+   */
+  resolveStartNode(story) {
+    const startNode = this.config?.app?.startNode;
+    if (!startNode) {
+      return undefined;
+    }
+    if (story.getNode(startNode) === undefined) {
+      logger.warn(
+        "GameController: configured startNode '%s' was not found in story '%s'; falling back to the root node",
+        startNode,
+        story.root.id
+      );
+      return undefined;
+    }
+    return startNode;
   }
 
   startGame() {
@@ -158,7 +187,11 @@ export default class GameController {
     this.resetState();
     this.gameInProgress = true;
 
-    this.dialogueSequencer.play(this.story, this.dialogueIteratorContext);
+    this.dialogueSequencer.play(
+      this.story,
+      this.dialogueIteratorContext,
+      { startNode: this.startNode }
+    );
   }
 
   /**

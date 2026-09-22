@@ -23,18 +23,34 @@ export default class DialogueIterator {
    *
    * @param {Dialogue} dialogue
    * @param {DialogueIteratorContext} context
+   * @param {string} [startNode] Id of the node to start at. Omit (or pass a
+   *  blank value) to start at the dialogue's root node.
+   * @throws {Error} if `startNode` is given but names no node in `dialogue`.
    */
-  constructor(dialogue, context) {
+  constructor(dialogue, context, startNode) {
     this.dialogue = dialogue;
     this.context = context;
     this.conditionParser = new ConditionParser(context);
-    this.reset();
+    this.reset(startNode);
   }
 
   /**
-   * Resets the iterator to the beginning of the dialogue.
+   * Resets the iterator to the beginning of the dialogue, or to a specific
+   * node when `startNode` is given.
+   *
+   * @param {string} [startNode] Id of the node to reset to. Omit (or pass a
+   *  blank value) to reset to the dialogue's root node.
+   * @throws {Error} if `startNode` is given but names no node in the dialogue.
    */
-  reset() {
+  reset(startNode) {
+    if (startNode) {
+      const node = this.dialogue.getNode(startNode);
+      if (node === undefined) {
+        throw new Error(`DialogueIterator: startNode '${startNode}' not found in dialogue '${this.dialogue.root.id}'`);
+      }
+      this.activeNode = node;
+      return;
+    }
     this.activeNode = this.dialogue.root;
   }
 

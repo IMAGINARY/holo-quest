@@ -92,6 +92,41 @@ describe('DialogueIterator', () => {
     });
   });
 
+  describe('start node', () => {
+    it('should start at the given node id', () => {
+      const dialogue = Dialogue.fromJson(helloThenWorldDialogue);
+      const iterator = new DialogueIterator(dialogue, new TestDialogueIteratorContext(), 'world');
+      expect(iterator.getActiveNode().id).to.equal('world');
+      expect(getDialogueTrace(iterator)).to.deep.equal(['World', '!']);
+    });
+
+    it('should start at the root node when no start node is given', () => {
+      const dialogue = Dialogue.fromJson(helloThenWorldDialogue);
+      const iterator = new DialogueIterator(dialogue, new TestDialogueIteratorContext());
+      expect(getDialogueTrace(iterator)).to.deep.equal(['Hello', 'World', '!']);
+    });
+
+    it('should start at the root node when the start node is blank', () => {
+      const dialogue = Dialogue.fromJson(helloThenWorldDialogue);
+      const iterator = new DialogueIterator(dialogue, new TestDialogueIteratorContext(), '');
+      expect(getDialogueTrace(iterator)).to.deep.equal(['Hello', 'World', '!']);
+    });
+
+    it('should support resetting to a given node id', () => {
+      const dialogue = Dialogue.fromJson(helloThenWorldDialogue);
+      const iterator = new DialogueIterator(dialogue, new TestDialogueIteratorContext());
+      expect(getDialogueTrace(iterator)).to.deep.equal(['Hello', 'World', '!']);
+      iterator.reset('world');
+      expect(getDialogueTrace(iterator)).to.deep.equal(['World', '!']);
+    });
+
+    it('should throw when the start node id is not found in the dialogue', () => {
+      const dialogue = Dialogue.fromJson(helloThenWorldDialogue);
+      expect(() => new DialogueIterator(dialogue, new TestDialogueIteratorContext(), 'nope'))
+        .to.throw("startNode 'nope' not found");
+    });
+  });
+
   describe('sequences', () => {
     it('should handle a sequence', () => {
       const dialogue = Dialogue.fromJson(sequenceDialogue);

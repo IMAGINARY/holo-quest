@@ -5,7 +5,7 @@ Tree-structured dialogue engine: parses JSON dialogue definitions, validates the
 ## Files
 
 - **`dialogue.js`** — `Dialogue` class; parses JSON into a node tree with parent links and id lookup map (`Dialogue.fromJson`)
-- **`dialogue-iterator.js`** — `DialogueIterator`; walks the node tree (`next`/`nextWithResponse`/`goTo`), evaluates conditions, processes flag assignments
+- **`dialogue-iterator.js`** — `DialogueIterator`; walks the node tree (`next`/`nextWithResponse`/`goTo`), evaluates conditions, processes flag assignments, optionally starts at a given node id (constructor/`reset(startNode)`)
 - **`dialogue-iterator-context.js`** — `DialogueIteratorContext`; runtime state wrapping an external `FlagStore` + cycle position tracking
 - **`dialogue-sequencer.js`** — `DialogueSequencer`; playback controller that drives the iterator, manages UI states and effects, emits `'end'`/`'terminate'` events
 - **`condition-parser.js`** — `ConditionParser`; expression evaluator using `expressionparser` lib
@@ -46,7 +46,7 @@ All states implement the `onBegin`/`onEnd` lifecycle from the base class.
 ## Execution Flow
 
 1. `Dialogue.fromJson(json)` — schema-validates, deep-copies, links parents, normalizes types/ids, then runs `validateDialogue` on the built tree (duplicate IDs, invalid references, response values, `responseFlag` types, `capture.cond`, cycles). Throws on any failure, so a `Dialogue` that exists is structurally valid. `src/main.jsx` calls it directly and lets the throw reach the fatal-error handler installed by `initStandaloneApp`
-2. `DialogueSequencer.play(dialogue, context, options)` — creates iterator, calls `runUntilInteractivity`
+2. `DialogueSequencer.play(dialogue, context, options)` — creates iterator (optionally starting at `options.startNode`, resolved and validated by `GameController.resolveStartNode` against `config.app.startNode`), calls `runUntilInteractivity`
 3. Iterator skips non-interactive nodes (sequence/random/cycle/first) via `next()`
 4. On `statement` → TextState → speech bubble → (optional) ResponseState → (optional) ThenState
 5. On `effect` → EffectState → creates/ends effect via factory
