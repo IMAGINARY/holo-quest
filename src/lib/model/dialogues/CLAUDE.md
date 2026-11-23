@@ -74,6 +74,8 @@ A collection with no enabled child finishes immediately and goes through the sam
 - `"flag += 1"` — increment
 - `"flag -= 1"` — decrement
 
+`set` holds one such expression as a string, or an array of them; `DialogueIterator.processAssignments` accepts both, on nodes and on responses.
+
 Parsed by `DialogueIterator.ASSIGNMENT_RE`, mirrored by the `flag_assignment` pattern in the schema.
 
 A flag holds a number or a string. Values are not clamped or otherwise constrained by `FlagStore`; they can be negative, decimal or empty. `+=`/`-=` throw a `TypeError` when the flag holds a string. `responseFlag` writes the selected response's `value`, which is a number or a string depending on how it was written; all responses in a node, and all nodes sharing a `responseFlag`, must agree on the type.

@@ -142,12 +142,19 @@
       "maxItems": 100
     },
     "flag_assignments": {
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/flag_assignment"
-      },
-      "minItems": 0,
-      "maxItems": 100
+      "oneOf": [
+        {
+          "$ref": "#/definitions/flag_assignment"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/flag_assignment"
+          },
+          "minItems": 0,
+          "maxItems": 100
+        }
+      ]
     },
     "flag_assignment": {
       "type": "string",

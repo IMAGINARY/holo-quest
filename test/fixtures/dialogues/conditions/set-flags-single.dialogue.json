@@ -1,0 +1,28 @@
+{
+  "id": "set-flags-single",
+  "items": [
+    {
+      "type": "sequence",
+      "items": [
+        {
+          "text": "A",
+          "set": "aFlag"
+        },
+        {
+          "text": "B?",
+          "cond": "aFlag",
+          "responses": [
+            {
+              "text": "Ok",
+              "set": "score = 3"
+            }
+          ]
+        },
+        {
+          "text": "Skip",
+          "cond": "cFlag"
+        }
+      ]
+    }
+  ]
+}

@@ -257,14 +257,16 @@ export default class DialogueIterator {
   }
 
   /**
-   * Applies an array of flag assignment expressions (e.g. "myFlag", "score += 1").
+   * Applies the flag assignment expressions of a `set` property (e.g. "myFlag",
+   * "score += 1"), which holds either a single expression or an array of them.
    *
    * @private
-   * @param {Array<string>} [assignments]
+   * @param {string|Array<string>} [assignments]
    */
   processAssignments(assignments) {
     if (!assignments) return;
-    assignments.forEach((assignment) => {
+    const list = Array.isArray(assignments) ? assignments : [assignments];
+    list.forEach((assignment) => {
       this.processAssignment(assignment);
     });
   }

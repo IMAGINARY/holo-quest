@@ -32,6 +32,8 @@ import monoCycleDialogue from './fixtures/dialogues/cycle/mono-cycle.dialogue.js
 import conditionDialogue from './fixtures/dialogues/conditions/condition.dialogue.json';
 import cycleConditionDialogue from './fixtures/dialogues/conditions/cycle-condition.dialogue.json';
 import setFlagsDialogue from './fixtures/dialogues/conditions/set-flags.dialogue.json';
+import setFlagsSingleDialogue
+  from './fixtures/dialogues/conditions/set-flags-single.dialogue.json';
 import setFlagsIntDialogue from './fixtures/dialogues/conditions/set-flags-int.dialogue.json';
 import setFlagsTouchDialogue from './fixtures/dialogues/conditions/set-flags-touch.dialogue.json';
 import setFlagsIncDecDialogue
@@ -80,6 +82,8 @@ import invalidCaptureUnknownPropertyDialogue
   from './fixtures/dialogues/invalid/invalid-capture-unknown-property.dialogue.json';
 import invalidAssignmentStringIncDialogue
   from './fixtures/dialogues/invalid/invalid-assignment-string-inc.dialogue.json';
+import invalidAssignmentSingleDialogue
+  from './fixtures/dialogues/invalid/invalid-assignment-single.dialogue.json';
 
 describe('DialogueIterator', () => {
   describe('core functionality', () => {
@@ -301,6 +305,15 @@ describe('DialogueIterator', () => {
       expect(context.flags.exists('aFlag')).to.be.true;
       expect(context.flags.exists('bFlag')).to.be.true;
       expect(context.flags.exists('cFlag')).to.be.false;
+    });
+
+    it('should accept a single assignment written as a string instead of an array', () => {
+      const dialogue = Dialogue.fromJson(setFlagsSingleDialogue);
+      const context = new TestDialogueIteratorContext();
+      const iterator = new DialogueIterator(dialogue, context);
+      expect(getDialogueTrace(iterator, [0])).to.deep.equal(['A', 'B?', '>> Ok']);
+      expect(context.flags.value('aFlag')).to.equal(1);
+      expect(context.flags.value('score')).to.equal(3);
     });
 
     it('should allow a dialogue to set flags to integer literals', () => {
@@ -658,6 +671,11 @@ describe('DialogueIterator', () => {
 
     it('should throw an exception if an assignment uses += with a string literal', () => {
       expect(() => Dialogue.fromJson(invalidAssignmentStringIncDialogue))
+        .to.throw('validation failed');
+    });
+
+    it('should check the syntax of a single assignment written as a string', () => {
+      expect(() => Dialogue.fromJson(invalidAssignmentSingleDialogue))
         .to.throw('validation failed');
     });
 
