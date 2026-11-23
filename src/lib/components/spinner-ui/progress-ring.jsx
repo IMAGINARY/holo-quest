@@ -3,7 +3,9 @@ import React from 'react';
 const RADIUS = 40;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 
-export default function ProgressRing({ progress = 0, color = 'white' }) {
+// strokeWidth is in viewBox units (out of 100), so it scales with the ring's
+// rendered size. Above 20 the stroke overflows the viewBox and clips.
+export default function ProgressRing({ progress = 0, color = 'white', strokeWidth = 10 }) {
   const offset = CIRCUMFERENCE * (1 - progress);
 
   return (
@@ -14,7 +16,7 @@ export default function ProgressRing({ progress = 0, color = 'white' }) {
         r={RADIUS}
         fill="none"
         stroke={color}
-        strokeWidth="10"
+        strokeWidth={strokeWidth}
         strokeLinecap="round"
         strokeDasharray={CIRCUMFERENCE}
         strokeDashoffset={offset}

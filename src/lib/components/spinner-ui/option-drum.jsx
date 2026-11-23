@@ -97,7 +97,11 @@ export default function OptionDrum({
                       transform: 'translateY(-50%)',
                     }}
                   >
-                    <ProgressRing progress={confirmationProgress} color={ring.color} />
+                    <ProgressRing
+                      progress={confirmationProgress}
+                      color={ring.color}
+                      strokeWidth={ring.strokeWidth}
+                    />
                   </span>
                 )}
               </span>

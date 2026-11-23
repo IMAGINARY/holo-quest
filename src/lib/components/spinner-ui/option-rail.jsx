@@ -133,7 +133,11 @@ export default function OptionRail({
             height: ring.size,
           }}
         >
-          <ProgressRing progress={confirmationProgress} color={ring.color} />
+          <ProgressRing
+            progress={confirmationProgress}
+            color={ring.color}
+            strokeWidth={ring.strokeWidth}
+          />
         </div>
       )}
     </div>

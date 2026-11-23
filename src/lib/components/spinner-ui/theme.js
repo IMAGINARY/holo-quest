@@ -65,6 +65,8 @@ export default {
   },
   ring: {
     size: 80,
+    // Stroke in ring viewBox units (out of 100); max 20 before clipping.
+    strokeWidth: 10,
     color: '#ffffff',
   },
   layout: {
@@ -100,6 +102,8 @@ export default {
     },
     ring: {
       size: 36,
+      // Stroke in ring viewBox units (out of 100); max 20 before clipping.
+      strokeWidth: 20,
       gap: '1em',
       color: '#ffffff',
     },
