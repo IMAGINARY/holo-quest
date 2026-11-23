@@ -1,0 +1,23 @@
+{
+  "id": "self-disabling-item",
+  "items": [
+    {
+      "type": "sequence",
+      "items": [
+        {
+          "text": "One"
+        },
+        {
+          "text": "Two",
+          "cond": "^seen",
+          "set": [
+            "seen"
+          ]
+        },
+        {
+          "text": "Three"
+        }
+      ]
+    }
+  ]
+}

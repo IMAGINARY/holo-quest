@@ -1,0 +1,23 @@
+{
+  "id": "invalid-cycle-nested-jump",
+  "items": [
+    {
+      "type": "sequence",
+      "items": [
+        {
+          "type": "first",
+          "items": [
+            {
+              "id": "inner",
+              "text": "Inner"
+            }
+          ]
+        },
+        {
+          "text": "Outer",
+          "then": "inner"
+        }
+      ]
+    }
+  ]
+}

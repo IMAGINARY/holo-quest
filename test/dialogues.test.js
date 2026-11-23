@@ -19,6 +19,13 @@ import jumpToMidSequenceDialogue
   from './fixtures/dialogues/sequences/jump-to-mid-sequence.dialogue.json';
 import jumpAroundWithSequencesDialogue
   from './fixtures/dialogues/sequences/jump-around-with-sequences.dialogue.json';
+import selfDisablingItemDialogue
+  from './fixtures/dialogues/sequences/self-disabling-item.dialogue.json';
+import selfDisablingResponseDialogue
+  from './fixtures/dialogues/sequences/self-disabling-response.dialogue.json';
+import sequenceThenDialogue from './fixtures/dialogues/sequences/sequence-then.dialogue.json';
+import sequenceThenOverriddenDialogue
+  from './fixtures/dialogues/sequences/sequence-then-overridden.dialogue.json';
 import randomDialogue from './fixtures/dialogues/random/random.dialogue.json';
 import cycleDialogue from './fixtures/dialogues/cycle/cycle.dialogue.json';
 import monoCycleDialogue from './fixtures/dialogues/cycle/mono-cycle.dialogue.json';
@@ -39,7 +46,14 @@ import countDialogue from './fixtures/dialogues/conditions/count.dialogue.json';
 import firstDialogue from './fixtures/dialogues/first/first-dialogue.json';
 import firstWithCondsDialogue from './fixtures/dialogues/first/first-with-conds.json';
 import firstBetweenSequencesDialogue from './fixtures/dialogues/first/first-between-sequences.json';
+import emptyFirstInSequenceDialogue from './fixtures/dialogues/first/empty-first-in-sequence.json';
+import firstThenDialogue from './fixtures/dialogues/first/first-then.json';
+import emptyFirstThenDialogue from './fixtures/dialogues/first/empty-first-then.json';
 import responseDialogue from './fixtures/dialogues/responses/response.dialogue.json';
+import responsesInSequenceDialogue
+  from './fixtures/dialogues/responses/responses-in-sequence.dialogue.json';
+import responseInNestedFirstDialogue
+  from './fixtures/dialogues/responses/response-in-nested-first.dialogue.json';
 import conditionalResponseDialogue
   from './fixtures/dialogues/responses/conditional-response.dialogue.json';
 import responseSetsFlagsDialogue
@@ -162,6 +176,32 @@ describe('DialogueIterator', () => {
       const dialogue = Dialogue.fromJson(jumpToMidSequenceDialogue);
       const iterator = new DialogueIterator(dialogue, new TestDialogueIteratorContext());
       expect(getDialogueTrace(iterator)).to.deep.equal(['Hello', 'World', '!']);
+    });
+
+    // The item is no longer enabled by the time it finishes, but the sequence
+    // still has to carry on from where that item sits, not from its start.
+    it('should continue after an item that disables itself', () => {
+      const dialogue = Dialogue.fromJson(selfDisablingItemDialogue);
+      const iterator = new DialogueIterator(dialogue, new TestDialogueIteratorContext());
+      expect(getDialogueTrace(iterator)).to.deep.equal(['One', 'Two', 'Three']);
+    });
+
+    it('should continue after an item that is disabled by its own response', () => {
+      const dialogue = Dialogue.fromJson(selfDisablingResponseDialogue);
+      const iterator = new DialogueIterator(dialogue, new TestDialogueIteratorContext());
+      expect(getDialogueTrace(iterator, [0])).to.deep.equal(['One', 'Two?', '>> Ok', 'Three']);
+    });
+
+    it('should follow the then of a sequence after its last item', () => {
+      const dialogue = Dialogue.fromJson(sequenceThenDialogue);
+      const iterator = new DialogueIterator(dialogue, new TestDialogueIteratorContext());
+      expect(getDialogueTrace(iterator)).to.deep.equal(['One', 'Two', 'End']);
+    });
+
+    it('should not follow the then of a sequence when an item jumps out of it', () => {
+      const dialogue = Dialogue.fromJson(sequenceThenOverriddenDialogue);
+      const iterator = new DialogueIterator(dialogue, new TestDialogueIteratorContext());
+      expect(getDialogueTrace(iterator)).to.deep.equal(['One', 'Other']);
     });
   });
 
@@ -402,6 +442,25 @@ describe('DialogueIterator', () => {
       const iterator = new DialogueIterator(dialogue, context);
       expect(getDialogueTrace(iterator)).to.deep.equal(['Hello', 'world', '!']);
     });
+
+    it('should skip a first type node with no enabled items', () => {
+      const dialogue = Dialogue.fromJson(emptyFirstInSequenceDialogue);
+      const iterator = new DialogueIterator(dialogue, new TestDialogueIteratorContext());
+      expect(getDialogueTrace(iterator)).to.deep.equal(['Hello', '!']);
+    });
+
+    // The then of the first node wins over the next sibling of its parent sequence.
+    it('should follow the then of a first type node after its item', () => {
+      const dialogue = Dialogue.fromJson(firstThenDialogue);
+      const iterator = new DialogueIterator(dialogue, new TestDialogueIteratorContext());
+      expect(getDialogueTrace(iterator)).to.deep.equal(['Picked', 'End']);
+    });
+
+    it('should follow the then of a first type node with no enabled items', () => {
+      const dialogue = Dialogue.fromJson(emptyFirstThenDialogue);
+      const iterator = new DialogueIterator(dialogue, new TestDialogueIteratorContext());
+      expect(getDialogueTrace(iterator)).to.deep.equal(['End']);
+    });
   });
 
   describe('responses', () => {
@@ -490,6 +549,29 @@ describe('DialogueIterator', () => {
       expect(getDialogueTrace(iterator, [1])).to.deep.equal(
         ['Hello?', '>> Hello world!', 'I see you\'re a programmer.']
       );
+    });
+
+    it('should end the dialogue after a top level response without a then', () => {
+      const dialogue = Dialogue.fromJson(responseJumpsDialogue);
+      const context = new TestDialogueIteratorContext();
+      const iterator = new DialogueIterator(dialogue, context);
+      expect(getDialogueTrace(iterator, [2])).to.deep.equal(['Hello?', '>> Hey!']);
+    });
+
+    it('should continue to the next item of a sequence after a response without a then', () => {
+      const dialogue = Dialogue.fromJson(responsesInSequenceDialogue);
+      const context = new TestDialogueIteratorContext();
+      const iterator = new DialogueIterator(dialogue, context);
+      expect(getDialogueTrace(iterator, [1, 0])).to.deep.equal([
+        'How old are you?', '>> Old', 'Favourite colour?', '>> Red', 'Thank you!',
+      ]);
+    });
+
+    it('should continue through nested parents after a response without a then', () => {
+      const dialogue = Dialogue.fromJson(responseInNestedFirstDialogue);
+      const context = new TestDialogueIteratorContext();
+      const iterator = new DialogueIterator(dialogue, context);
+      expect(getDialogueTrace(iterator, [1])).to.deep.equal(['Ready?', '>> No', 'Moving on']);
     });
 
     it('should support responses that generate text when selected', () => {

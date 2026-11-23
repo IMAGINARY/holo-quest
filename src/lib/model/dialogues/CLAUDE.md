@@ -5,7 +5,7 @@ Tree-structured dialogue engine: parses JSON dialogue definitions, validates the
 ## Files
 
 - **`dialogue.js`** — `Dialogue` class; parses JSON into a node tree with parent links and id lookup map (`Dialogue.fromJson`)
-- **`dialogue-iterator.js`** — `DialogueIterator`; walks the node tree (`next`/`nextWithResponse`/`goTo`), evaluates conditions, processes flag assignments, optionally starts at a given node id (constructor/`reset(startNode)`)
+- **`dialogue-iterator.js`** — `DialogueIterator`; walks the node tree (`next`/`nextWithResponse`/`goTo`, with `continueAfter` deciding what follows a finished node), evaluates conditions, processes flag assignments, optionally starts at a given node id (constructor/`reset(startNode)`)
 - **`dialogue-iterator-context.js`** — `DialogueIteratorContext`; runtime state wrapping an external `FlagStore` + cycle position tracking
 - **`dialogue-sequencer.js`** — `DialogueSequencer`; playback controller that drives the iterator, manages UI states and effects, emits `'end'`/`'terminate'` events
 - **`condition-parser.js`** — `ConditionParser`; expression evaluator using `expressionparser` lib
@@ -16,7 +16,7 @@ Tree-structured dialogue engine: parses JSON dialogue definitions, validates the
 
 - **`dialogue-schema-validation.js`** — JSON Schema validation via AJV (lazily compiled)
 - **`dialogue-validation.js`** — Structural checks: duplicate IDs, invalid `then` references, response values (all-or-none, unique, one type per set and per `responseFlag` across the dialogue), response positions (all-or-none, unique, non-zero, contiguous), `responseControl`/`responsePlaceholder` only on nodes with responses, `capture.cond` syntax, cycles. Runs at the end of `Dialogue.fromJson`, after the schema layer, so both layers run on the production load path. Set-level response rules live here rather than in the schema: expressing "all or none" there costs one `anyOf` branch per combination, so the branches multiply with every new property
-- **`dialogue-validation-cycles.js`** — Directed graph cycle detection via `find-cycle/directed`
+- **`dialogue-validation-cycles.js`** — Directed graph cycle detection via `find-cycle/directed`. Its `getContinuationTargets` is the static counterpart of `DialogueIterator.continueAfter`; change one and the other has to follow
 
 ### Sequencer UI States (`dialogue-sequencer-states/`)
 
@@ -41,7 +41,21 @@ All states implement the `onBegin`/`onEnd` lifecycle from the base class.
 - **`random`** — picks one enabled child at random
 - **`cycle`** — round-robins through enabled children across visits
 - **`first`** — picks the first child whose condition is met
-- **`root`** — synthetic; assigned to the top-level node by `Dialogue.fromJson`
+- **`root`** — synthetic; assigned to the top-level node by `Dialogue.fromJson`. Enters its first enabled item, like `first`
+
+All node types accept `then`, collections included.
+
+## Continuation (what follows a finished node)
+
+Implemented once, in `DialogueIterator.continueAfter`, and used by both `next()` and `nextWithResponse()`:
+
+1. The selected response's `then` (handled in `nextWithResponse` before `continueAfter`)
+2. The node's own `then`
+3. If the parent is a `sequence`: the next enabled sibling after the node, located by its position in the full `items` list (the node may have disabled itself while it played)
+4. Otherwise the parent is finished too: rules 2-4 apply to the parent
+5. No parent left: the dialogue ends
+
+A collection with no enabled child finishes immediately and goes through the same rules. A parent is never re-entered, so `first`/`random`/`cycle` pick once per visit. The rule is documented for authors in `docs/dialogues.md` ("Transitions").
 
 ## Execution Flow
 

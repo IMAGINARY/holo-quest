@@ -1,0 +1,35 @@
+{
+  "id": "responses-in-sequence",
+  "items": [
+    {
+      "type": "sequence",
+      "items": [
+        {
+          "text": "How old are you?",
+          "responses": [
+            {
+              "text": "Young"
+            },
+            {
+              "text": "Old"
+            }
+          ]
+        },
+        {
+          "text": "Favourite colour?",
+          "responses": [
+            {
+              "text": "Red"
+            },
+            {
+              "text": "Blue"
+            }
+          ]
+        },
+        {
+          "text": "Thank you!"
+        }
+      ]
+    }
+  ]
+}

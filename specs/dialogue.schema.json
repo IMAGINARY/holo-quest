@@ -189,6 +189,9 @@
         },
         "set": {
           "$ref": "#/definitions/flag_assignments"
+        },
+        "then": {
+          "$ref": "#/definitions/node_id"
         }
       },
       "required": [
@@ -210,6 +213,9 @@
         },
         "set": {
           "$ref": "#/definitions/flag_assignments"
+        },
+        "then": {
+          "$ref": "#/definitions/node_id"
         }
       },
       "required": [
@@ -231,6 +237,9 @@
         },
         "set": {
           "$ref": "#/definitions/flag_assignments"
+        },
+        "then": {
+          "$ref": "#/definitions/node_id"
         }
       },
       "required": [
@@ -252,6 +261,9 @@
         },
         "set": {
           "$ref": "#/definitions/flag_assignments"
+        },
+        "then": {
+          "$ref": "#/definitions/node_id"
         }
       },
       "required": [

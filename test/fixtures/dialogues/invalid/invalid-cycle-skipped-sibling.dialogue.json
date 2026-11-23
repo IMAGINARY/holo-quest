@@ -1,0 +1,27 @@
+{
+  "id": "invalid-cycle-skipped-sibling",
+  "items": [
+    {
+      "type": "sequence",
+      "items": [
+        {
+          "id": "a",
+          "text": "A"
+        },
+        {
+          "text": "B",
+          "cond": "flag",
+          "then": "end"
+        },
+        {
+          "text": "C",
+          "then": "a"
+        }
+      ]
+    },
+    {
+      "id": "end",
+      "text": "End"
+    }
+  ]
+}

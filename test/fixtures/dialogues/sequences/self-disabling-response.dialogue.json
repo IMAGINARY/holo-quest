@@ -1,0 +1,28 @@
+{
+  "id": "self-disabling-response",
+  "items": [
+    {
+      "type": "sequence",
+      "items": [
+        {
+          "text": "One"
+        },
+        {
+          "text": "Two?",
+          "cond": "^answered",
+          "responses": [
+            {
+              "text": "Ok",
+              "set": [
+                "answered"
+              ]
+            }
+          ]
+        },
+        {
+          "text": "Three"
+        }
+      ]
+    }
+  ]
+}

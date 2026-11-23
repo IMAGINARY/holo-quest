@@ -1,0 +1,26 @@
+{
+  "id": "sequence-then-overridden",
+  "items": [
+    {
+      "type": "sequence",
+      "then": "end",
+      "items": [
+        {
+          "text": "One",
+          "then": "other"
+        },
+        {
+          "text": "Skip"
+        }
+      ]
+    },
+    {
+      "id": "other",
+      "text": "Other"
+    },
+    {
+      "id": "end",
+      "text": "Skip end"
+    }
+  ]
+}

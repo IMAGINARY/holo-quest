@@ -32,25 +32,77 @@ A dialogue has three properties:
 A dialogue is composed of nodes. Nodes can have different types:
 
 - **statement**: A statement is a node that displays a text and can have responses.
+- **effect**: An effect node is a node that performs an effect and displays no text.
 - **random**: A random node is a node that randomly picks one of its items.
 - **cycle**: A cycle node is a node that picks the next of its items, in order and starting with 
     the first, when becomes active.
 - **sequence**: A sequence node is a node that goes through its items in order.
 - **first**: A first node is a node that continues to its first valid item.
 
-When playing a dialogue, there's one active node. A node might transition to another node, but if
-there's no transition, the dialogue ends.
+When playing a dialogue, there's one active node. When a node finishes, the dialogue moves on to
+another node, or ends if there is none to move on to (see [Transitions](#transitions)).
+
+The dialogue starts at the first of its top-level `items` whose `cond` is true (or that has no
+`cond`). The other top-level nodes are only reached through a `then`.
 
 All nodes have these properties:
 
 - `id`: (string) The node's id. If it's not set, it's generated automatically.
 - `type`: (string, default: 'statement') The node's type. Can be 'statement', 'effect', 'random', 
-     'cycle', or 'sequence'.
+     'cycle', 'sequence', or 'first'. A node with an `effect` property and no `type` is an 'effect'.
 - `cond` (string, optional): A logical expression (see below).
 - `set` (string | array, optional): One or more flags that are set when the node becomes active.
+- `then` (string, optional): The ID of the node to transition to when this one finishes (see
+    [Transitions](#transitions)).
 
 A node can only become active if its `cond` is true. When it becomes active, it
 sets all of its `set` flags.
+
+`cond` is only checked when a node is picked by its parent. A `then` jumps to its target without
+checking the target's `cond`.
+
+### Transitions
+
+A statement or effect node finishes when the player moves past it. A collection node finishes when
+the child it transitioned to finishes (for a `sequence`, when the last of them does), or right away
+if none of its children can become active.
+
+When a node finishes, the dialogue goes to the first of these that applies:
+
+1. The node in the `then` of the response the player selected, if the node has responses.
+2. The node in its own `then`.
+3. If its parent is a `sequence`, the next sibling after it whose `cond` is true.
+4. Otherwise the parent has finished as well, and rules 2 to 4 are applied to the parent.
+
+If the top level is reached and nothing applied, the dialogue ends.
+
+A parent is never run again by rule 4: a `first`, `random` or `cycle` node picks one child per
+visit, and once that child finishes the dialogue continues from wherever the parent itself would.
+
+For example, in this dialogue the player answers both questions and then sees "Thank you!", because
+each question continues to its next sibling. After that the `sequence` has no children left, so its
+own `then` is followed:
+
+```yaml
+- type: sequence
+  then: goodbye
+  items:
+    - text: How old are you?
+      responses:
+        - text: Under 30
+        - text: 30 or older
+    - text: Do you live nearby?
+      responses:
+        - text: "Yes"
+        - text: "No"
+    - text: Thank you!
+- id: goodbye
+  text: Goodbye!
+```
+
+A response with a `then` leaves the sequence instead. The same two questions placed directly at the
+top level, rather than inside a `sequence`, would end the dialogue after the first answer, since a
+top-level node has no parent to continue through.
 
 ### Statement nodes
 
@@ -96,13 +148,9 @@ Statement nodes have these properties:
 
 If the statement node has `responses`, they player will have to pick one of them to continue.
 
-The statement node will transition to the next one, decided by the first of these that applies:
-
-- A node specified in the selected response's `then` property.
-- A node specified in the statement node's `then` property.
-- Back to the parent node.
-
-If there's no transition, the dialogue ends.
+Where the dialogue goes next is described in [Transitions](#transitions): the selected response's
+`then`, then the statement's own `then`, then whatever follows the statement through its parent.
+This is the same whether or not the statement has responses.
 
 #### Responses
 
@@ -276,14 +324,20 @@ children depending on their specific type.
 Children are specified through the `items` property.
 
 - `items` (array, required): An array of node objects.
+- `then` (string, optional): The ID of the node to transition to once the collection has finished.
 
 Collection nodes only consider children with a `cond` property that is true (or no `cond`) when
-deciding which one to transition to.
+deciding which one to transition to. If none of them qualifies, the collection is skipped: it
+finishes right away, as described in [Transitions](#transitions).
+
+A collection's `then` is only followed when the dialogue comes back to the collection. A child that
+has a `then` of its own leaves the collection, and the collection's `then` is not used.
 
 their behavior is defined by their type:
 
-- `sequence`: Go through all of their children in order.
-- `first`: Transitions to the first children node.
+- `sequence`: Go through all of their children in order. Each child's `cond` is checked when its
+    turn comes, so a flag set by an earlier child can enable or disable a later one.
+- `first`: Transitions to the first child whose `cond` is true.
 - `random`: Randomly pick one of their children and transition to it.
 - `cycle`: Each time a `cycle` node becomes active, it picks the next of its children in order
     (starting with the first, on the first activation). When all children have been picked, it 
@@ -482,9 +536,14 @@ Node IDs, and the ID of the dialogue itself, must be unique within a dialogue.
 
 ### Cycles are forbidden
 
-A dialogue can't have cycles. That is, there cannot be a path from a node to itself through 
-`then` properties. Even though cycles could be designed in a way that avoids infinite loops,
-they are not allowed because the risk of having one by mistake is too high.
+A dialogue can't have cycles. That is, there cannot be a path from a node back to itself, whether
+through `then` properties or through the implicit steps described in [Transitions](#transitions)
+(the next sibling in a `sequence`, or continuing through a parent). Even though cycles could be
+designed in a way that avoids infinite loops, they are not allowed because the risk of having one by
+mistake is too high.
+
+Conditions are not evaluated for this check. A path counts even if a `cond` would always prevent it
+in practice, and a sibling with a `cond` is assumed to be skippable.
 
 ### Response sets must be consistent
 

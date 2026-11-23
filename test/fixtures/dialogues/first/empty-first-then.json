@@ -1,0 +1,22 @@
+{
+  "id": "empty-first-then",
+  "items": [
+    {
+      "type": "first",
+      "then": "end",
+      "items": [
+        {
+          "cond": "never",
+          "text": "Skip A"
+        }
+      ]
+    },
+    {
+      "text": "Skip B"
+    },
+    {
+      "id": "end",
+      "text": "End"
+    }
+  ]
+}

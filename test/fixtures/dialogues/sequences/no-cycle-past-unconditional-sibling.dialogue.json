@@ -1,0 +1,28 @@
+{
+  "id": "no-cycle-past-unconditional-sibling",
+  "items": [
+    {
+      "type": "sequence",
+      "items": [
+        {
+          "id": "a",
+          "text": "A"
+        },
+        {
+          "id": "b",
+          "text": "B",
+          "then": "end"
+        },
+        {
+          "id": "c",
+          "text": "C",
+          "then": "a"
+        }
+      ]
+    },
+    {
+      "id": "end",
+      "text": "End"
+    }
+  ]
+}

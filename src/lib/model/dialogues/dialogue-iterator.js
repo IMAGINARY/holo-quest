@@ -123,18 +123,20 @@ export default class DialogueIterator {
 
     this.processAssignments(this.activeNode.set);
 
+    // Collections first try to enter one of their children. Statements and
+    // effects have nothing to enter: they are finished as soon as they're left.
     let transitioned = false;
     switch (this.activeNode.type) {
       case 'statement':
       case 'effect':
-        transitioned = this.nextOnStatement();
         break;
       case 'root':
       case 'first':
-        transitioned = this.nextOnFirst();
-        break;
       case 'sequence':
-        transitioned = this.nextOnSequence();
+        // A sequence is entered through its first enabled item, just like a
+        // 'first'. They differ in what happens when that item finishes (see
+        // continueAfter).
+        transitioned = this.nextOnFirst();
         break;
       case 'random':
         transitioned = this.nextOnRandom();
@@ -146,7 +148,7 @@ export default class DialogueIterator {
         throw new Error(`Unknown node type: ${this.activeNode.type} (${this.activeNode.id}:${this.dialogue.root.id})`);
     }
     if (transitioned === false) {
-      transitioned = this.nextThroughParent();
+      transitioned = this.continueAfter(this.activeNode);
     }
     if (transitioned === false) {
       this.activeNode = null;
@@ -183,7 +185,7 @@ export default class DialogueIterator {
       return;
     }
 
-    if (!this.nextOnStatement()) {
+    if (!this.continueAfter(this.activeNode)) {
       this.activeNode = null;
     }
   }
@@ -325,24 +327,13 @@ export default class DialogueIterator {
   }
 
   /**
-   * Jumps to the next node when the active node is of type 'first'
+   * Enters the first enabled item of the active node. Used by 'first',
+   * 'sequence' and the root node.
    *
    * @private
-   * @returns {boolean} true if the transition to the next node was successful.
+   * @returns {boolean} true if an item was entered, false if none is enabled.
    */
   nextOnFirst() {
-    const matchingItems = this.getEnabledItems(this.activeNode.items);
-    this.activeNode = matchingItems.length > 0 ? matchingItems[0] : null;
-    return true;
-  }
-
-  /**
-   * Jumps to the next node when the active node is of type 'sequence'
-   *
-   * @private
-   * @returns {boolean} true if the transition to the next node was successful.
-   */
-  nextOnSequence() {
     const matchingItems = this.getEnabledItems(this.activeNode.items);
     if (matchingItems.length > 0) {
       [this.activeNode] = matchingItems;
@@ -392,43 +383,47 @@ export default class DialogueIterator {
   }
 
   /**
-   * Jumps to the next node when the active node is of type 'statement'
+   * Moves on from a node that has finished: a statement or effect that was
+   * left, or a collection that had no enabled item to enter.
+   *
+   * The first of these that applies decides where the dialogue goes:
+   *
+   * 1. The node's own `then`.
+   * 2. If its parent is a sequence, the next enabled sibling after it.
+   * 3. Otherwise the parent is finished too, and the same rules apply to it.
+   *
+   * A parent is never entered again, so a 'first', 'random' or 'cycle' picks
+   * only once per visit. A response's `then` takes precedence over all of
+   * this, and is handled by nextWithResponse.
+   *
+   * checkCyclesInDialogue (dialogue-validation-cycles.js) mirrors these rules
+   * statically. Keep the two in step.
    *
    * @private
-   * @returns {boolean} true if the transition to the next node was successful.
+   * @param {Object} node
+   * @returns {boolean} true if a next node was found, false if the dialogue
+   *  has nowhere left to go.
    */
-  nextOnStatement() {
-    if (this.activeNode.then) {
-      this.goTo(this.activeNode.then);
-      return true;
-    }
-    return false;
-  }
-
-  /**
-   * Jumps to the next node by traversing the parent nodes.
-   *
-   * @private
-   * @returns {boolean} true if the transition to the next node was successful.
-   */
-  nextThroughParent() {
-    let currentParent = this.activeNode.parent;
-    let currentChild = this.activeNode;
-    while (currentParent) {
-      if (currentParent.type === 'sequence') {
-        const matchingItems = this.getEnabledItems(currentParent.items);
-        const index = matchingItems.indexOf(currentChild);
-        if (index < matchingItems.length - 1) {
-          this.activeNode = matchingItems[index + 1];
+  continueAfter(node) {
+    let current = node;
+    while (current) {
+      if (current.then) {
+        this.goTo(current.then);
+        return true;
+      }
+      const { parent } = current;
+      if (parent && parent.type === 'sequence') {
+        // Located in the full item list, not the enabled one: the node may
+        // have disabled itself while it played (e.g. `cond: ^seen` with
+        // `set: seen`), and it still has to be found to know what follows it.
+        const index = parent.items.indexOf(current);
+        const [nextSibling] = this.getEnabledItems(parent.items.slice(index + 1));
+        if (nextSibling) {
+          this.activeNode = nextSibling;
           return true;
         }
       }
-      if (currentParent.then) {
-        this.goTo(currentParent.then);
-        return true;
-      }
-      currentChild = currentParent;
-      currentParent = currentParent.parent;
+      current = parent;
     }
     return false;
   }

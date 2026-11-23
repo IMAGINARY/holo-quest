@@ -1,0 +1,20 @@
+{
+  "id": "invalid-cycle-collection-then",
+  "items": [
+    {
+      "type": "sequence",
+      "then": "after",
+      "items": [
+        {
+          "id": "inner",
+          "text": "Inner"
+        }
+      ]
+    },
+    {
+      "id": "after",
+      "text": "After",
+      "then": "inner"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "id": "sequence-then",
+  "items": [
+    {
+      "type": "sequence",
+      "then": "end",
+      "items": [
+        {
+          "text": "One"
+        },
+        {
+          "text": "Two"
+        }
+      ]
+    },
+    {
+      "text": "Skip"
+    },
+    {
+      "id": "end",
+      "text": "End"
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "id": "first-then",
+  "items": [
+    {
+      "type": "sequence",
+      "items": [
+        {
+          "type": "first",
+          "then": "end",
+          "items": [
+            {
+              "text": "Picked"
+            },
+            {
+              "text": "Skip A"
+            }
+          ]
+        },
+        {
+          "text": "Skip B"
+        },
+        {
+          "id": "end",
+          "text": "End"
+        }
+      ]
+    }
+  ]
+}

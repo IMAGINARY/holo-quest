@@ -1,0 +1,25 @@
+{
+  "id": "empty-first-in-sequence",
+  "items": [
+    {
+      "type": "sequence",
+      "items": [
+        {
+          "text": "Hello"
+        },
+        {
+          "type": "first",
+          "items": [
+            {
+              "cond": "never",
+              "text": "Skip"
+            }
+          ]
+        },
+        {
+          "text": "!"
+        }
+      ]
+    }
+  ]
+}

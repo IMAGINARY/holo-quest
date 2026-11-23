@@ -9,6 +9,14 @@ import cycleSelfDialogue from './fixtures/dialogues/invalid/invalid-cycle-self.d
 import cycleResponseSelfDialogue
   from './fixtures/dialogues/invalid/invalid-cycle-response-self.dialogue.json';
 import cycleRandomDialogue from './fixtures/dialogues/invalid/invalid-cycle-random.dialogue.json';
+import cycleNestedJumpDialogue
+  from './fixtures/dialogues/invalid/invalid-cycle-nested-jump.dialogue.json';
+import cycleSkippedSiblingDialogue
+  from './fixtures/dialogues/invalid/invalid-cycle-skipped-sibling.dialogue.json';
+import cycleCollectionThenDialogue
+  from './fixtures/dialogues/invalid/invalid-cycle-collection-then.dialogue.json';
+import noCyclePastUnconditionalSiblingDialogue
+  from './fixtures/dialogues/sequences/no-cycle-past-unconditional-sibling.dialogue.json';
 import duplicateIdDialogue from './fixtures/dialogues/invalid/invalid-duplicate-id.dialogue.json';
 import invalidReferenceDialogue from './fixtures/dialogues/invalid/invalid-reference.dialogue.json';
 import invalidResponseValuePartialDialogue
@@ -92,6 +100,27 @@ describe('Dialogue validation', () => {
 
     it('should not detect cycles from sibling nodes with a parent that is not a sequence', () => {
       expect(() => Dialogue.fromJson(cycleRandomDialogue)).to.not.throw();
+    });
+
+    // The inner node has no sibling of its own: it gets back to the node that
+    // jumped to it by continuing through its parents.
+    it('should detect cycles that continue through the parents of a nested node', () => {
+      expect(() => Dialogue.fromJson(cycleNestedJumpDialogue))
+        .to.throw('Dialogue contains a cycle');
+    });
+
+    it('should detect cycles that depend on a conditional sibling being skipped', () => {
+      expect(() => Dialogue.fromJson(cycleSkippedSiblingDialogue))
+        .to.throw('Dialogue contains a cycle');
+    });
+
+    it('should detect cycles through the \'then\' property of a collection node', () => {
+      expect(() => Dialogue.fromJson(cycleCollectionThenDialogue))
+        .to.throw('Dialogue contains a cycle');
+    });
+
+    it('should not look for cycles past a sibling that can\'t be skipped', () => {
+      expect(() => Dialogue.fromJson(noCyclePastUnconditionalSiblingDialogue)).to.not.throw();
     });
   });
 

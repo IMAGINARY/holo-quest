@@ -1,0 +1,32 @@
+{
+  "id": "response-in-nested-first",
+  "items": [
+    {
+      "type": "sequence",
+      "items": [
+        {
+          "type": "first",
+          "items": [
+            {
+              "text": "Ready?",
+              "responses": [
+                {
+                  "text": "Yes"
+                },
+                {
+                  "text": "No"
+                }
+              ]
+            },
+            {
+              "text": "Skip"
+            }
+          ]
+        },
+        {
+          "text": "Moving on"
+        }
+      ]
+    }
+  ]
+}
