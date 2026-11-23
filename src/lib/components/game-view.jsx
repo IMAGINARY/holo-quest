@@ -148,6 +148,9 @@ export default function GameView({ config, controller }) {
               className="absolute w-full flex justify-center"
               style={{
                 top: `${inputTopPercent}%`,
+                // Puts the control's anchor line (see `anchorTop` in
+                // ui-controls.js) at `inputTopPercent` instead of its top edge.
+                marginTop: -(Control?.anchorTop ?? 0),
                 color: defaultInputColor,
                 fontSize: `${defaultInputSize}em`,
               }}

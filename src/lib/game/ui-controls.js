@@ -5,13 +5,15 @@
  *
  * A control is a React component taking `{ options, placeholder, position, velocity,
  * confirmationProgress }`, where `options` is a map of spinner position to option label. It may
- * also carry two static properties:
+ * also carry three static properties:
  *
  * - `placement`: how a response set is laid out along the spinner track. `'centered'` (the
  *   default) uses each response's authored `position`, or spreads the set symmetrically around
  *   the neutral centre. `'sequential'` numbers the responses `1..n` in order and ignores any
  *   authored `position`.
  * - `gearRatio`: how many steps the spinner travels per unit of its base calibration (default 1).
+ * - `anchorTop`: distance in px from the control's top edge to its anchor line (e.g. its selected
+ *   row). `GameView` places that line at `inputTopPercent` (default 0, i.e. the top edge).
  *
  * See docs/ui-controls.md.
  */

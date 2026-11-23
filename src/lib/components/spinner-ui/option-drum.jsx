@@ -5,6 +5,11 @@ const {
   width, visibleAround, label, frame, fade, ring,
 } = theme.drum;
 
+const rowHeight = label.fontSize * label.lineHeight;
+const viewportHeight = (2 * visibleAround + 1) * rowHeight;
+// Top edge of the centered (selected) row.
+const centerTop = visibleAround * rowHeight;
+
 function clamp(value, min, max) {
   return Math.min(max, Math.max(min, value));
 }
@@ -21,10 +26,6 @@ export default function OptionDrum({
   const rows = [placeholder, ...labels];
   const clampedPos = clamp(position, 0, labels.length);
   const absVel = Math.min(1, Math.abs(velocity));
-
-  const rowHeight = label.fontSize * label.lineHeight;
-  const viewportHeight = (2 * visibleAround + 1) * rowHeight;
-  const centerTop = visibleAround * rowHeight;
 
   // The gradient straddles the clip edge: it starts half its height outside
   // the viewport, so at rest the outer half of the outermost rows is faded.
@@ -121,3 +122,6 @@ export default function OptionDrum({
 // Control contract (see src/lib/game/ui-controls.js).
 OptionDrum.placement = 'sequential';
 OptionDrum.gearRatio = theme.drum.gearRatio;
+// Anchor on the selected row rather than the top edge, so it lines up with
+// where other controls sit instead of hanging three rows lower.
+OptionDrum.anchorTop = centerTop;

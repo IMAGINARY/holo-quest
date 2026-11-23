@@ -43,18 +43,20 @@ A control is a React component that takes these props:
 Controls are purely presentational. Confirmation is detected by `useSpinnerController`, which calls
 back with the settled position; `GameUiController` maps that position back to a response.
 
-A control can also declare two static properties, both optional:
+A control can also declare three static properties, all optional:
 
 | Static | Default | Meaning |
 | --- | --- | --- |
 | `placement` | `'centered'` | How responses are assigned spinner positions. `'centered'` uses each response's authored `position`, or spreads the set symmetrically around the neutral centre 0 (skipping 0). `'sequential'` numbers the responses `1..n` in order and ignores `position`. |
 | `gearRatio` | `1` | Steps the spinner travels per unit of its base calibration. Raise it for controls with denser steps. Passed to `useSpinnerController`. |
+| `anchorTop` | `0` | Distance in px from the control's top edge to its anchor line (e.g. its selected row). `GameView` places that line at `inputTopPercent`, so tall controls line up with short ones instead of hanging below them. |
 
 ```js
 export default function OptionDrum({ options, placeholder, position, velocity }) { /* ... */ }
 
 OptionDrum.placement = 'sequential';
 OptionDrum.gearRatio = theme.drum.gearRatio;
+OptionDrum.anchorTop = centerTop; // top of the selected row
 ```
 
 Position 0 is always the spinner's neutral resting position and never confirms, so a control

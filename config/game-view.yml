@@ -5,7 +5,9 @@ gameView:
   defaultTextColor: '#cccccc'
   # Default text size for speech text (in em units)
   defaultTextSize: 3
-  # Vertical position of the input control, as a percentage from the top of the screen
+  # Vertical position of the input control, as a percentage from the top of the screen.
+  # Positions the control's anchor line: its top edge, unless the control declares
+  # `anchorTop` (e.g. the drum anchors on its selected row). See docs/ui-controls.md.
   inputTopPercent: 70
   # Default color for the input control
   defaultInputColor: '#cccccc'
