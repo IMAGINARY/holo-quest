@@ -34,7 +34,11 @@ export default function OptionDrum({
     + `transparent ${-fadeHalf}px, black ${fadeHalf}px, `
     + `black calc(100% - ${fadeHalf}px), transparent calc(100% + ${fadeHalf}px))`;
 
+  // Frame lines keep a fixed width, centered, regardless of the label width.
   const frameStyle = {
+    left: '50%',
+    width,
+    transform: 'translateX(-50%)',
     height: frame.height,
     fontSize: label.fontSize,
     backgroundImage: `linear-gradient(to right, transparent, ${frame.color} ${frame.fadeWidth}, `
@@ -48,7 +52,9 @@ export default function OptionDrum({
   );
 
   return (
-    <div className="relative" style={{ width, height: viewportHeight }}>
+    // Full parent width, so long labels are only clipped by the screen edge
+    // rather than by the (narrower) frame lines.
+    <div className="relative" style={{ width: '100%', height: viewportHeight }}>
       {/* Clipped and faded rows */}
       <div
         className="absolute inset-0 overflow-hidden"
@@ -112,11 +118,11 @@ export default function OptionDrum({
 
       {/* Frame lines around the centered row */}
       <div
-        className="absolute left-0 w-full"
+        className="absolute"
         style={{ ...frameStyle, top: centerTop - frame.height }}
       />
       <div
-        className="absolute left-0 w-full"
+        className="absolute"
         style={{ ...frameStyle, top: centerTop + rowHeight }}
       />
     </div>

@@ -75,6 +75,8 @@ export default {
     height: 60,
   },
   drum: {
+    // Width of the frame lines. Labels are not limited to it: the drum spans
+    // its parent's width, so long labels only clip at the screen edges.
     width: 800,
     // Suggested useSpinnerController gearRatio: rows are much denser than
     // rail steps (~54px vs 260px), so the drum needs to travel more steps
