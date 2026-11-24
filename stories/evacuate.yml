@@ -15,7 +15,7 @@ items:
       - text:
           en: Yes
           de: Ja
-        then: bg-living_room
+    then: bg-living_room
   - id: bg-living_room
     type: effect
     effect:
@@ -39,27 +39,23 @@ items:
           en: 4 pm
           de: 16 Uhr
         value: "16:00"
-        then: abendprogramm
       - text:
           en: 5 pm
           de: 17 Uhr
         value: "17:00"
-        then: abendprogramm
       - text:
           en: 6 pm
           de: 18 Uhr
         value: "18:00"
-        then: abendprogramm
       - text:
           en: 7 pm
           de: 19 Uhr
         value: "19:00"
-        then: abendprogramm
       - text:
           en: 8 pm
           de: 20 Uhr
         value: "20:00"
-        then: abendprogramm
+    then: abendprogramm
   - id: abendprogramm
     text:
       en: "Your plan for the evening is:"
@@ -241,37 +237,31 @@ items:
           en: panicked
           de: In Panik
         value: panicked
-        then: emoji-weiter
 #      - text:
 #          en: terrified
 #          de: Verängstigt
 #        value: terrified
-#        then: emoji-weiter
       - text:
           en: stressed
           de: Gestresst
         value: stressed
-        then: emoji-weiter
       - text:
           en: confused
           de: Verwirrt
         value: confused
-        then: emoji-weiter
       - text:
           en: alert
           de: Wachsam
         value: alert
-        then: emoji-weiter
       - text:
           en: calm
           de: Gelassen
         value: calm
-        then: emoji-weiter
 #      - text:
 #          en: bored
 #          de: Gelangweilt
 #        value: bored
-#        then: emoji-weiter
+    then: emoji-weiter
   - id: emoji-weiter
     text:
       en: What do you do now?
@@ -317,7 +307,7 @@ items:
       - text:
           en: Continue my evening
           de: Ich mache weiter
-        then: weiter
+    then: weiter
   - id: weiter
     text:
       en: |
@@ -558,7 +548,7 @@ items:
           de: |
             Ich verlasse 
             die Wohnung
-        then: bg-street
+    then: bg-street
   - id: bg-street
     type: effect
     effect:
@@ -741,17 +731,15 @@ items:
           en: Are there other people in danger?
           de: Sind Menschen in Gefahr?
         value: other-people
-        then: entscheidung-strasse2
       - text:
           en: How can I help?
           de: Wie kann ich helfen?
         value: help
-        then: entscheidung-strasse2
       - text:
           en: Who should I inform?
           de: Wen soll ich informieren?
         value: inform
-        then: entscheidung-strasse2
+    then: entscheidung-strasse2
   - id: entscheidung-strasse2
     text:
       en: You continue walking. Where to now?
@@ -923,8 +911,8 @@ items:
       - text:
           en: Taken to emergency shelter!
           de: Eskortiert zur Notunterkunft!
-        then: ende-notunterkunft-eskortiert
     sound: stories/evacuate/audio/dingdong.aac
+    then: ende-notunterkunft-eskortiert
   - id: ende-notunterkunft-eskortiert
     text:
       en: |
@@ -967,22 +955,19 @@ items:
           en: 5 minutes
           de: 5 Minuten
         value: "5m"
-        then: x-minuten
       - text:
           en: 10 minutes
           de: 10 Minuten
         value: "10m"
-        then: x-minuten
       - text:
           en: 15 minutes
           de: 15 Minuten
         value: "15m"
-        then: x-minuten
       - text:
           en: 20 minutes
           de: 20 Minuten
         value: "20m"
-        then: x-minuten
+    then: x-minuten
   - id: x-minuten
     text:
       en: 'Cell broadcast on your phone: "DANGER! Chemical fire requires evacuation.
@@ -1069,7 +1054,7 @@ items:
       - text:
           en: Continue my evening
           de: Ich mache weiter
-        then: weiter
+    then: weiter
   - id: ich-setze-kopfhoerer-auf-audio
     type: effect
     effect:
@@ -1088,32 +1073,27 @@ items:
           en: panicked
           de: In Panik
         value: panicked
-        then: emoji-weiter
 #      - text:
 #          en: terrified
 #          de: Verängstigt
 #        value: terrified
-#        then: emoji-weiter
       - text:
           en: stressed
           de: Gestresst
         value: stressed
-        then: emoji-weiter
       - text:
           en: confused
           de: Verwirrt
         value: confused
-        then: emoji-weiter
       - text:
           en: alert
           de: Wachsam
         value: alert
-        then: emoji-weiter
       - text:
           en: calm
           de: Ruhig
         value: calm
-        then: emoji-weiter
+    then: emoji-weiter
   - id: ich-mache-nichts-audio
     type: effect
     effect:
@@ -1132,27 +1112,23 @@ items:
           en: panicked
           de: In Panik
         value: panicked
-        then: emoji-weiter
       - text:
           en: stressed
           de: Gestresst
         value: stressed
-        then: emoji-weiter
       - text:
           en: confused
           de: Verwirrt
         value: confused
-        then: emoji-weiter
       - text:
           en: alert
           de: Wachsam
         value: alert
-        then: emoji-weiter
       - text:
           en: calm
           de: Ruhig
         value: calm
-        then: emoji-weiter
+    then: emoji-weiter
   - id: oh-ist-was-passiert
     text:
       en: Someone will sort it out.
