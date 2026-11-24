@@ -1,4 +1,7 @@
 id: evacuate
+capture:
+  cond: surveyConsent = 1
+  flags: ['*']
 items:
   - id: start
     text:
@@ -29,95 +32,118 @@ items:
       de: |
         Es ist Freitag. Du bist zu Hause und reif fürs Wochenende! 
         Wie spät ist es?
+    responseFlag: readyTime
+    responseControl: drum
     responses:
       - text:
           en: 4 pm
           de: 16 Uhr
+        value: "16:00"
         then: abendprogramm
       - text:
           en: 5 pm
           de: 17 Uhr
+        value: "17:00"
         then: abendprogramm
       - text:
           en: 6 pm
           de: 18 Uhr
+        value: "18:00"
         then: abendprogramm
       - text:
           en: 7 pm
           de: 19 Uhr
+        value: "19:00"
         then: abendprogramm
       - text:
           en: 8 pm
           de: 20 Uhr
+        value: "20:00"
         then: abendprogramm
   - id: abendprogramm
     text:
       en: "Your plan for the evening is:"
       de: "Dein Plan für den Abend ist:"
+    responseFlag: readyPlan
+    responseControl: drum
     responses:
       - text:
           en: gaming
           de: zocken
+        value: gaming
         then: ein-videospiel-spielen
       - text:
           en: reading
           de: lesen
+        value: reading
         then: ein-buch-lesen
       - text:
           en: going out
           de: ausgehen
+        value: going-out
         then: ausgehen
-#      - text:
-#          en: sleeping
-#          de: schlafen
-#        then: schlafen
-#      - text:
-#          en: working
-#          de: arbeiten
-#        then: arbeiten
-#      - text:
-#          en: watching TV
-#          de: fernsehen
-#        then: eine-serie-schauen
+      - text:
+          en: sleeping
+          de: schlafen
+        value: sleeping
+        then: schlafen
+      - text:
+          en: working
+          de: arbeiten
+        then: arbeiten
+        value: working
+      - text:
+          en: watching TV
+          de: fernsehen
+        value: watching-tv
+        then: eine-serie-schauen
       - text:
           en: cooking
           de: kochen
+        value: cooking
         then: abendessen-kochen
-#      - text:
-#          en: diary writing
-#          de: Tagebuch schreiben
-#        then: tagebuch-schreiben
-#      - text:
-#          en: tidying up
-#          de: aufräumen
-#        then: aufraeumen
-#      - text:
-#          en: listening to music
-#          de: Musik hören
-#        then: musik-hoeren
-#      - text:
-#          en: holiday planning
-#          de: Urlaub planen
-#        then: urlaub-planen
+      - text:
+          en: diary writing
+          de: Tagebuch schreiben
+        then: tagebuch-schreiben
+        value: diary-writing
+      - text:
+          en: tidying up
+          de: aufräumen
+        then: aufraeumen
+        value: tidying-up
+      - text:
+          en: listening to music
+          de: Musik hören
+        then: musik-hoeren
+        value: listening-to-music
+      - text:
+          en: holiday planning
+          de: Urlaub planen
+        then: urlaub-planen
+        value: holiday-planning
   - id: ein-videospiel-spielen
     text:
       en: |
         The final boss is almost defeated. 
         A text from your neighbor flashes up on your phone: 
-        "ARE YOU OK?"'
+        "ARE YOU OK?"
       de: |
         Der Endgegner ist fast besiegt. 
         Auf dem Handy blinkt eine Nachricht von deinem Nachbarn: 
         “ALLES OK BEI DIR?”
     sound: stories/evacuate/audio/notification.aac
+    responseFlag: neighborText
     responses:
       - text:
           en: '"Yes, you?"'
           de: “Ja, bei dir?”
+        value: reply
         then: weitermachen2-audio
       - text:
           en: Write back later
           de: Ich antworte später
+        value: "postpone"
         then: weitermachen-audio
   - id: weitermachen2-audio
     type: effect
@@ -138,6 +164,7 @@ items:
         Plötzlich hörst du Sirenengeheul. 
         Was geht dir durch den Kopf?
 #    sound: stories/evacuate/audio/siren.mp3
+    responseFlag: sirenStressLevel
     responses:
       - text:
           en: |
@@ -146,6 +173,7 @@ items:
           de: |
             Ahhhh, ich 
             hasse Sirenen!
+        value: 8
         then: ich-hasse-sirenen
       - text:
           en: | 
@@ -154,6 +182,7 @@ items:
           de: |
             Ist vielleicht 
             was passiert?
+        value: 6
         then: oh-ist-was-passiert
       - text:
           en: |
@@ -162,6 +191,7 @@ items:
           de: |
             Ganz schön 
             nervig
+        value: 4
         then: ganz-schoen-laut-und-nervig
       - text:
           en: |
@@ -170,23 +200,28 @@ items:
           de: |
             Sicher ein 
             Probealarm
+        value: 2
         then: bestimmt-ein-fehlalarm
   - id: ich-hasse-sirenen
     text:
       en: Your heart is racing.
       de: Dein Herz rast.
+    responseFlag: sirenReaction
     responses:
       - text:
-          en: Breath slowly
+          en: Breathe slowly
           de: Ich atme langsam durch
+        value: breathe
         then: ich-schliesse-die-fenster-zur-strasse-audio
       - text:
           en: Put headphones on
           de: Ich setze Kopfhörer auf
+        value: headphones
         then: ich-setze-kopfhoerer-auf-audio
       - text:
           en: Back to my activity
           de: Weiter mit dem Abendprogramm
+        value: ignore
         then: ich-mache-nichts-audio
   - id: ich-schliesse-die-fenster-zur-strasse-audio
     type: effect
@@ -200,39 +235,48 @@ items:
     text:
       en: The siren has stopped. How do you feel?
       de: Die Sirene hat aufgehört. Wie fühlst du dich?
+    responseFlag: sirenFeeling
     responses:
       - text:
           en: panicked
           de: In Panik
+        value: panicked
         then: emoji-weiter
 #      - text:
 #          en: terrified
 #          de: Verängstigt
+#        value: terrified
 #        then: emoji-weiter
       - text:
           en: stressed
           de: Gestresst
+        value: stressed
         then: emoji-weiter
       - text:
           en: confused
           de: Verwirrt
+        value: confused
         then: emoji-weiter
       - text:
           en: alert
           de: Wachsam
+        value: alert
         then: emoji-weiter
       - text:
           en: calm
           de: Gelassen
+        value: calm
         then: emoji-weiter
 #      - text:
 #          en: bored
 #          de: Gelangweilt
+#        value: bored
 #        then: emoji-weiter
   - id: emoji-weiter
     text:
       en: What do you do now?
       de: Was machst du jetzt?
+    responseFlag: nextAction
     responses:
       - text:
           en: |
@@ -241,6 +285,7 @@ items:
           de: |
             Ich scrolle auf 
             Social Media
+        value: social-media
         then: social-media
       - text:
           en: |
@@ -249,6 +294,7 @@ items:
           de: |
             Ich schaue aus 
             dem Fenster
+        value: window
         then: fenster
       - text:
           en: |
@@ -257,6 +303,7 @@ items:
           de: |
             Zurück zum 
             Abendprogramm
+        value: activity
         then: weiter
   - id: social-media
     text:
@@ -280,35 +327,44 @@ items:
         Dein Handy klingelt, im selben Moment geht der Akku aus. 
         Du lädst es und öffnest die App:
     sound: stories/evacuate/audio/ring-off.aac
+    responseFlag: socialMediaApp
+    responseControl: drum
     responses:
       - text:
           en: Instagram
           de: Instagram
+        value: instagram
         then: nina-nein
       - text:
           en: Signal
           de: Signal
+        value: signal
         then: nina-nein
-#      - text:
-#          en: TikTok
-#          de: TikTok
-#        then: nina-nein
+      - text:
+          en: TikTok
+          de: TikTok
+        value: tiktok
+        then: nina-nein
       - text:
           en: NINA
           de: NINA
+        value: nina
         then: nina-ja
       - text:
           en: WhatsApp
           de: WhatsApp
+        value: whatsapp
         then: nina-nein
       - text:
           en: X
           de: X
+        value: x
         then: nina-nein
-#      - text:
-#          en: YouTube
-#          de: YouTube
-#        then: nina-nein
+      - text:
+          en: YouTube
+          de: YouTube
+        value: youtube
+        then: nina-nein
   - id: nina-nein
     text:
       en: |
@@ -318,6 +374,7 @@ items:
         Viele Posts, Videos und Nachrichten. 
         Die Sirene ertönt erneut.
     sound: stories/evacuate/audio/siren.mp3
+    responseFlag: siren2Reaction
     responses:
       - text:
           en: |
@@ -326,6 +383,7 @@ items:
           de: |
             Ich suche lokale 
             Posts in Social Media
+        value: social-media
         then: social-media-2
       - text:
           en: |
@@ -334,6 +392,7 @@ items:
           de: |
             Ich checke 
             das Internet
+        value: internet
         then: internet
       - text:
           en: |
@@ -342,6 +401,7 @@ items:
           de: |
             Ich warte 
             noch etwas
+        value: wait
         then: warten
   - id: social-media-2
     text:
@@ -351,6 +411,7 @@ items:
       de: |
         "Gefahr! Evakuierung! Brand! Umgehend handeln! 
         Giftige Wolke! Das ist real! No Fake!"
+    responseFlag: socialMediaReaction
     responses:
       - text:
           en: |
@@ -359,6 +420,7 @@ items:
           de: |
             Ich checke lokale 
             News im Internet
+        value: internet
         then: internet
       - text:
           en: |
@@ -367,6 +429,7 @@ items:
           de: |
             Ich packe 
             meine Sachen
+        value: pack
         then: packen
       - text:
           en: |
@@ -375,6 +438,7 @@ items:
           de: |
             Ich warte 
             noch etwas
+        value: wait
         then: durchsage
   - id: internet
     text:
@@ -386,6 +450,7 @@ items:
         Das Chemiewerk in deinem Viertel brennt. 
         Du siehst Bilder von Einsatzkräften. 
         Die Gegend wird evakuiert.
+    responseFlag: internetReaction
     responses:
       - text:
           en: |
@@ -394,6 +459,7 @@ items:
           de: |
             Ich gehe 
             zum Nachbarn
+        value: neighbor
         then: bg-hallway
       - text:
           en: |
@@ -402,6 +468,7 @@ items:
           de: |
             Ich kontaktiere 
             meine Familie
+        value: family
         then: familie
       - text:
           en: |
@@ -410,6 +477,7 @@ items:
           de: |
             Ich packe 
             meine Sachen
+        value: pack
         then: packen
       - text:
           en: |
@@ -418,6 +486,7 @@ items:
           de: |
             Ich verlasse 
             die Wohnung
+        value: leave
         then: bg-street-2
       - text:
           en: |
@@ -426,6 +495,7 @@ items:
           de: |
             Ich warte 
             noch etwas
+        value: wait
         then: durchsage
   - id: bg-hallway
     type: effect
@@ -443,6 +513,7 @@ items:
       de: |
         Du findest deinen Nachbarn, der gerade von einem Freund abgeholt wird. 
         Sie bedanken sich fürs Nachschauen. Und jetzt?
+    responseFlag: neighborReaction
     responses:
       - text:
           en: |
@@ -451,6 +522,7 @@ items:
           de: |
             Ich packe 
             meine Sachen
+        value: pack
         then: packen
       - text:
           en: |
@@ -459,6 +531,7 @@ items:
           de: |
             Ich verlasse 
             die Wohnung
+        value: leave
         then: bg-street-2
       - text:
           en: |
@@ -467,6 +540,7 @@ items:
           de: |
             Ich warte 
             noch etwas
+        value: wait
         then: durchsage
   - id: packen
     text:
@@ -504,35 +578,43 @@ items:
         Du hörst Sirenen, Blaulicht spiegelt sich in den Pfützen. 
         Wie fühlst du dich?
     sound: stories/evacuate/audio/ambulance.aac
+    responseFlag: streetFeeling
     responses:
       - text:
           en: panicked
           de: In Panik
         then: emoji-weiter2
+        value: panicked
 #      - text:
 #          en: terrified
 #          de: Verängstigt
+#        value: terrified
 #        then: emoji-weiter2
       - text:
           en: stressed
           de: Gestresst
+        value: stressed
         then: emoji-weiter2
       - text:
           en: confused
           de: Verwirrt
+        value: confused
         then: emoji-weiter3
       - text:
           en: alert
           de: Wachsam
+        value: alert
         then: emoji-weiter3
       - text:
           en: calm
           de: Ruhig
+        value: calm
         then: emoji-weiter3
   - id: emoji-weiter2
     text:
       en: What are you afraid of?
       de: Wovor hast du Angst?
+    responseFlag: fear
     responses:
       - text:
           en: |
@@ -543,6 +625,7 @@ items:
             Dass jemand 
             in meine Wohnung 
             einbricht
+        value: break-in
         then: entscheidung-strasse
       - text:
           en: |
@@ -553,6 +636,7 @@ items:
             Dass ich nicht 
             weiß, wo ich 
             übernachten soll
+        value: no-bed
         then: polizei-hilft
       - text:
           en: |
@@ -561,6 +645,7 @@ items:
           de: |
             Dass ich etwas 
             falsch mache
+        value: doing-wrong
         then: polizei-hilft
       - text:
           en: |
@@ -569,19 +654,23 @@ items:
           de: |
             Dass das alles 
             nicht echt ist
+        value: not-real
         then: entscheidung-strasse
   - id: entscheidung-strasse
     text:
       en: You continue walking. Where to now?
       de: Du läufst weiter. Wohin jetzt?
+    responseFlag: destination
     responses:
       - text:
           en: Cycle to a friend
           de: Ich radle zu meiner Freundin
+        value: friend
         then: ende-freundin
       - text:
           en: Follow the evacuation route to a shelter
           de: Ich folge der Fluchtroute in eine Notunterkunft
+        value: shelter
         then: ende-notunterkunft
   - id: ende-freundin
     text:
@@ -590,142 +679,12 @@ items:
         She prepares warm tea for you. How did everyone else get on?
 
         THE END
-#
-#        May we use your choices ANONYMOUSLY for a scientific study?
       de: |
         Du kommst klatschnass bei deiner Freundin an. 
         Sie macht dir einen warmen Tee. Wie ist es wohl anderen ergegangen?
         
         ENDE
-#
-#        Dürfen wir deine Entscheidungen ANONYM für eine wissenschaftliche Studie verwenden?
-#    responses:
-#      - text:
-#          en: Yes
-#          de: Ja
-#        then: umfrage
-#      - text:
-#          en: No, restart
-#          de: Nein, zum Neustart
-  - id: umfrage
-    text:
-      en: Would you like to answer 3 quick questions about yourself?
-      de: Möchtest du uns noch 3 Fragen zu dir beantworten?
-    responses:
-      - text:
-          en: Yes
-          de: Ja
-        then: frage-1
-      - text:
-          en: No, restart
-          de: Nein, zum Neustart
-  - id: frage-1
-    text:
-      en: "Question 1/3: How old are you?"
-      de: "Frage 1/3: Wie alt bist du?"
-    responses:
-      - text:
-          en: Under 18
-          de: unter 18
-        then: frage-2
-      - text:
-          en: 18–24
-          de: 18-24
-        then: frage-2
-      - text:
-          en: 25–34
-          de: 15-34
-        then: frage-2
-      - text:
-          en: 35–44
-          de: 35-44
-        then: frage-2
-      - text:
-          en: 45–54
-          de: 45-54
-        then: frage-2
-      - text:
-          en: 55–64
-          de: 55-64
-        then: frage-2
-      - text:
-          en: 65 or older
-          de: 65 oder älter
-        then: frage-2
-      - text:
-          en: Prefer not to say
-          de: keine Angabe
-        then: frage-2
-  - id: frage-2
-    text:
-      en: "Question 2/3: What gender do you identify as?"
-      de: "Frage 2/3: Mit welchem Geschlecht identifizierst du dich?"
-    responses:
-      - text:
-          en: Woman
-          de: Frau
-        then: frage-3
-      - text:
-          en: Man
-          de: Mann
-        then: frage-3
-      - text:
-          en: Non-binary / other
-          de: Divers
-        then: frage-3
-      - text:
-          en: Prefer not to say
-          de: keine Angabe
-        then: frage-3
-  - id: frage-3
-    text:
-      en: "Question 3/3: What is your highest level of education?"
-      de: "Frage 3/3: Was ist dein höchster Bildungsabschluss?"
-    responses:
-      - text:
-          en: Left school without qualifications
-          de: Schule beendet ohne Abschluß
-        then: danke
-      - text:
-          en: Still in school
-          de: Noch in der Schule ohne Abschluß
-        then: danke
-      - text:
-          en: Secondary school certificate
-          de: Volks/Hauptschulabschluss
-        then: danke
-      - text:
-          en: GCSEs or equivalent
-          de: Mittlere Reife, Realschul - oder gleichwertiger Abschluss
-        then: danke
-      - text:
-          en: A-levels or equivalent
-          de: Fachabitur, Fachhoschulreife
-        then: danke
-      - text:
-          en: Vocational / technical qualification
-          de: Abitur, Hochschulreife
-        then: danke
-      - text:
-          en: University degree
-          de: Fachhochschul-/Hochschulabschluss
-        then: danke
-      - text:
-          en: Postgraduate / doctorate
-          de: Promotion
-        then: danke
-      - text:
-          en: Prefer not to say
-          de: keine Angabe
-        then: danke
-  - id: danke
-    text:
-      en: Thank you!
-      de: Danke!
-    responses:
-      - text:
-          en: Back to the start
-          de: Zurück zum Start
+    then: survey-consent
   - id: ende-notunterkunft
     text:
       en: |
@@ -734,40 +693,30 @@ items:
         What happens tomorrow? Maybe breakfast?
 
         THE END
-#
-#
-#        May we use your choices ANONYMOUSLY for a scientific study?
       de: |
         Ihr seid 72 Personen in der Notunterkunft. 
         Der Imbiss nebenan spendiert 15 kg Kartoffelsalat. 
         Wie geht es morgen weiter? Vielleicht mit Frühstück?
 
         ENDE
-#
-#        Dürfen wir deine Entscheidungen ANONYM für eine wissenschaftliche Studie
-#        verwenden?
-#    responses:
-#      - text:
-#          en: Yes
-#          de: Ja
-#        then: umfrage
-#      - text:
-#          en: No, restart
-#          de: Nein, zum Neustart
+    then: survey-consent
   - id: polizei-hilft
     text:
       en: A policewoman sees that you are afraid. She guides you to an emergency
         shelter.
       de: Eine Polizistin erkennt deine Angst. Sie begleitet dich zu einer
         Notunterkunft.
+    responseFlag: destination
     responses:
       - text:
           en: Go with her
           de: Ich gehe mit
+        value: shelter
         then: ende-notunterkunft
       - text:
           en: Rather take a hotel
           de: Ich nehme lieber ein Hotel
+        value: hotel
         then: ende-hotel
   - id: ende-hotel
     text:
@@ -776,59 +725,53 @@ items:
         What happens tomorrow?
 
         THE END
-#
-#
-#        May we use your choices ANONYMOUSLY for a scientific study?
       de: |
         Du bekommst das letzte Zimmer und bist zu aufgeregt, um zu schlafen. 
         Wie geht es morgen weiter?
 
         ENDE
-#
-#
-#        Dürfen wir deine Entscheidungen ANONYM für eine wissenschaftliche Studie
-#        verwenden?
-#    responses:
-#      - text:
-#          en: Yes
-#          de: Ja
-#        then: umfrage
-#      - text:
-#          en: No, restart
-#          de: Nein, zum Neustart
+    then: survey-consent
   - id: emoji-weiter3
     text:
       en: What do you think?
       de: Was denkst du?
+    responseFlag: thoughts
     responses:
       - text:
           en: Are there other people in danger?
           de: Sind Menschen in Gefahr?
+        value: other-people
         then: entscheidung-strasse2
       - text:
           en: How can I help?
           de: Wie kann ich helfen?
+        value: help
         then: entscheidung-strasse2
       - text:
           en: Who should I inform?
           de: Wen soll ich informieren?
+        value: inform
         then: entscheidung-strasse2
   - id: entscheidung-strasse2
     text:
       en: You continue walking. Where to now?
       de: Du läufst weiter. Aber wohin jetzt?
+    responseFlag: destination
     responses:
       - text:
           en: Pick up my cousins
           de: Ich hole meine Cousine ab
+        value: cousins
         then: verwandte
       - text:
           en: Drive to the family country home
           de: Ich fahre zur Familie aufs Land
+        value: country-home
         then: ende-land
       - text:
           en: Follow the evacuation route to a shelter
           de: Ich folge der Fluchtroute in eine Notunterkunft
+        value: shelter
         then: ende-notunterkunft-help
   - id: verwandte
     text:
@@ -838,27 +781,13 @@ items:
         How will the situation develop?
 
         THE END
-#
-#
-#        May we use your choices ANONYMOUSLY for a scientific study?
       de: |
         Du nimmst dein Auto und holst deine Cousine ab. 
         Ihr fahrt zur Familie aufs Land. 
         Wie wird sich die Situation entwickeln?
 
         ENDE
-#
-#
-#        Dürfen wir deine Entscheidungen ANONYM für eine wissenschaftliche Studie
-#        verwenden?
-#    responses:
-#      - text:
-#          en: Yes
-#          de: Ja
-#        then: umfrage
-#      - text:
-#          en: No, restart
-#          de: Nein, zum Neustart
+    then: survey-consent
   - id: ende-land
     text:
       en: |
@@ -867,27 +796,13 @@ items:
         Do you feel relaxed here?
 
         THE END
-#
-#
-#        May we use your choices ANONYMOUSLY for a scientific study?
       de: |
         Die direkte Route war gesperrt. 
         Nach Umwegen kommst du im Familienhaus auf dem Land an. 
         Fühlst du dich hier entspannt?
 
         ENDE
-#
-#
-#        Dürfen wir deine Entscheidungen ANONYM für eine wissenschaftliche Studie
-#        verwenden?
-#    responses:
-#      - text:
-#          en: Yes
-#          de: Ja
-#        then: umfrage
-#      - text:
-#          en: No, restart
-#          de: Nein, zum Neustart
+    then: survey-consent
   - id: ende-notunterkunft-help
     text:
       en: |
@@ -896,26 +811,13 @@ items:
         What else can you do?
 
         THE END
-#
-#        May we use your choices ANONYMOUSLY for a scientific study?
       de: |
         In der Notunterkunft. 
         Du sprichst mit anderen und hilfst Neuankömmlingen. 
         Was kannst du noch tun?
 
         ENDE
-#
-#
-#        Dürfen wir deine Entscheidungen ANONYM für eine wissenschaftliche Studie
-#        verwenden?
-#    responses:
-#      - text:
-#          en: Yes
-#          de: Ja
-#        then: umfrage
-#      - text:
-#          en: No, restart
-#          de: Nein, zum Neustart
+    then: survey-consent
   - id: bg-street-2
     type: effect
     effect:
@@ -940,14 +842,17 @@ items:
       de: |
         Du läufst auf die Straße. Es fängt an zu gewittern. 
         Dir fällt auf, dass du dein Handy beim Laden vergessen hast.
+    responseFlag: forgotPhone
     responses:
       - text:
           en: Quickly go back up
           de: Ich gehe schnell zurück
+        value: go-back
         then: handy-zurueck2
       - text:
           en: Doesn't matter, keep walking
           de: Egal, ich will einfach weg
+        value: keep-walking
         then: weg
   - id: handy-zurueck2
     text:
@@ -955,31 +860,38 @@ items:
         switch off the lights. Where to now?
       de: Du nimmst das Handy mit, schließt die Fenster, drehst Wasser und Gas ab und
         machst das Licht aus. Wohin jetzt?
+    responseFlag: destination
     responses:
       - text:
           en: Pick up my cousins
           de: Ich hole meine Cousine ab
+        value: cousins
         then: verwandte
       - text:
           en: Drive to the family country home
           de: Ich fahre zur Familie aufs Land
+        value: country-home
         then: ende-land
       - text:
           en: Take a hotel
           de: Ich nehme ein Hotel
+        value: hotel
         then: ende-hotel
   - id: weg
     text:
       en: Where to? What do you do?
       de: Wohin? Was machst du?
+    responseFlag: destination
     responses:
       - text:
           en: Cycle to a friend
           de: Ich radle zu meiner Freundin
+        value: friend
         then: ende-freundin
       - text:
           en: Take a hotel
           de: Ich nehme ein Hotel
+        value: hotel
         then: ende-hotel
   - id: durchsage
     text:
@@ -987,10 +899,12 @@ items:
         getting loud in the building.
       de: Du hörst eine Evakuierungs-Durchsage mit Megafon von der Straße. Es wird
         laut im Treppenhaus.
+    responseFlag: evacuationReaction
     responses:
       - text:
           en: Leave the flat
           de: Ich verlasse die Wohnung
+        value: leave
         then: bg-street
       - text:
           en: |
@@ -999,6 +913,7 @@ items:
           de: |
             So eine Evakuierung 
             gab es noch nie, ich bleibe
+        value: stay
         then: bleiben
   - id: bleiben
     text:
@@ -1018,61 +933,55 @@ items:
         Will you be able to sleep here?
 
         THE END
-#
-#
-#        May we use your choices ANONYMOUSLY for a scientific study?
       de: |
         In der alten Turnhalle. Dir ist kalt. Du bist hungrig. 
         Du hast den Einsatzkräften viel Arbeit gemacht. 
         Wirst du hier schlafen können?
 
         ENDE
-#
-#
-#        Dürfen wir deine Entscheidungen ANONYM für eine wissenschaftliche Studie
-#        verwenden?
-#    responses:
-#      - text:
-#          en: Yes
-#          de: Ja
-#        then: umfrage
-#      - text:
-#          en: No, restart
-#          de: Nein, zum Neustart
+    then: survey-consent
   - id: familie
     text:
       en: You call your cousins who live nearby. You decide together what to do next.
       de: Du rufst deine Cousine an, die in der Nähe wohnt. Ihr plant die nächsten
         Schritte gemeinsam.
+    responseFlag: familyReaction
     responses:
       - text:
           en: Pack my things
           de: Ich packe meine Sachen
+        value: pack
         then: packen
       - text:
           en: Leave the flat
           de: Ich verlasse die Wohnung
+        value: leave
         then: bg-street-2
   - id: warten
     text:
       en: How long do you wait?
       de: Wieviel Zeit wartest du?
+    responseFlag: waitTime
     responses:
       - text:
           en: 5 minutes
           de: 5 Minuten
+        value: "5m"
         then: x-minuten
       - text:
           en: 10 minutes
           de: 10 Minuten
+        value: "10m"
         then: x-minuten
       - text:
           en: 15 minutes
           de: 15 Minuten
+        value: "15m"
         then: x-minuten
       - text:
           en: 20 minutes
           de: 20 Minuten
+        value: "20m"
         then: x-minuten
   - id: x-minuten
     text:
@@ -1083,14 +992,17 @@ items:
         erforderlich. Verlassen Sie sofort das Evakuierungsgebiet Schönhausen.
         Hören Sie auf Anweisungen der Einsatzkräfte."'
     sound: stories/evacuate/audio/alert-tone.mp3
+    responseFlag: alertReaction
     responses:
       - text:
           en: Leave the flat
           de: Ich verlasse die Wohnung
+        value: leave
         then: bg-street-2
       - text:
           en: Wait a little longer
           de: Ich warte noch etwas
+        value: wait
         then: durchsage
   - id: nina-ja
     text:
@@ -1102,6 +1014,7 @@ items:
         Die Warn-app NINA meldet: 
         "Chemiebrand. Höchste Warnstufe. Evakuierung im Radius von 2000 m erforderlich. 
         Verlassen Sie Ihre Wohnung. Gültig: aktuell."
+    responseFlag: ninaAlertReaction
     responses:
       - text:
           en: | 
@@ -1110,6 +1023,7 @@ items:
           de: |
             Ich gehe 
             zum Nachbarn
+        value: neighbor
         then: bg-hallway
       - text:
           en: | 
@@ -1118,6 +1032,7 @@ items:
           de: |
             Ich kontaktiere 
             meine Familie
+        value: family
         then: familie
       - text:
           en: | 
@@ -1126,6 +1041,7 @@ items:
           de: |
             Ich checke lokale 
             News im Internet
+        value: internet
         then: internet
       - text:
           en: | 
@@ -1134,6 +1050,7 @@ items:
           de: |
             Ich packe 
             meine Sachen
+        value: pack
         then: packen
       - text:
           en: | 
@@ -1142,6 +1059,7 @@ items:
           de: |
             Ich verlasse 
             die Wohnung
+        value: leave
         then: bg-street-2
   - id: fenster
     text:
@@ -1164,30 +1082,37 @@ items:
     text:
       en: The siren has stopped. How do you feel?
       de: Die Sirene hat aufgehört. Wie fühlst du dich?
+    responseFlag: sirenFeeling
     responses:
       - text:
           en: panicked
           de: In Panik
+        value: panicked
         then: emoji-weiter
 #      - text:
 #          en: terrified
 #          de: Verängstigt
+#        value: terrified
 #        then: emoji-weiter
       - text:
           en: stressed
           de: Gestresst
+        value: stressed
         then: emoji-weiter
       - text:
           en: confused
           de: Verwirrt
+        value: confused
         then: emoji-weiter
       - text:
           en: alert
           de: Wachsam
+        value: alert
         then: emoji-weiter
       - text:
           en: calm
           de: Ruhig
+        value: calm
         then: emoji-weiter
   - id: ich-mache-nichts-audio
     type: effect
@@ -1201,33 +1126,38 @@ items:
     text:
       en: The siren has stopped. How do you feel?
       de: Die Sirene hat aufgehört. Wie fühlst du dich?
+    responseFlag: sirenFeeling
     responses:
       - text:
           en: panicked
           de: In Panik
+        value: panicked
         then: emoji-weiter
-#      |
-
       - text:
           en: stressed
           de: Gestresst
+        value: stressed
         then: emoji-weiter
       - text:
           en: confused
           de: Verwirrt
+        value: confused
         then: emoji-weiter
       - text:
           en: alert
           de: Wachsam
+        value: alert
         then: emoji-weiter
       - text:
           en: calm
           de: Ruhig
+        value: calm
         then: emoji-weiter
   - id: oh-ist-was-passiert
     text:
       en: Someone will sort it out.
       de: Jemand wird sich schon darum kümmern.
+    responseFlag: sirenReaction
     responses:
       - text:
           en: |
@@ -1236,6 +1166,7 @@ items:
           de: |
             Ich schließe die 
             Fenster zur Straße
+        value: close-windows
         then: ich-schliesse-die-fenster-zur-strasse-audio
       - text:
           en: |
@@ -1244,6 +1175,7 @@ items:
           de: |
             Ich setze 
             Kopfhörer auf
+        value: headphones
         then: ich-setze-kopfhoerer-auf-audio
       - text:
           en: |
@@ -1252,11 +1184,13 @@ items:
           de: |
             Weiter mit 
             dem Abendprogramm
+        value: ignore
         then: ich-mache-nichts-audio
   - id: ganz-schoen-laut-und-nervig
     text:
       en: Nothing disturbs you.
       de: Du lässt dich nicht stören.
+    responseFlag: sirenReaction
     responses:
       - text:
           en: |
@@ -1265,6 +1199,7 @@ items:
           de: |
             Ich schließe die 
             Fenster zur Straße
+        value: close-windows
         then: ich-schliesse-die-fenster-zur-strasse-audio
       - text:
           en: |
@@ -1273,6 +1208,7 @@ items:
           de: |
             Ich setze 
             Kopfhörer auf
+        value: headphones
         then: ich-setze-kopfhoerer-auf-audio
       - text:
           en: |
@@ -1281,11 +1217,13 @@ items:
           de: |
             Weiter mit 
             dem Abendprogramm
+        value: ignore
         then: ich-mache-nichts-audio
   - id: bestimmt-ein-fehlalarm
     text:
       en: You are glad they do test alarms.
       de: Du findest es gut, dass es Probealarme gibt.
+    responseFlag: sirenReaction
     responses:
       - text:
           en: |
@@ -1294,6 +1232,7 @@ items:
           de: |
             Ich schließe 
             die Fenster zur Straße
+        value: close-windows
         then: ich-schliesse-die-fenster-zur-strasse-audio
       - text:
           en: |
@@ -1302,6 +1241,7 @@ items:
           de: |
             Ich setze 
             Kopfhörer auf
+        value: headphones
         then: ich-setze-kopfhoerer-auf-audio
       - text:
           en: |
@@ -1310,6 +1250,7 @@ items:
           de: |
             Weiter mit 
             dem Abendprogramm
+        value: ignore
         then: ich-mache-nichts-audio
   - id: weitermachen-audio
     type: effect
@@ -1325,6 +1266,7 @@ items:
       de: Es vergehen ein paar Minuten. Plötzlich hörst du Sirenengeheul. Was geht dir
         durch den Kopf?
 #    sound: stories/evacuate/audio/siren.mp3
+    responseFlag: sirenStressLevel
     responses:
       - text:
           en: |
@@ -1333,6 +1275,7 @@ items:
           de: |
             Ahhhh, 
             ich hasse Sirenen!
+        value: 8
         then: ich-hasse-sirenen
       - text:
           en: |
@@ -1341,6 +1284,7 @@ items:
           de: |
             Ist vielleicht 
             was passiert?
+        value: 6
         then: oh-ist-was-passiert
       - text:
           en: |
@@ -1349,6 +1293,7 @@ items:
           de: |
             Ganz schön 
             nervig
+        value: 4
         then: ganz-schoen-laut-und-nervig
       - text:
           en: |
@@ -1357,6 +1302,7 @@ items:
           de: |
             Sicher ein 
             Probealarm
+        value: 2
         then: bestimmt-ein-fehlalarm
   - id: ein-buch-lesen
     text:
@@ -1369,14 +1315,17 @@ items:
         Auf dem Handy blinkt eine Nachricht von deinem Nachbarn: 
         “ALLES OK BEI DIR?”
     sound: stories/evacuate/audio/notification.aac
+    responseFlag: neighborText
     responses:
       - text:
           en: '"Yes, you?"'
           de: “Ja, bei dir?”
+        value: reply
         then: weitermachen2-audio
       - text:
           en: Write back later
           de: Ich antworte später
+        value: "postpone"
         then: weitermachen-audio
   - id: ausgehen
     text:
@@ -1389,19 +1338,22 @@ items:
         Auf dem Handy blinkt eine Nachricht von deinem Nachbarn: 
         “ALLES OK BEI DIR?”
     sound: stories/evacuate/audio/notification.aac
+    responseFlag: neighborText
     responses:
       - text:
           en: '"Yes, you?"'
           de: “Ja, bei dir?”
+        value: reply
         then: weitermachen2-audio
       - text:
           en: Write back later
           de: Ich antworte später
+        value: "postpone"
         then: weitermachen-audio
   - id: schlafen
     text:
       en: |
-        The pyjamas are so cosy! 
+        The pyjamas are so cozy! 
         A text from your neighbor flashes up on your phone: 
         "ARE YOU OK?"
       de: |
@@ -1409,14 +1361,17 @@ items:
         Auf dem Handy blinkt eine Nachricht von deinem Nachbarn: 
         “ALLES OK BEI DIR?”
     sound: stories/evacuate/audio/notification.aac
+    responseFlag: neighborText
     responses:
       - text:
           en: '"Yes, you?"'
           de: “Ja, bei dir?”
+        value: reply
         then: weitermachen2-audio
       - text:
           en: Write back later
           de: Ich antworte später
+        value: "postpone"
         then: weitermachen-audio
   - id: arbeiten
     text:
@@ -1429,14 +1384,17 @@ items:
         Auf dem Handy blinkt eine Nachricht von deinem Nachbarn: 
         “ALLES OK BEI DIR?”
     sound: stories/evacuate/audio/notification.aac
+    responseFlag: neighborText
     responses:
       - text:
           en: '"Yes, you?"'
           de: “Ja, bei dir?”
+        value: reply
         then: weitermachen2-audio
       - text:
           en: Write back later
           de: Ich antworte später
+        value: "postpone"
         then: weitermachen-audio
   - id: eine-serie-schauen
     text:
@@ -1449,14 +1407,17 @@ items:
         Auf dem Handy blinkt eine Nachricht von deinem Nachbarn: 
         “ALLES OK BEI DIR?”
     sound: stories/evacuate/audio/notification.aac
+    responseFlag: neighborText
     responses:
       - text:
           en: '"Yes, you?"'
           de: “Ja, bei dir?”
+        value: reply
         then: weitermachen2-audio
       - text:
           en: Write back later
           de: Ich antworte später
+        value: "postpone"
         then: weitermachen-audio
   - id: abendessen-kochen
     text:
@@ -1469,34 +1430,40 @@ items:
         Auf dem Handy blinkt eine Nachricht von deinem Nachbarn: 
         “ALLES OK BEI DIR?”
     sound: stories/evacuate/audio/notification.aac
+    responseFlag: neighborText
     responses:
       - text:
           en: '"Yes, you?"'
           de: “Ja, bei dir?”
+        value: reply
         then: weitermachen2-audio
       - text:
           en: Write back later
           de: Ich antworte später
+        value: "postpone"
         then: weitermachen-audio
   - id: tagebuch-schreiben
     text:
       en: |
         "Dear diary! ..." 
         A text from your neighbor flashes up on your phone: 
-        "ARE YOU OK?"'
+        "ARE YOU OK?"
       de: |
         "Liebes Tagebuch! ..."
         Auf dem Handy blinkt eine Nachricht von deinem Nachbarn: 
         “ALLES OK BEI DIR?”
     sound: stories/evacuate/audio/notification.aac
+    responseFlag: neighborText
     responses:
       - text:
           en: '"Yes, you?"'
           de: “Ja, bei dir?”
+        value: reply
         then: weitermachen2-audio
       - text:
           en: Write back later
           de: Ich antworte später
+        value: "postpone"
         then: weitermachen-audio
   - id: aufraeumen
     text:
@@ -1509,14 +1476,17 @@ items:
         Auf dem Handy blinkt eine Nachricht von deinem Nachbarn: 
         “ALLES OK BEI DIR?”
     sound: stories/evacuate/audio/notification.aac
+    responseFlag: neighborText
     responses:
       - text:
           en: '"Yes, you?"'
           de: “Ja, bei dir?”
+        value: reply
         then: weitermachen2-audio
       - text:
           en: Write back later
           de: Ich antworte später
+        value: "postpone"
         then: weitermachen-audio
   - id: musik-hoeren
     text:
@@ -1529,14 +1499,17 @@ items:
         Auf dem Handy blinkt eine Nachricht von deinem Nachbarn: 
         “ALLES OK BEI DIR?”
     sound: stories/evacuate/audio/notification.aac
+    responseFlag: neighborText
     responses:
       - text:
           en: '"Yes, you?"'
           de: “Ja, bei dir?”
+        value: reply
         then: weitermachen2-audio
       - text:
           en: Write back later
           de: Ich antworte später
+        value: "postpone"
         then: weitermachen-audio
   - id: urlaub-planen
     text:
@@ -1549,25 +1522,158 @@ items:
         Auf dem Handy blinkt eine Nachricht von deinem Nachbarn: 
         “ALLES OK BEI DIR?”
     sound: stories/evacuate/audio/notification.aac
+    responseFlag: neighborText
     responses:
       - text:
           en: '"Yes, you?"'
           de: “Ja, bei dir?”
+        value: reply
         then: weitermachen2-audio
       - text:
           en: Write back later
           de: Ich antworte später
+        value: "postpone"
         then: weitermachen-audio
-  - id: datenerheben
+  - id: survey-consent
     text:
-      en: May we use your choices ANONYMOUSLY for a scientific study?
-      de: Dürfen wir deine Entscheidungen ANONYM für eine wissenschaftliche Studie
-        verwenden?
+      en: |
+        Can we use the decisions you took for security research?
+        Read the text to your right before making your choice.
+      de: |
+        Möchtest du hier selbst an Sicherheitsforschung teilnehmen? 
+        Beachte dazu bitte den Text links von dir.
+    responseFlag: surveyConsent
     responses:
       - text:
-          en: Yes
-          de: Ja
-        then: umfrage
+          en: No, I do not give my consent.
+          de: Nein, ich willige nicht ein.
+        value: 0
       - text:
-          en: No, restart
-          de: Nein, zum Neustart
+          en: Yes, I give my consent.
+          de: Ja, ich willige ein.
+        value: 1
+        then: survey-data
+  - id: survey-data
+    text:
+      en: Would you like to answer 3 quick questions about yourself?
+      de: Möchtest du uns noch 3 Fragen zu dir beantworten?
+    responses:
+      - text:
+          en: 'No, restart'
+          de: 'Nein, zum Neustart'
+      - text:
+          en: 'Yes'
+          de: 'Ja'
+        then: survey-q-age
+  - id: survey-questions
+    type: sequence
+    items:
+      - id: survey-q-age
+        text:
+          en: "Question 1/3: How old are you?"
+          de: "Frage 1/3: Wie alt bist du?"
+        responseControl: drum
+        responseFlag: surveyAge
+        responses:
+          - text:
+              en: Under 18
+              de: unter 18
+            value: "<18"
+          - text:
+              en: 18–24
+              de: 18-24
+            value: "18-24"
+          - text:
+              en: 25–34
+              de: 25-34
+            value: "25-34"
+          - text:
+              en: 35–44
+              de: 35-44
+            value: "35-44"
+          - text:
+              en: 45–54
+              de: 45-54
+            value: "45-54"
+          - text:
+              en: 55–64
+              de: 55-64
+            value: "55-64"
+          - text:
+              en: 65 or older
+              de: 65 oder älter
+            value: "65+"
+          - text:
+              en: Prefer not to say
+              de: keine Angabe
+            value: "no-answer"
+      - id: survey-q-gender
+        text:
+          en: "Question 2/3: What gender do you identify as?"
+          de: "Frage 2/3: Mit welchem Geschlecht identifizierst du dich?"
+        responseControl: drum
+        responseFlag: surveyGender
+        responses:
+          - text:
+              en: Woman
+              de: Frau
+            value: woman
+          - text:
+              en: Man
+              de: Mann
+            value: man
+          - text:
+              en: Non-binary / other
+              de: Divers
+            value: non-binary
+          - text:
+              en: Prefer not to say
+              de: keine Angabe
+            value: "no-answer"
+      - id: survey-q-education
+        text:
+          en: "Question 3/3: What is your highest level of education?"
+          de: "Frage 3/3: Was ist dein höchster Bildungsabschluss?"
+        responseControl: drum
+        responseFlag: surveyEducation
+        responses:
+          - text:
+              en: Left school without qualifications
+              de: Schule beendet ohne Abschluss
+            value: no-qualifications
+          - text:
+              en: Still in school
+              de: Noch in der Schule ohne Abschluss
+            value: still-in-school
+          - text:
+              en: Lower secondary school certificate
+              de: Volks/Hauptschulabschluss
+            value: hauptschule
+          - text:
+              en: Intermediate secondary school certificate
+              de: Mittlere Reife, Realschul- oder gleichwertiger Abschluss
+            value: mittlere-reife
+          - text:
+              en: Vocational college entrance qualification
+              de: Fachabitur, Fachhochschulreife
+            value: fachabitur
+          - text:
+              en: University entrance qualification (A-levels or equivalent)
+              de: Abitur, Hochschulreife
+            value: abitur
+          - text:
+              en: University degree
+              de: Fachhochschul-/Hochschulabschluss
+            value: university-degree
+          - text:
+              en: Doctorate
+              de: Promotion
+            value: doctorate
+          - text:
+              en: Prefer not to say
+              de: keine Angabe
+            value: "no-answer"
+      - id: survey-end
+        text:
+          en: Thank you!
+          de: Danke!
