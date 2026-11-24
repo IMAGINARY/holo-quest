@@ -62,17 +62,22 @@ async function loadConfig(settingsFiles, overrides = {}) {
  *
  * @param {Object} config  Resolved configuration, expected to contain `app.storyPath` and
  *  `app.story`.
- * @return {Promise<Object>} Resolved story object
+ * @return {Promise<{story: Object, storyText: string}>} Resolved story object, and the story
+ *  file's text exactly as fetched (used to fingerprint the content, see `initNachbarin`)
  */
 async function loadStory(config) {
   const storyFile = `${config.app.storyPath}/${config.app.story}.yml`;
-  const cfgLoader = new CfgLoader(CfgReaderFetch, yaml.load);
+  let storyText;
+  const cfgLoader = new CfgLoader(async (file) => {
+    storyText = await CfgReaderFetch(file);
+    return storyText;
+  }, yaml.load);
   try {
     logger.debug('Loading story file: %s', storyFile);
     const story = await cfgLoader.load([storyFile]);
     Object.freeze(story);
     logger.debug('Story loaded successfully', story);
-    return story;
+    return { story, storyText };
   } catch (err) {
     throw new Error(`Error loading story: ${err.message}`);
   }
@@ -87,7 +92,7 @@ async function loadStory(config) {
  * - Story loading (from the path/id resolved in configuration)
  * - Sentry initialization (with DSN from query string or config)
  *
- * @return {Promise<{config: Object, story: Object}>}
+ * @return {Promise<{config: Object, story: Object, storyText: string}>}
  */
 export default async function initStandaloneApp() {
   const qs = new URLSearchParams(window.location.search);
@@ -113,7 +118,7 @@ export default async function initStandaloneApp() {
     initSentry(config.sentry.dsn);
   }
 
-  const story = await loadStory(config);
+  const { story, storyText } = await loadStory(config);
 
-  return { config, story };
+  return { config, story, storyText };
 }

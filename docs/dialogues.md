@@ -501,6 +501,9 @@ A capture object has these properties:
 No other properties are allowed, so a misspelled `cond` fails validation instead of silently
 capturing flags unconditionally.
 
+Captured flags are sent to Nachbarin when it's configured, and discarded otherwise (see
+[Data Capture](../README.md#data-capture-nachbarin)).
+
 Patterns can use these wildcards:
 
 - `*`: Matches any sequence of characters, including none.

@@ -1,3 +1,8 @@
 nachbarin:
+  # Nachbarin API endpoint URL (requires an api key to access)
   url: https://nachbarin.api.imaginary.org/
+  # This version number is passed to nachbarin and stored along with the captured data.
+  # Changing it signals to data readers that the data format may have changed, and they should check
+  # for compatibility.
+  engineVersion: 1.0.0
 #  apiKey: <your_api_key_here>

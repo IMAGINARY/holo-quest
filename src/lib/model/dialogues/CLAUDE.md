@@ -119,4 +119,4 @@ The dialogue validator only checks the shape (identifier pattern in the schema; 
 - **`test/condition-parser.test.js`** — condition expression tests
 - **`test/dialogue-validation.test.js`** — validation tests
 - **`test/flag-capture.test.js`** — flag pattern matching tests
-- **`src/lib/game/game-controller.js`** — owns the `FlagStore` and runs capture on the sequencer's `'terminate'` event
+- **`src/lib/game/game-controller.js`** — owns the `FlagStore` and runs capture on the sequencer's `'terminate'` event; `submitCapturedFlags` writes the result to the Nachbarin client built by `src/lib/init/init-nachbarin.js` (or discards it when Nachbarin isn't configured)

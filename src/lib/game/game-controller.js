@@ -23,10 +23,14 @@ export default class GameController {
    * @param {Map<string, Function>} uiControls The registered input controls, by the identifier a
    *  statement's `responseControl` refers to (see `src/lib/init/register-ui-controls.js`).
    *  `GameView` builds the controls from it by name.
+   * @param {{client: Object, onResult: Function}|null} [nachbarin] The Nachbarin write client
+   *  captured flags are sent to, with its per-record result logger, as returned by
+   *  `initNachbarin` (`src/lib/init/init-nachbarin.js`). `null` when Nachbarin is not used.
    */
-  constructor(config, uiControls) {
+  constructor(config, uiControls, nachbarin = null) {
     this.config = config;
     this.uiControls = uiControls;
+    this.nachbarin = nachbarin;
     this.languages = config.game.languages;
     this.initLang();
     this.gameInProgress = false;
@@ -267,19 +271,26 @@ export default class GameController {
   /**
    * Hands captured flag values off for persistence.
    *
-   * Placeholder: this will delegate to a library that transparently forwards the payload to a
-   * cloud service, together with a hash of the story that produced them as a content version.
-   * Until then it deliberately drops the payload.
+   * Writes them to Nachbarin as `{ flags }` app data when a client was provided, and drops them
+   * otherwise. The client queues the record durably and returns immediately, sending it in the
+   * background whenever the service is reachable. The record's engine and content (story hash)
+   * versions are set by the client.
    *
-   * The payload is a fresh object, unaffected by the flag store reset that follows, so an
-   * implementation may retain it across the restart.
+   * May throw (the client throws synchronously on a record the service could never accept);
+   * {@link captureFlags} catches and logs it.
    *
    * @param {Object<string, number|string>} flags Flags selected by {@link captureFlags}. Values
    *  may be personal and must never be logged or sent to error reporting.
    */
-  // eslint-disable-next-line class-methods-use-this
   submitCapturedFlags(flags) {
-    logger.debug('GameController: submitCapturedFlags is a placeholder; %d flag(s) discarded', Object.keys(flags).length);
+    const count = Object.keys(flags).length;
+    if (!this.nachbarin) {
+      logger.debug('GameController: Nachbarin disabled; %d flag(s) discarded', count);
+      return;
+    }
+    const { client, onResult } = this.nachbarin;
+    const clientId = client.write({ appData: { flags } }, { onResult });
+    logger.info('GameController: queued %d captured flag(s) for Nachbarin as record %s', count, clientId);
   }
 
   /**

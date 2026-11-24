@@ -38,6 +38,7 @@
   },
   "dependencies": {
     "@fontsource/averia-sans-libre": "^5.2.7",
+    "@imaginary-maths/nachbarin-client": "^1.0.0",
     "@sentry/browser": "^10.38.0",
     "@vitejs/plugin-react": "^5.1.4",
     "ajv": "^8.18.0",

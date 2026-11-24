@@ -168,3 +168,75 @@ describe('GameController flag capture', () => {
     expect(controller.gameInProgress).to.equal(false);
   });
 });
+
+describe('GameController.submitCapturedFlags', () => {
+  /**
+   * Builds a controller that keeps the real submitCapturedFlags(), wired to the given
+   * Nachbarin handle.
+   */
+  function makeSubmittingController(nachbarin) {
+    const controller = makeController();
+    delete controller.submitCapturedFlags;
+    controller.nachbarin = nachbarin;
+    return controller;
+  }
+
+  beforeEach(() => {
+    vi.spyOn(logger, 'debug').mockImplementation(() => {});
+    vi.spyOn(logger, 'info').mockImplementation(() => {});
+    vi.spyOn(logger, 'error').mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it('should write the captured flags to the Nachbarin client', () => {
+    const client = { write: vi.fn(() => 'record-id') };
+    const onResult = () => {};
+    const controller = makeSubmittingController({ client, onResult });
+    controller.flags.set('consent', 1);
+    controller.flags.set('survey-age', 42);
+
+    controller.captureFlags();
+
+    expect(client.write).toHaveBeenCalledTimes(1);
+    expect(client.write).toHaveBeenCalledWith(
+      { appData: { flags: { 'survey-age': 42 } } },
+      { onResult }
+    );
+  });
+
+  it('should drop the flags without throwing when Nachbarin is not used', () => {
+    const controller = makeSubmittingController(null);
+    controller.flags.set('consent', 1);
+    controller.flags.set('survey-age', 42);
+
+    expect(() => controller.captureFlags()).to.not.throw();
+    expect(logger.error).not.toHaveBeenCalled();
+  });
+
+  it('should log, not throw, when the client refuses the record', () => {
+    const client = { write: vi.fn(() => { throw new Error('app_data too large'); }) };
+    const controller = makeSubmittingController({ client, onResult: () => {} });
+    controller.flags.set('consent', 1);
+    controller.flags.set('survey-age', 42);
+
+    expect(() => controller.captureFlags()).to.not.throw();
+    expect(logger.error).toHaveBeenCalled();
+  });
+
+  it('should never log flag values', () => {
+    const client = { write: vi.fn(() => 'record-id') };
+    const controller = makeSubmittingController({ client, onResult: () => {} });
+    controller.flags.set('consent', 1);
+    controller.flags.set('survey-name', 'Ada Lovelace');
+
+    controller.captureFlags();
+
+    const logged = [logger.debug, logger.info, logger.error]
+      .flatMap((spy) => spy.mock.calls.flat())
+      .map(String);
+    expect(logged.some((arg) => arg.includes('Ada Lovelace'))).to.equal(false);
+  });
+});

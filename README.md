@@ -74,6 +74,26 @@ There are two ways to provide the Sentry DSN:
 
 If both are provided, the query string takes precedence — Sentry is initialized only once.
 
+## Data Capture (Nachbarin)
+
+When a game ends, the flags selected by the story's `capture` declaration (see [Capture](docs/dialogues.md#capture)) are sent to [Nachbarin](https://github.com/IMAGINARY/nachbarin) through [`@imaginary-maths/nachbarin-client`](https://www.npmjs.com/package/@imaginary-maths/nachbarin-client). The client queues each record in `localStorage` and sends it in the background whenever the service is reachable, so records survive network outages and page reloads.
+
+It's configured in `config/nachbarin.yml`:
+
+| Key                       | Description |
+|---------------------------|-------------|
+| `nachbarin.url`           | Service endpoint. |
+| `nachbarin.apiKey`        | A Nachbarin `write` key. Usually supplied with the `nachbarin_apiKey` query string argument instead. |
+| `nachbarin.engineVersion` | Stored with every record as its `engine_version`. Bump it when the format of the captured data changes. |
+
+Nachbarin is used only when both `url` and `apiKey` are set. Otherwise captured flags are discarded.
+
+Each record's `app_data` is `{ "flags": { "<flag>": <value>, ... } }`. Its `content_version` is `sha256:` followed by the SHA-256 of the story file's text as loaded, so data readers can match a record to the story script that produced it. To compute it for a story file (UTF-8 without a BOM): `shasum -a 256 stories/<story>.yml`.
+
+Hashing needs a secure context: `https:`, `http://localhost` and `http://127.0.0.1` work, but a LAN address like `http://192.168.1.50` doesn't. If the story can't be hashed, Nachbarin is disabled and an error is logged.
+
+With `?log=info`, the console shows whether Nachbarin is enabled, the engine and content versions, each queued and delivered record, failed send attempts and their retry schedule, and when the connection is restored. Flag values and the API key are never logged.
+
 ## Credits
 
 Developed by Eric Londaits for IMAGINARY gGmbH.
