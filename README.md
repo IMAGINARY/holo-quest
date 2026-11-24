@@ -34,8 +34,9 @@ The app accepts query string parameters to control its behavior:
 | `lang`       | Default language code at startup. Must be a value present in `game.languages`; if not, the first language in the list is used and a warning is logged. Overrides `game.defaultLanguage`. Must match `[a-zA-Z0-9_-]+`; invalid values are logged and ignored. | _(none)_ |
 | `strict`     | Expression strictness (`game.strictExpressions`). When on, a condition or flag assignment that can't be evaluated throws; when off, it is logged and the condition is treated as false. Use `?strict=0` to disable, any other value to enable. Useful for proving a story out on the kiosk itself. | strict in dev, lenient in a production build |
 | `startNode`  | Node id to start the story from, instead of its root node. Overrides `app.startNode`. Must match `[a-zA-Z0-9_-]+`; invalid values are logged and ignored. An id not found in the story is also logged and ignored, falling back to the root node. | _(none)_ |
+| `nachbarin_apiKey` | API key for the Nachbarin service. Overrides `nachbarin.apiKey`. The key ends up in the URL (browser history, server logs), so prefer a settings file where that matters. | _(none)_ |
 
-Examples: `?log=debug`, `?settings=my-settings.yml`, `?log=info&settings=game1.yml,game2.yml`, `?sentry_dsn=https://examplePublicKey@o0.ingest.sentry.io/0`, `?frontAdj=0,0,1.1,1.2`, `?hdSim`, `?story=evacuate`, `?lang=en`, `?strict=1`, `?startNode=ready`
+Examples: `?log=debug`, `?settings=my-settings.yml`, `?log=info&settings=game1.yml,game2.yml`, `?sentry_dsn=https://examplePublicKey@o0.ingest.sentry.io/0`, `?frontAdj=0,0,1.1,1.2`, `?hdSim`, `?story=evacuate`, `?lang=en`, `?strict=1`, `?startNode=ready`, `?nachbarin_apiKey=<key>`
 
 ## Configuration
 

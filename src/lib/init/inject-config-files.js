@@ -7,5 +7,6 @@ export default [
   'spinner',
   'game',
   'shortcuts',
+  'nachbarin',
   'default-settings',
 ];

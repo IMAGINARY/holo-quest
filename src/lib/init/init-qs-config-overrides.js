@@ -94,5 +94,11 @@ export default function getQsConfigOverrides(qs) {
       logger.error('lang: must contain only alphanumeric characters, _ or -');
     }
   }
+  const nachbarinApiKey = qs.get('nachbarin_apiKey');
+  if (nachbarinApiKey) {
+    overrides['nachbarin_apiKey query string'] = {
+      nachbarin: { apiKey: nachbarinApiKey },
+    };
+  }
   return overrides;
 }
