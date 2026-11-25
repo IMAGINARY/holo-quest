@@ -1517,7 +1517,7 @@ items:
         Read the text to your right before making your choice.
       de: |
         Möchtest du hier selbst an Sicherheitsforschung teilnehmen? 
-        Beachte dazu bitte den Text links von dir.
+        Beachte dazu bitte den Text rechts von dir.
     responseFlag: surveyConsent
     responses:
       - text:
